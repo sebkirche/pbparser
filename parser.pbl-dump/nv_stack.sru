@@ -86,7 +86,7 @@ public function any peek (long al_pos);
 
 any la_val
 
-if al_pos > 0 and al_pos <= al_pos then
+if il_pos > 0 and al_pos <= il_pos then
 	la_val = ia_values[al_pos]
 end if
 

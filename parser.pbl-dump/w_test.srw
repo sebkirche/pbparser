@@ -66,68 +66,12 @@ end prototypes
 type variables
 
 nv_parser i_parser
-constant ulong LOCALE_SDECIMAL = 14 // decimal separator
 
 end variables
 
 forward prototypes
-public function string getlocaleinfo (unsignedlong al_localetype, boolean ab_userlocale)
-public function string fixdecimal (string as_text)
 public subroutine showerror (string as_return)
 end prototypes
-
-public function string getlocaleinfo (unsignedlong al_localetype, boolean ab_userlocale);// returns the LOCALE setting of the given type
-//
-// al_localetype = the local we want to get
-// ab_userlocale = TRUE - use the user locales /  FALSE - use the system locales
-
-
-ulong ll_cid
-ulong ll_len
-string s_ret = "", s_tmp = ""
-
-if ab_userlocale then
-	ll_cid = getuserdefaultlcid( )
-else
-	ll_cid = getsystemdefaultlcid( )
-end if
-
-// first call to get the correct length for the data to return
-ll_len = getlocaleinfo(ll_cid, al_localetype, s_tmp , len(s_tmp))
-
-if ll_len > 0 then
-	s_tmp = space(ll_len)
-	
-	//second call to get the data
-	ll_len = getlocaleinfo(ll_cid, al_localetype, s_tmp , len(s_tmp))
-	if ll_len > 0 then s_ret = left(s_tmp, ll_len -1) // the returned data includes the string terminator
-end if
-
-return s_ret
-
-end function
-
-public function string fixdecimal (string as_text);
-string ls_sep, ls_rep
-long p
-
-ls_sep = getlocaleinfo(locale_sdecimal, true)
-
-if ls_sep = ',' then 
-	ls_rep = '.'
-else
-	ls_rep = ','
-end if
-
-p = pos(as_text, ls_rep)
-do while p > 0 
-	as_text = replace(as_text, p, 1, ls_sep)
-	p = pos(as_text, ls_rep)
-loop
-
-return as_text
-
-end function
 
 public subroutine showerror (string as_return);
 
@@ -181,6 +125,7 @@ destroy(this.mle_formula)
 end on
 
 event open;
+//12.3 'toto' truc false
 //mle_formula.text = "33+42*2.5/(0.1-5)^2^3"
 //mle_formula.text = "1*sum()"
 //mle_formula.text = "2+3*4"
@@ -192,7 +137,9 @@ event open;
 //mle_formula.text = "+1 + --+1" // attendu 2
 //mle_formula.text = "true and not false"
 //mle_formula.text = "len('toto') = 4"
-mle_formula.text = "min(len('toto')+7;-len(~"machin~");4.2)"
+//mle_formula.text = "min(len('toto')+7;-len(~"machin~");4.2)"
+//mle_formula.text = "12.3 'toto' 42 false myvar"
+mle_formula.text = "2+4"
 
 end event
 
@@ -251,6 +198,7 @@ fontpitch fontpitch = fixed!
 fontfamily fontfamily = modern!
 string facename = "Courier New"
 long textcolor = 33554432
+boolean hscrollbar = true
 boolean autohscroll = true
 boolean autovscroll = true
 borderstyle borderstyle = stylelowered!
@@ -275,11 +223,11 @@ event clicked;
 
 long i
 string ls_res
-nv_tok lt_parsed[]
+nv_termqueue lt_parsed
 
-i_parser.getparsed( lt_parsed[] )
+lt_parsed = i_parser.getparsed()
 
-ls_res = i_parser.eval(lt_parsed[])
+ls_res = i_parser.eval(lt_parsed)
 
 showerror(ls_res)
 
@@ -338,22 +286,23 @@ end type
 
 event clicked;
 long i
-nv_tok lt_tokens[], lt_parsed[]
+nv_termqueue lt_tokens, lt_parsed
 
 i_parser.setreverse( cbx_postfix.checked )
-mle_formula.text = fixdecimal(mle_formula.text)
+//mle_formula.text = fixdecimal(mle_formula.text)
 
 if i_parser.tokenize( mle_formula.text ) then
-	i_parser.gettokens( lt_tokens[] )
-	if i_parser.parse(lt_tokens[]) then
-		i_parser.getparsed( lt_parsed[] )
+	lt_tokens = i_parser.getterms()
+	if i_parser.parse(lt_tokens) then
+		lt_parsed = i_parser.getparsed()
 		mle_polish.text = ""
-		for i = 1 to upperbound(lt_parsed[])
-			mle_polish.text += lt_parsed[i].dump() + ' '
+		for i = 1 to lt_parsed.size()
+			mle_polish.text += lt_parsed.peek(i).dump() + ' '
 		next
 	else
 		mle_polish.text = i_parser.getlasterror()
 	end if
+
 end if
 
 end event
@@ -393,26 +342,27 @@ end type
 
 event clicked;
 long i, p
-nv_tok lt_tokens[]
 string ls_err, ls_form
+nv_termqueue terms
 
 ls_form = mle_formula.text
 p = pos(ls_form, "~r~n")
 if p > 0 then ls_form = left(ls_form, p - 1)
 
-ls_form = fixdecimal(ls_form)
+//ls_form = fixdecimal(ls_form)
 mle_formula.text = ls_form
 
 if i_parser.tokenize( ls_form ) then
-	i_parser.gettokens( lt_tokens[] )
+	terms = i_parser.getterms()
 	mle_tokens.text = ""
 	if cbx_dbgtokens.checked then mle_debug.text = ""
-	for i = 1 to upperbound(lt_tokens[])
-		mle_tokens.text += lt_tokens[i].dump() + ' '
+	for i = 1 to terms.size()
+		mle_tokens.text += terms.peek(i).dump() + ' '
 		if cbx_dbgtokens.checked then 
-			mle_debug.text += lt_tokens[i].dump() + &
-									'[' + lt_tokens[i].typename() + ']' +&
-									iif(lt_tokens[i].kind = i_parser.UNARYOP or lt_tokens[i].kind = i_parser.BINARYOP, string(i_parser.getprec(lt_tokens[i])), "") + &
+			mle_debug.text += terms.peek(i).dump() + &
+									' [' + terms.peek(i).typename() + ']' +&
+									iif(terms.peek(i).kind = nv_term.UNARYOP or terms.peek(i).kind = nv_term.BINARYOP, " p=" + string(i_parser.getprec(terms.peek(i))), "") + &
+									' ' + terms.peek(i).classname() +&
 									'~r~n' 
 		end if 
 	next
