@@ -69,6 +69,7 @@ string is_lasterror
 
 
 end variables
+
 forward prototypes
 public subroutine setreverse (boolean ab_reverse)
 public function string getlasterror ()
@@ -113,8 +114,6 @@ inv_tokens = la_empty[]
 ll_inplen= len(as_input)
 
 do while ll_tk_start <= ll_inplen
-	lnv_tok.value = ""
-	lnv_tok.kind = UNDEF
 	ll_tk_end = ll_tk_start
 	
 	lc = mid(as_input, ll_tk_start, 1)
@@ -123,6 +122,7 @@ do while ll_tk_start <= ll_inplen
 			do while (ll_tk_end <= ll_inplen) and isNumber(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start + 1))
 				ll_tk_end++
 			loop 
+			lnv_tok = create nv_tok
 			lnv_tok.value = dec(trim(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start)))
 			lnv_tok.kind = DECIM
 		case '*', '/', '^', '%', '=', '<', '>'
@@ -134,10 +134,12 @@ do while ll_tk_start <= ll_inplen
 					ll_tk_end++	
 				end if
 			end if
+			lnv_tok = create nv_tok
 			lnv_tok.value = mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start)
 			lnv_tok.kind = BINARYOP
 		case '+', '-'
 			ll_tk_end++
+			lnv_tok = create nv_tok
 			lnv_tok.value = mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start)
 			ll_tokens = upperbound(inv_tokens[])
 			if ll_tokens = 0 then
@@ -153,6 +155,7 @@ do while ll_tk_start <= ll_inplen
 			do while (ll_tk_end <= ll_inplen) and isWordChar(mid(as_input, ll_tk_end, 1))
 				ll_tk_end++
 			loop
+			lnv_tok = create nv_tok
 			lnv_tok.value = trim(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start))
 			if isbool(lnv_tok.value) then
 				lnv_tok.value = iif(lower(lnv_tok.value)="true", true, false)
@@ -184,11 +187,13 @@ do while ll_tk_start <= ll_inplen
 				goto exit_tokenize
 			else
 				ll_tk_end = ll_cur + 1
+				lnv_tok = create nv_tok
 				lnv_tok.value = mid(as_input, ll_begin + 1, ll_cur - ll_begin - 1)
 				lnv_tok.kind = STR
 			end if			
 		case ARGSEP, LPAR, RPAR
 			ll_tk_end++
+			lnv_tok = create nv_tok
 			lnv_tok.value = mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start)
 			choose case lc
 				case ARGSEP; lnv_tok.kind = TARGSEP
@@ -416,7 +421,8 @@ do while t <= upperbound(anv_tokens[])
 			lq_out.push(lt_op.pop())
 		loop
 		//just pop the '('
-		if lt_op.top().value = LPAR then 
+		if lt_op.top().value = LPAR then
+			destroy lt_op.top()
 			lt_op.pop()
 		else
 			//we might have a parenthesis mismatch
@@ -543,6 +549,7 @@ nv_tok lt_ret, item
 dec ldc_ret = 0, ldc_val
 long i
 
+lt_ret = create nv_tok
 choose case ast_func.value
 	case "answer"	//dummy function
 		lt_ret.kind = DECIM
@@ -647,6 +654,8 @@ nv_tok lt_ret, item
 dec ldc_ret = 0, ldc_val
 long i
 
+lt_ret = create nv_tok
+
 //get the type of the identifier, then push the value
 
 choose case lower(ast_ident.value)
@@ -671,6 +680,8 @@ dec ldc_op1, ldc_op2, ldc_res
 any la_op1, la_op2
 boolean lb_val
 long i
+
+lt_ret = create nv_tok
 
 choose case ast_op.kind
 	case UNARYOP

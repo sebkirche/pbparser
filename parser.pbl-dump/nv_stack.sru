@@ -43,6 +43,7 @@ any la_ret
 if il_pos = 0 then return la_ret	
 
 la_ret = ia_values[il_pos]
+setnull(ia_values[il_pos])
 il_pos --
 
 return la_ret

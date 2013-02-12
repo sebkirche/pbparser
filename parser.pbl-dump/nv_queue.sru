@@ -46,6 +46,7 @@ any la_ret
 if il_end = 0 then return la_ret
 
 la_ret = ia_values[il_start]
+setnull(ia_values[il_start])
 il_start ++
 
 if il_start > il_end then il_end = 0

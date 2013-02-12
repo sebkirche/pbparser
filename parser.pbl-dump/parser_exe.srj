@@ -1,0 +1,21 @@
+EXE:eval.exe,,0,0
+CMP:0,0,0,2,0,0
+COM:Sébastien Kirche
+DES:
+CPY:2011-2013
+PRD:PB Evaluator
+PVS:1,0,0,1
+PVN:1,0,0,1
+FVS:1,0,0,1
+FVN:1,0,0,1
+PBD:c:\Dev\lang_design\pre-postfix-trees\pbparser\parser.pbl,,0
+OBJ:c:\dev\lang_design\pre-postfix-trees\pbparser\parser.pbl,nv_tokstack,u
+OBJ:c:\dev\lang_design\pre-postfix-trees\pbparser\parser.pbl,w_test,w
+OBJ:c:\dev\lang_design\pre-postfix-trees\pbparser\parser.pbl,m_main,m
+OBJ:c:\dev\lang_design\pre-postfix-trees\pbparser\parser.pbl,nv_stack,u
+OBJ:c:\dev\lang_design\pre-postfix-trees\pbparser\parser.pbl,nv_parser,u
+OBJ:c:\dev\lang_design\pre-postfix-trees\pbparser\parser.pbl,nv_tok,u
+OBJ:c:\dev\lang_design\pre-postfix-trees\pbparser\parser.pbl,nv_queue,u
+OBJ:c:\Dev\lang_design\pre-postfix-trees\pbparser\parser.pbl,parser,a
+OBJ:c:\dev\lang_design\pre-postfix-trees\pbparser\parser.pbl,iif,f
+OBJ:c:\dev\lang_design\pre-postfix-trees\pbparser\parser.pbl,w_help,w

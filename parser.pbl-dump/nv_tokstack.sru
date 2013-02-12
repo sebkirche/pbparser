@@ -14,6 +14,7 @@ nv_tok it_values[]
 long il_pos = 0
 
 end variables
+
 forward prototypes
 public function boolean isempty ()
 public subroutine reset ()
@@ -46,12 +47,14 @@ public function nv_tok pop ();
 nv_tok lt_ret
 
 if il_pos = 0 then 
+	lt_ret = create nv_tok
 	lt_ret.value = ""
 	lt_ret.kind = 0
 	return lt_ret	
 end if
 
 lt_ret = it_values[il_pos]
+setnull(it_values[il_pos])
 il_pos --
 
 return lt_ret

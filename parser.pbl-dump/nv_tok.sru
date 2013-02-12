@@ -3,8 +3,9 @@ global type nv_tok from nonvisualobject
 end type
 end forward
 
-global type nv_tok from nonvisualobject autoinstantiate
+global type nv_tok from nonvisualobject
 end type
+global nv_tok nv_tok
 
 type variables
 
@@ -125,7 +126,6 @@ public function string dump ();
 string ls_ret
 
 if kind = FUNC then
-	//ls_ret = anv_token.value + '(' + string(anv_token.count) + ')'
 	ls_ret = value + '.' + iif(count > -1, string(count), '?')
 elseif kind = UNARYOP then
 	if value = '-' then 
@@ -152,4 +152,9 @@ on nv_tok.destroy
 TriggerEvent( this, "destructor" )
 call super::destroy
 end on
+
+event constructor;
+kind = UNDEF
+
+end event
 
