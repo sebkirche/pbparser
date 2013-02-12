@@ -8,7 +8,7 @@ end type
 
 type variables
 /*
-	Shunting-Yard evaluator - Sebastien KIRCHE 2011-2013
+	Shunting-Yard evaluator v0.9 - (c) Sebastien KIRCHE 2011-2013
 
 	PB implementation of Dijkstra's Shunting-Yard Algorithm
 	for parsing infix math expressions and preparing a postfix 
@@ -63,6 +63,7 @@ constant string RPAR = ")"
 
 
 end variables
+
 forward prototypes
 public subroutine setreverse (boolean ab_reverse)
 public function string getlasterror ()
@@ -174,7 +175,8 @@ public function boolean isfunc (any aa_tok);
 boolean lb_ret = false
 
 choose case lower(aa_tok)
-	case 'answer', "sum", "mul", "abs"; lb_ret = true
+	case 'answer', "sum", "mul", "abs", "min", "max"
+		lb_ret = true
 end choose
 
 return lb_ret
@@ -522,8 +524,32 @@ choose case ast_func.value
 			ldc_ret *= ldc_val
 		next
 	case "abs"
-		if ast_args.size() > 0 then ldc_ret = abs(dec(ast_args.pop().value))
-	
+		if ast_func.count = 1 then 
+			ldc_ret = abs(dec(ast_args.pop().value))
+		else
+			is_lasterror = "abs() needs 1 argument"
+		end if
+	case "min"
+		if ast_args.size() > 0 then 
+			ldc_ret = dec(ast_args.pop().value)
+			for i = 2 to ast_func.count
+				ldc_val = dec(ast_args.pop().value)
+				if ldc_val < ldc_ret then ldc_ret = ldc_val
+			next
+		else
+			is_lasterror = "missing argument"
+		end if
+	case "max"
+		if ast_args.size() > 0 then 
+			ldc_ret = dec(ast_args.pop().value)
+			for i = 2 to ast_func.count
+				ldc_val = dec(ast_args.pop().value)
+				if ldc_val > ldc_ret then ldc_ret = ldc_val
+			next
+		else
+			is_lasterror = "missing argument"
+		end if
+
 end choose
 
 return ldc_ret
