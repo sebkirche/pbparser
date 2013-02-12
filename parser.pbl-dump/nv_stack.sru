@@ -23,6 +23,7 @@ public function any top ()
 public subroutine reset ()
 public function long size ()
 public subroutine settop (any aa_val)
+public function any peek (long al_pos)
 end prototypes
 
 public function boolean isempty ();
@@ -78,6 +79,19 @@ if il_pos > 0 then
 end if
 
 end subroutine
+
+public function any peek (long al_pos);
+// for debug : get a value
+
+any la_val
+
+if al_pos > 0 and al_pos <= al_pos then
+	la_val = ia_values[al_pos]
+end if
+
+return la_val
+
+end function
 
 on nv_stack.create
 call super::create

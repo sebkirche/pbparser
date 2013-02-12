@@ -22,6 +22,7 @@ public function st_tok pop ()
 public subroutine push (st_tok ast_val)
 public function st_tok top ()
 public function long size ()
+public function st_tok peek (long al_pos)
 end prototypes
 
 public function boolean isempty ();
@@ -76,6 +77,19 @@ end function
 
 public function long size ();
 return il_pos
+
+end function
+
+public function st_tok peek (long al_pos);
+// for debug : get a value
+
+any la_val
+
+if al_pos > 0 and al_pos <= al_pos then
+	la_val = ist_values[al_pos]
+end if
+
+return la_val
 
 end function
 

@@ -20,6 +20,8 @@ public function boolean isempty ()
 public subroutine push (any aa_val)
 public function any pop ()
 public subroutine reset ()
+public function long size ()
+public function any peek (long al_pos)
 end prototypes
 
 public function boolean isempty ();
@@ -60,6 +62,27 @@ il_start = 1
 il_end = 0
 
 end subroutine
+
+public function long size ();
+if il_end = 0 then
+	return 0
+else
+	return il_end - il_start + 1
+end if
+
+end function
+
+public function any peek (long al_pos);
+// for debug : return a value from given position from start
+any la_val
+
+if al_pos >= size() then
+	la_val = ia_values[il_start + al_pos -1]
+end if
+
+return la_val
+
+end function
 
 on nv_queue.create
 call super::create

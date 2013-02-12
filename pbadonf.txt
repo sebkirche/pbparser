@@ -1,0 +1,9 @@
+Bonjour,
+
+voici un évaluateur d'expressions basé sur l'algorithme Shunting-yard (triage) de Dijkstra permettant de transformer des expressions infixes (notation algébrique courante) en expressions postfixées (comme la "notation polonaise" sur les calculatrices HP; par exemple "2 + 2" devient "2 2 +"). 
+
+On commence par "tokeniser" l'expression (premier nettoyage), puis on applique le "triage" aux tokens pour obtenir une notation postfixée. L'avantage de la transformation est qu'elle permet de faire disparaître les parenthèses tout respectant la priorité des opérateurs. 
+
+L'évaluation de l'expression est ensuite très simple : en utilisant une pile, il suffit d'empiler les termes de l'expression les uns après les autres et lorsqu'on rencontre un opérateur (+, - , *, /) ou une fonction, on dépile le nombre d'arguments nécessaires à l'opérateur ou à la fonction, on empile le résultat et on recommence.
+
+L'évaluateur supporte les opérations de base ainsi que l'utilisation de fonctions. J'ai implémenté une variante de l'algo permettant d'avoir des fonctions avec un nombre de de paramètres variables.

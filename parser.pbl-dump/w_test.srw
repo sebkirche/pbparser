@@ -162,7 +162,8 @@ event open;
 //mle_formula.text = "2^ (abs  (sum(2 ;-3 ; 4))-1)+1"
 //mle_formula.text = "2^ abs(sum(2;-3;4))"
 //mle_formula.text = "2 - 1 <= 1 + 1"
-mle_formula.text = "1 + --1" // attendu 2
+//mle_formula.text = "+1 + --+1 = 2 = not(true)"
+mle_formula.text = "+1 + --+1" // attendu 2
 
 
 end event
@@ -194,8 +195,8 @@ integer weight = 400
 fontcharset fontcharset = ansi!
 fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!
-string facename = "Arial"
-string text = "eval"
+string facename = "Tahoma"
+string text = "&eval"
 end type
 
 event clicked;
@@ -214,12 +215,12 @@ integer x = 471
 integer y = 608
 integer width = 1198
 integer height = 80
-integer textsize = -10
+integer textsize = -8
 integer weight = 400
 fontcharset fontcharset = ansi!
 fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!
-string facename = "Arial"
+string facename = "Tahoma"
 long textcolor = 33554432
 long backcolor = 67108864
 string text = "postfix (uncheck for prefix - won~'t evaluate)"
@@ -253,8 +254,8 @@ integer weight = 400
 fontcharset fontcharset = ansi!
 fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!
-string facename = "Arial"
-string text = "parse"
+string facename = "Tahoma"
+string text = "&parse"
 end type
 
 event clicked;
@@ -306,8 +307,8 @@ integer weight = 400
 fontcharset fontcharset = ansi!
 fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!
-string facename = "Arial"
-string text = "tokenize"
+string facename = "Tahoma"
+string text = "&tokenize"
 end type
 
 event clicked;

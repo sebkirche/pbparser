@@ -51,26 +51,23 @@ constant char CC_LEFT = 'L'
 constant char CC_RIGHT = 'R'
 
 //types of tokens
-constant char ARGSEP = ';'				//argument separator for funcalls
+constant char ARGSEP = ';'			//argument separator for funcalls
 constant string NUM = "Num"			//numeric type
-constant string BOOL = "Bool"			//boolean type
+constant string BOOL = "Bool"		//boolean type
 constant string STR = "Str"			//string type
-constant string UNARYOP = "UnOp"		//unary operator
+constant string UNARYOP = "UnOp"	//unary operator
 constant string BINARYOP = "BinOp"	//binary operator 
-constant string IDENT = "Id"			//identifier (variable)
-constant string FUNC = "Func"			//function
+constant string IDENT = "Id"		//identifier (variable)
+constant string FUNC = "Func"		//function
 constant string LPAR = "("
 constant string RPAR = ")"
 
 
 end variables
-
 forward prototypes
 public subroutine setreverse (boolean ab_reverse)
 public function string getlasterror ()
 public function boolean tokenize (string as_input)
-public function boolean isfunc (any aa_tok)
-public function character getassoc (any aa_op)
 public function boolean iswordchar (character ac_char)
 public function boolean gettokens (ref st_tok ast_tokens[])
 public function boolean getparsed (ref st_tok ast_expr[])
@@ -79,8 +76,10 @@ public function boolean isop (st_tok ast_tok)
 public function boolean parse (st_tok ast_tokens[])
 public function string tokentostring (st_tok ast_token)
 public function integer getprec (st_tok ast_tok)
-public function decimal evalfunc (st_tok ast_func, ref nv_tokstack ast_args)
 public function boolean isbool (any aa_tok)
+public function character getassoc (st_tok ast_op)
+public function st_tok evalfunc (st_tok ast_func, ref nv_tokstack ast_args)
+public function boolean isfunc (st_tok ast_tok)
 end prototypes
 
 public subroutine setreverse (boolean ab_reverse);
@@ -118,9 +117,9 @@ do while ll_tk_start <= ll_inplen
 			do while (ll_tk_end <= ll_inplen) and isNumber(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start + 1))
 				ll_tk_end++
 			loop 
-			lst_tok.value = trim(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start))
+			lst_tok.value = dec(trim(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start)))
 			lst_tok.kind = NUM
-		case '+', '*', '/', '^', '%', '=', '<', '>'
+		case '*', '/', '^', '%', '=', '<', '>'
 			ll_tk_end++
 			if lc = '<' or lc = '>' and ll_tk_end < ll_inplen then //lookahead ;)
 				if mid(as_input, ll_tk_end, 1) = '=' &
@@ -131,7 +130,7 @@ do while ll_tk_start <= ll_inplen
 			end if
 			lst_tok.value = mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start)
 			lst_tok.kind = BINARYOP
-		case '-'
+		case '+', '-'
 			ll_tk_end++
 			lst_tok.value = mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start)
 			ll_tokens = upperbound(ist_tokens[])
@@ -149,7 +148,18 @@ do while ll_tk_start <= ll_inplen
 				ll_tk_end++
 			loop 
 			lst_tok.value = trim(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start))
-			lst_tok.kind = IDENT
+			if isbool(lst_tok.value) then
+				lst_tok.value = iif(lower(lst_tok.value)="true", true, false)
+				lst_tok.kind = BOOL
+			elseif lower(lst_tok.value) = "and" or lower(lst_tok.value) = "or" then
+				lst_tok.value = lower(lst_tok.value)
+				lst_tok.kind = BINARYOP
+			elseif lower(lst_tok.value) = "not" then
+				lst_tok.value = lower(lst_tok.value)
+				lst_tok.kind = UNARYOP
+			else
+				lst_tok.kind = IDENT
+			end if
 		case ARGSEP, LPAR, RPAR
 			ll_tk_end++
 			lst_tok.value = mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start)
@@ -175,40 +185,6 @@ loop
 
 exit_tokenize:
 return lb_ret
-
-end function
-
-public function boolean isfunc (any aa_tok);
-//check if the given identifier is a function
-
-boolean lb_ret = false
-
-choose case lower(aa_tok)
-	case 'answer', "sum", "mul", "abs", "min", "max", "not"
-		lb_ret = true
-end choose
-
-return lb_ret
-
-end function
-
-public function character getassoc (any aa_op);
-// return the associativity for an operator
-
-char lc_ret
-
-choose case string(aa_op, "[general]")
-	case '^'
-		lc_ret = CC_RIGHT
-	case '*', '/', '%'
-		lc_ret = CC_LEFT
-	case '+', '-'
-		lc_ret = CC_LEFT
-	case else
-		lc_ret = CC_LEFT
-end choose
-
-return lc_ret
 
 end function
 
@@ -265,7 +241,7 @@ n = upperbound(ast_toks[])
 if n = 0 then return ""
 
 for i = 1 to n
-	ls_val = ast_toks[i].value
+	ls_val = lower(string(ast_toks[i].value))
 	choose case ast_toks[i].kind
 		case NUM
 			lst_eval.push(ast_toks[i])
@@ -273,12 +249,19 @@ for i = 1 to n
 			lst_eval.push(ast_toks[i])
 		case UNARYOP
 			choose case ls_val
-				case '-'
+				case '-', '+'
 					ldc_op1 = dec(lst_eval.pop().value)
-					ldc_res = - ldc_op1
+					if ls_val = '-' then
+						ldc_res = - ldc_op1
+					elseif ls_val = '+' then
+						ldc_res = ldc_op1
+					end if
+					item.kind = NUM
+					item.value = ldc_res
+				case 'not'
+					item.kind = BOOL
+					item.value = not(lst_eval.pop().value)
 			end choose
-			item.value = ldc_res
-			item.kind = NUM
 			lst_eval.push(item)
 		case BINARYOP
 			if lst_eval.size() >= 2 then
@@ -321,17 +304,22 @@ for i = 1 to n
 						item.value = lb_res
 						item.kind = BOOL
 						lst_eval.push(item)
-					case '=', '<>'
+					case '=', '<>', 'and', 'or'
 						st_op2 = lst_eval.pop()
 						st_op1 = lst_eval.pop()
-						//TODO : remplacer "true"/"false" par true/false lors du parsing
-						if st_op1.kind = BOOL then st_op1.value = iif(string(st_op1.value) = "true", true, false)
-						if st_op2.kind = BOOL then st_op2.value = iif(string(st_op2.value) = "true", true, false)
+						if st_op1.kind <> st_op2.kind then
+							ls_ret = "broken expression : mismatch operands (" + st_op1.kind + '/' + st_op2.kind + ") for `" + ls_val + "` at " + string(ast_toks[i].position)
+							goto end_eval
+						end if
 						choose case ls_val
 							case '='
 								lb_res = (st_op1.value = st_op2.value)
 							case '<>'
 								lb_res = (st_op1.value <> st_op2.value)
+							case 'and'
+								lb_res = (st_op1.value and st_op2.value)
+							case 'or'
+								lb_res = (st_op1.value or st_op2.value)
 						end choose
 						item.value = lb_res
 						item.kind = BOOL
@@ -341,13 +329,12 @@ for i = 1 to n
 						goto end_eval
 				end choose
 			else
-				ls_ret = "broken expression : wrong number of operands for " + ls_val + " at " + string(ast_toks[i].position)
+				ls_ret = "broken expression : wrong number of operands for `" + ls_val + "` at " + string(ast_toks[i].position)
 				goto end_eval
 			end if
 
 		case FUNC
-			item.kind = NUM //TODO we can implement string funcs too
-			item.value = evalfunc(ast_toks[i], lst_eval)
+			item = evalfunc(ast_toks[i], lst_eval)
 			lst_eval.push(item)
 	end choose
 next
@@ -415,21 +402,17 @@ long t = 1
 do while t <= upperbound(ast_tokens[])
 	lst_tok = ast_tokens[t]
 
-	if isnumber(lst_tok.value) then
-		//if the token is a number, pass it to the output queue
+	if lst_tok.kind = NUM or lst_tok.kind = BOOL then
+		//if the token is an operand, pass it to the output queue
 		lq_out.push(lst_tok)
 		if lst_args.size() > 0 then lst_args.settop(true)
-	elseif isfunc(lst_tok.value) then
+	elseif isfunc(lst_tok) then
 		//if it is a function, push it to the stack
 		lst_tok.kind = FUNC
 		lst_op.push(lst_tok)
 		lst_argcount.push(0)
 		if lst_args.size() > 0 then lst_args.settop(true)
 		lst_args.push(false)
-	elseif isbool(lst_tok.value) then
-		lst_tok.kind = BOOL
-		lst_tok.value = lower(lst_tok.value)
-		lq_out.push(lst_tok)
 	elseif lst_tok.value = ARGSEP then
 		//if it is a function argument separator
 		//1) pop all pending operators until getting '('
@@ -453,9 +436,9 @@ do while t <= upperbound(ast_tokens[])
 		//we have an operator, process operator precedence
 		//if there are other pending operations
 		do while not lst_op.isempty() &
-			and ((getassoc(lst_tok.value) = cc_left and getprec(lst_tok) <= getprec(lst_op.top())) &
+			and ((getassoc(lst_tok) = cc_left and getprec(lst_tok) <= getprec(lst_op.top())) &
 			or &
-			(getassoc(lst_tok.value) = cc_right and getprec(lst_tok) < getprec(lst_op.top()))) 
+			(getassoc(lst_tok) = cc_right and getprec(lst_tok) < getprec(lst_op.top()))) 
 			lq_out.push(lst_op.pop())
 		loop
 		lst_op.push(lst_tok)
@@ -476,7 +459,7 @@ do while t <= upperbound(ast_tokens[])
 			lb_ret = false
 			goto end_of_shunt
 		end if
-		if isfunc(lst_op.top().value) then 
+		if isfunc(lst_op.top()) then 
 			//if there is a function after the paren
 			//add it to the queue with arguments count
 			ll_count = lst_argcount.pop()
@@ -485,6 +468,7 @@ do while t <= upperbound(ast_tokens[])
 			lst_func.count = ll_count
 			lq_out.push(lst_func)
 		end if
+	//else what to do ?
 	end if
 	t++
 loop
@@ -525,9 +509,16 @@ public function string tokentostring (st_tok ast_token);
 string ls_ret
 
 if ast_token.kind = FUNC then
-	ls_ret = ast_token.value + '(' + string(ast_token.count) + ')'
+	//ls_ret = ast_token.value + '(' + string(ast_token.count) + ')'
+	ls_ret = ast_token.value + '.' + string(ast_token.count)
 elseif ast_token.kind = UNARYOP then
-	if ast_token.value = '-' then ls_ret = '_'
+	if ast_token.value = '-' then 
+		ls_ret = '_'
+	else
+		ls_ret = ast_token.value
+	end if
+elseif ast_token.kind = BOOL or ast_token.kind = NUM then
+	ls_ret = string(ast_token.value)
 else
 	ls_ret = ast_token.value
 end if
@@ -542,82 +533,24 @@ public function integer getprec (st_tok ast_tok);
 int li_ret
 
 choose case ast_tok.value
-	case '^'; 					li_ret = 6
+	case '^'; 					li_ret = 8
 	case '-'
 		//special minus case
 		if ast_tok.kind = UNARYOP then 
-			li_ret = 5
+			li_ret = 7
 		else
-			li_ret = 2
+			li_ret = 5
 		end if
-	case '*', '/', '%';		li_ret = 4
-	case '+' /*- above*/;	li_ret = 3
-	case '<', '<=', '=<', &
-			'>', '>=', '=>';	li_ret = 2
-	case '=', '<>';			li_ret = 1
+	case '*', '/', '%';			li_ret = 6
+	case '+' /*- above*/;		li_ret = 5
+	case '<', '<=', '>', '>=';	li_ret = 4
+	case '=', '<>';				li_ret = 3
+	case 'and', 'or';			li_ret = 2
+	case 'not';					li_ret = 1
 	case else;					li_ret = 0
 end choose
 
 return li_ret
-
-end function
-
-public function decimal evalfunc (st_tok ast_func, ref nv_tokstack ast_args);
-// evaluate the value of a function
-
-dec ldc_ret = 0, ldc_val
-long i
-
-choose case ast_func.value
-	case "answer"	//dummy function
-		ldc_ret = 42
-	case "sum"
-		for i = 1 to ast_func.count
-			ldc_val = dec(ast_args.pop().value)
-			ldc_ret += ldc_val
-		next
-	case "mul"
-		if ast_args.size() > 0 then ldc_ret = dec(ast_args.pop().value)
-		for i = 2 to ast_func.count
-			ldc_val = dec(ast_args.pop().value)
-			ldc_ret *= ldc_val
-		next
-	case "abs"
-		if ast_func.count = 1 then 
-			ldc_ret = abs(dec(ast_args.pop().value))
-		else
-			is_lasterror = "abs() needs 1 argument"
-		end if
-//	case "not" TODO : JE DOIS RETOURNER UN ST_TOK à la place de DECIMAL
-//		if ast_func.count = 1 then 
-//			ldc_ret = abs(dec(ast_args.pop().value))
-//		else
-//			is_lasterror = "abs() needs 1 argument"
-//		end if
-	case "min"
-		if ast_args.size() > 0 then 
-			ldc_ret = dec(ast_args.pop().value)
-			for i = 2 to ast_func.count
-				ldc_val = dec(ast_args.pop().value)
-				if ldc_val < ldc_ret then ldc_ret = ldc_val
-			next
-		else
-			is_lasterror = "missing argument"
-		end if
-	case "max"
-		if ast_args.size() > 0 then 
-			ldc_ret = dec(ast_args.pop().value)
-			for i = 2 to ast_func.count
-				ldc_val = dec(ast_args.pop().value)
-				if ldc_val > ldc_ret then ldc_ret = ldc_val
-			next
-		else
-			is_lasterror = "missing argument"
-		end if
-
-end choose
-
-return ldc_ret
 
 end function
 
@@ -628,6 +561,116 @@ boolean lb_ret = false
 
 choose case lower(aa_tok)
 	case 'true', "false"
+		lb_ret = true
+end choose
+
+return lb_ret
+
+end function
+
+public function character getassoc (st_tok ast_op);
+// return the associativity for an operator
+
+char lc_ret
+
+choose case ast_op.value
+	case '^', 'not'
+		lc_ret = CC_RIGHT
+	case '*', '/', '%'
+		lc_ret = CC_LEFT
+	case '+', '-', 'and', 'or'
+		if ast_op.kind = UNARYOP then
+			lc_ret = CC_RIGHT
+		else
+			lc_ret = CC_LEFT
+		end if
+	case else
+		lc_ret = CC_LEFT
+end choose
+
+return lc_ret
+
+end function
+
+public function st_tok evalfunc (st_tok ast_func, ref nv_tokstack ast_args);
+// evaluate the value of a function
+
+st_tok lst_ret, item
+dec ldc_ret = 0, ldc_val
+long i
+
+choose case ast_func.value
+	case "answer"	//dummy function
+		lst_ret.kind = NUM
+		lst_ret.value = 42
+	case "sum"
+		for i = 1 to ast_func.count
+			ldc_val = dec(ast_args.pop().value)
+			ldc_ret += ldc_val
+		next
+		lst_ret.kind = NUM
+		lst_ret.value = ldc_ret
+	case "mul"
+		if ast_args.size() > 0 then ldc_ret = dec(ast_args.pop().value)
+		for i = 2 to ast_func.count
+			ldc_val = dec(ast_args.pop().value)
+			ldc_ret *= ldc_val
+		next
+		lst_ret.kind = NUM
+		lst_ret.value = ldc_ret
+	case "abs"
+		if ast_func.count = 1 then 
+			ldc_ret = abs(dec(ast_args.pop().value))
+			lst_ret.kind = NUM
+			lst_ret.value = ldc_ret
+		else
+			is_lasterror = "abs() needs 1 argument"
+		end if
+	/*case "not"
+		if ast_func.count = 1 then
+			lst_ret.kind = BOOL
+			lst_ret.value = not(ast_args.pop().value)
+		else
+			is_lasterror = "abs() needs 1 argument"
+		end if*/
+	case "min"
+		if ast_args.size() > 0 then 
+			ldc_ret = dec(ast_args.pop().value)
+			for i = 2 to ast_func.count
+				ldc_val = dec(ast_args.pop().value)
+				if ldc_val < ldc_ret then ldc_ret = ldc_val
+			next
+			lst_ret.kind = NUM
+			lst_ret.value = ldc_ret
+		else
+			is_lasterror = "missing argument"
+		end if
+	case "max"
+		if ast_args.size() > 0 then 
+			ldc_ret = dec(ast_args.pop().value)
+			for i = 2 to ast_func.count
+				ldc_val = dec(ast_args.pop().value)
+				if ldc_val > ldc_ret then ldc_ret = ldc_val
+			next
+			lst_ret.kind = NUM
+			lst_ret.value = ldc_ret
+		else
+			is_lasterror = "missing argument"
+		end if
+
+end choose
+
+return lst_ret
+
+end function
+
+public function boolean isfunc (st_tok ast_tok);
+//check if the given identifier is a function
+
+boolean lb_ret = false
+
+choose case lower(ast_tok.value)
+	case 'answer', "sum", "mul", "abs", "min", "max"//, "not"
 		lb_ret = true
 end choose
 
