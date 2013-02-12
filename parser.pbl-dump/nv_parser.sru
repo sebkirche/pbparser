@@ -10,8 +10,8 @@ type variables
 
 private:
 
-any ia_tokens[]
-any ia_poltok[]
+st_tok ist_tokens[]
+st_tok ist_poltok[]
 boolean ib_reverse = true
 
 string is_lasterror
@@ -19,21 +19,27 @@ string is_lasterror
 constant char CC_LEFT = 'L'
 constant char CC_RIGHT = 'R'
 
+constant string NUMERIC = "Num"
+constant string STR = "Str"
+constant string OPERATION = "Op"
+constant string IDENT = "Id"
+constant string FUNC = "Func"
+
 end variables
 
 forward prototypes
 public subroutine setreverse (boolean ab_reverse)
-public function boolean gettokens (ref any aa_tokens[])
-public function boolean polish ()
 public function string getlasterror ()
-public function boolean getparsed (ref any aa_expr[])
 public function boolean tokenize (string as_input)
 public function boolean isfunc (any aa_tok)
 public function boolean isop (any aa_tok)
 public function integer getprec (any aa_op)
 public function character getassoc (any aa_op)
 public function boolean iswordchar (character ac_char)
-public function string eval ()
+public function boolean gettokens (ref st_tok ast_tokens[])
+public function boolean getparsed (ref st_tok ast_expr[])
+public function boolean polish (st_tok ast_tokens[])
+public function string eval (st_tok ast_toks[])
 end prototypes
 
 public subroutine setreverse (boolean ab_reverse);
@@ -41,161 +47,64 @@ ib_reverse = ab_reverse
 
 end subroutine
 
-public function boolean gettokens (ref any aa_tokens[]);
-aa_tokens[] = ia_tokens[]
-
-return true
-
-end function
-
-public function boolean polish ();
-boolean lb_ret = true
-any la_tok, empty_toks[]
-nv_queue lq_out
-nv_stack lst_op
-
-is_lasterror = ""
-
-if upperbound(ia_tokens[]) < 1 then
-	is_lasterror = "no input to polish"
-	lb_ret = false
-	goto end_of_shunt
-end if
-
-long t = 1
-do while t <= upperbound(ia_tokens[])
-	la_tok = ia_tokens[t]
-	
-	if isnumber(la_tok) then		//number ?
-		lq_out.push(la_tok)
-	elseif isfunc(la_tok) then		//func ?
-		lst_op.push(la_tok)
-	elseif la_tok = ';' then		//arg separator ?
-		do while not lst_op.isempty( ) and string(lst_op.top( ),"[general]") <> '('
-			lq_out.push(lst_op.pop())
-		loop
-		if lst_op.isempty( ) or string(lst_op.top( ),"[general]") <> '(' then
-			is_lasterror = "bad arg separator or parenthesis mismatch"
-			lb_ret = false
-			goto end_of_shunt
-		end if
-	elseif isop(la_tok) then	//O1
-		do while not lst_op.isempty( ) /*O2*/ &
-			and ((getassoc(la_tok) = cc_left and getprec(la_tok) <= getprec(lst_op.top())) &
-					or &
-					(getassoc(la_tok) = cc_right and getprec(la_tok) < getprec(lst_op.top()))) 
-			lq_out.push(lst_op.pop())
-		loop
-		lst_op.push(la_tok)
-	elseif la_tok = '(' then
-		lst_op.push(la_tok)
-	elseif la_tok = ')' then
-		do while not lst_op.isempty( ) and lst_op.top() <> '('
-			lq_out.push(lst_op.pop())
-		loop
-		if lst_op.top() = '(' then 
-			lst_op.pop( )
-		else
-			is_lasterror = "parenthesis error"
-			lb_ret = false
-			goto end_of_shunt
-		end if
-		if isfunc(lst_op.top()) then lq_out.push(lst_op.pop())
-	end if
-	t++
-loop
-do while not lst_op.isempty( )
-	if lst_op.top( ) = '(' or lst_op.top( ) = ')' then
-		is_lasterror = "parenthesis error"
-		lb_ret = false
-		goto end_of_shunt
-	end if
-	lq_out.push(lst_op.pop( ))
-loop
-
-//final 
-ia_poltok[] = empty_toks[]
-if ib_reverse then
-	//produce the postfixed stream
-	do while not lq_out.isempty( )
-		ia_poltok[upperbound(ia_poltok[]) + 1] = lq_out.pop( )
-	loop
-else
-	//reverse the reversed => prefixed stream
-	do while not lq_out.isempty( )
-		lst_op.push(lq_out.pop())
-	loop
-	do while not lst_op.isempty( )
-		ia_poltok[upperbound(ia_poltok[]) + 1] = lst_op.pop( )
-	loop
-end if
-
-end_of_shunt:
-return lb_ret
-
-end function
-
 public function string getlasterror ();
 return is_lasterror
 
 end function
 
-public function boolean getparsed (ref any aa_expr[]);
-aa_expr[] = ia_poltok[]
-
-return true
-
-end function
-
 public function boolean tokenize (string as_input);
 boolean lb_ret = true
-long c = 1, p, size, count = 0
-string ls_tok
+long ll_tk_start = 1, ll_tk_end, ll_in_len
+st_tok lst_tok
 any la_empty[]
+char lc
 
 is_lasterror = ""
-ia_tokens = la_empty[]
-size = len(as_input)
+ist_tokens = la_empty[]
+ll_in_len= len(as_input)
 
-do while c <= size
-	ls_tok = ""
-	p = c
+do while ll_tk_start <= ll_in_len
+	lst_tok.value = ""
+	lst_tok.kind = ""
+	ll_tk_end = ll_tk_start
 	
-	choose case mid(as_input, c, 1)
+	lc = mid(as_input, ll_tk_start, 1)
+	choose case lc
 		case '0' to '9' 
-			do while (p <= size) and isNumber(mid(as_input, c, p - c + 1))
-				p++
+			do while (ll_tk_end <= ll_in_len) and isNumber(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start + 1))
+				ll_tk_end++
 			loop 
-			ls_tok = trim(mid(as_input, c, p - c))
-		case '+', '-', '/', '^', '(', ')'
-			p++
-			ls_tok = mid(as_input, c, p - c)
-		case '*'
-			p++
-			ls_tok = 'x'
+			lst_tok.value = trim(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start))
+			lst_tok.kind = NUMERIC
+		case '+', '-', '*', '/', '^', '(', ')'
+			ll_tk_end++
+			lst_tok.value = mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start)
+			lst_tok.kind = OPERATION
 		case 'A' to 'Z', 'a' to 'z', '_'
-			do while (p <= size) and isWordChar(mid(as_input, p, 1))
-				p++
+			do while (ll_tk_end <= ll_in_len) and isWordChar(mid(as_input, ll_tk_end, 1))
+				ll_tk_end++
 			loop 
-			ls_tok = trim(mid(as_input, c, p - c))
+			lst_tok.value = trim(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start))
+			lst_tok.kind = IDENT
 		case ' ' 
-			c++		//ignore blanks
+			ll_tk_start++		//ignore blanks
 			continue
 		case else
-			is_lasterror = "possible unexpected char"
+			is_lasterror = "possible unexpected char : " + lc
 			lb_ret = false
-			goto end_of_tok
+			goto exit_tokenize
 	end choose
-	ia_tokens[upperbound(ia_tokens[]) + 1] = ls_tok
-	if p = c then 
+	lst_tok.position = ll_tk_start
+	ist_tokens[upperbound(ist_tokens[]) + 1] = lst_tok
+	if ll_tk_end = ll_tk_start then 
 		is_lasterror = "parsing error"
 		lb_ret = false
-		goto end_of_tok
+		goto exit_tokenize
 	end if
-	c = p
+	ll_tk_start = ll_tk_end
 loop
 
-end_of_tok:
+exit_tokenize:
 return lb_ret
 
 end function
@@ -269,10 +178,174 @@ end choose
 
 end function
 
-public function string eval ();
-//
+public function boolean gettokens (ref st_tok ast_tokens[]);
+ast_tokens[] = ist_tokens[]
 
-return ""
+return true
+
+end function
+
+public function boolean getparsed (ref st_tok ast_expr[]);
+//bug pour les structures ? 
+ast_expr[] = ist_poltok[]
+//long i, n
+//n = upperbound(ist_poltok[])
+//for i = 1 to n
+//	ast_expr[i] = ist_poltok[i]
+//next
+
+return true
+
+end function
+
+public function boolean polish (st_tok ast_tokens[]);
+boolean lb_ret = true
+st_tok lst_tok, empty_toks[]
+nv_queue lq_out
+nv_tokstack lst_op
+
+is_lasterror = ""
+
+if upperbound(ast_tokens[]) < 1 then
+	is_lasterror = "no input to polish"
+	lb_ret = false
+	goto end_of_shunt
+end if
+
+long t = 1
+do while t <= upperbound(ast_tokens[])
+	lst_tok = ast_tokens[t]
+	
+	if isnumber(lst_tok.value) then		//number ?
+		lq_out.push(lst_tok)
+	elseif isfunc(lst_tok.value) then		//func ?
+		lst_tok.kind = FUNC
+		lst_op.push(lst_tok)
+	elseif lst_tok.value = ';' then		//arg separator ?
+		do while not lst_op.isempty( ) and lst_op.top().value <> '('
+			lq_out.push(lst_op.pop())
+		loop
+		if lst_op.isempty( ) or lst_op.top().value <> '(' then
+			is_lasterror = "bad arg separator or parenthesis mismatch"
+			lb_ret = false
+			goto end_of_shunt
+		end if
+	elseif isop(lst_tok.value) then	//O1
+		do while not lst_op.isempty( ) /*O2*/ &
+			and ((getassoc(lst_tok.value) = cc_left and getprec(lst_tok.value) <= getprec(lst_op.top().value)) &
+					or &
+					(getassoc(lst_tok.value) = cc_right and getprec(lst_tok) < getprec(lst_op.top().value))) 
+			lq_out.push(lst_op.pop())
+		loop
+		lst_op.push(lst_tok)
+	elseif lst_tok.value = '(' then
+		lst_op.push(lst_tok)
+	elseif lst_tok.value = ')' then
+		do while not lst_op.isempty( ) and lst_op.top().value <> '('
+			lq_out.push(lst_op.pop())
+		loop
+		if lst_op.top().value = '(' then 
+			lst_op.pop()
+		else
+			is_lasterror = "parenthesis error"
+			lb_ret = false
+			goto end_of_shunt
+		end if
+		if isfunc(lst_op.top().value) then lq_out.push(lst_op.pop())
+	end if
+	t++
+loop
+do while not lst_op.isempty( )
+	if lst_op.top().value = '(' or lst_op.top().value = ')' then
+		is_lasterror = "parenthesis error"
+		lb_ret = false
+		goto end_of_shunt
+	end if
+	lq_out.push(lst_op.pop( ))
+loop
+
+//final 
+ist_poltok[] = empty_toks[]
+if ib_reverse then
+	//produce the postfixed stream
+	do while not lq_out.isempty( )
+		ist_poltok[upperbound(ist_poltok[]) + 1] = lq_out.pop( )
+	loop
+else
+	//reverse the reversed => prefixed stream
+	do while not lq_out.isempty( )
+		lst_op.push(lq_out.pop())
+	loop
+	do while not lst_op.isempty( )
+		ist_poltok[upperbound(ist_poltok[]) + 1] = lst_op.pop( )
+	loop
+end if
+
+end_of_shunt:
+return lb_ret
+
+end function
+
+public function string eval (st_tok ast_toks[]);
+nv_tokstack lst_eval
+st_tok item
+dec ldc_op1, ldc_op2, ldc_res
+string ls_ret = "", ls_operation
+long i, n
+
+n = upperbound(ast_toks[]) 
+if n = 0 then return ""
+
+for i = 1 to n
+	choose case ast_toks[i].kind
+		case NUMERIC
+			lst_eval.push(ast_toks[i])
+		case OPERATION
+			ls_operation = ast_toks[i].value
+			choose case ls_operation
+				case '+', '-', '*', '/', '^'
+					if lst_eval.size() >= 2 then
+						ldc_op2 = dec(lst_eval.pop().value)
+						ldc_op1 = dec(lst_eval.pop().value)
+						if ls_operation = '+' then
+							ldc_res = ldc_op1 + ldc_op2
+						elseif ls_operation = '-' then
+							ldc_res = ldc_op1 - ldc_op2
+						elseif ls_operation = '*' then
+							ldc_res = ldc_op1 * ldc_op2
+						elseif ls_operation = '/' then
+							ldc_res = ldc_op1 / ldc_op2
+						elseif ls_operation = '^' then
+							ldc_res = ldc_op1 ^ ldc_op2
+						end if
+						item.value = ldc_res
+						item.kind = NUMERIC
+						lst_eval.push(item)
+					else
+						ls_ret = "broken expression : not enough operands for " + ls_operation + " at " + string(ast_toks[i].position)
+						goto end_eval
+					end if
+				case else
+					ls_ret = "unknown op " + ls_operation
+					goto end_eval
+			end choose
+	end choose
+next
+if lst_eval.size() = 1 then
+	item = lst_eval.pop()
+	if item.kind = NUMERIC then
+		ls_ret = string(item.value)
+	elseif item.kind = STR then
+		ls_ret = item.value
+	else
+		ls_ret = "not sure how to process " + item.kind + " `" + string(item.value) + "`"
+	end if
+else
+	ls_ret = "evaluation failed"
+end if
+
+end_eval:
+return ls_ret
 
 end function
 

@@ -52,18 +52,75 @@ end type
 global w_test w_test
 
 type prototypes
-SUBROUTINE CopyMemory &
-   ( REF blob b, s_test s, long l )  &
-   LIBRARY "kernel32.dll"  &
-   ALIAS FOR RtlMoveMemory
-   
-end prototypes
+SUBROUTINE CopyMemory ( REF blob b, s_test s, long l ) LIBRARY "kernel32.dll" ALIAS FOR RtlMoveMemory
+Function ULong GetLocaleInfo(ulong Locale, ulong LCType, ref string lpLCData, ulong cchData) Library "kernel32.dll" Alias for "GetLocaleInfoW" 
+Function ULong GetSystemDefaultLCID() Library "kernel32.dll"
+Function ULong GetUserDefaultLCID() Library "kernel32.dll"
 
+end prototypes
 type variables
 
 nv_parser i_parser
+constant ulong LOCALE_SDECIMAL = 14 // decimal separator
 
 end variables
+forward prototypes
+public function string getlocaleinfo (unsignedlong al_localetype, boolean ab_userlocale)
+public function string fixdecimal (string as_text)
+end prototypes
+
+public function string getlocaleinfo (unsignedlong al_localetype, boolean ab_userlocale);// returns the LOCALE setting of the given type
+//
+// al_localetype = the local we want to get
+// ab_userlocale = TRUE - use the user locales /  FALSE - use the system locales
+
+
+ulong ll_cid
+ulong ll_len
+string s_ret = "", s_tmp = ""
+
+if ab_userlocale then
+	ll_cid = getuserdefaultlcid( )
+else
+	ll_cid = getsystemdefaultlcid( )
+end if
+
+// first call to get the correct length for the data to return
+ll_len = getlocaleinfo(ll_cid, al_localetype, s_tmp , len(s_tmp))
+
+if ll_len > 0 then
+	s_tmp = space(ll_len)
+	
+	//second call to get the data
+	ll_len = getlocaleinfo(ll_cid, al_localetype, s_tmp , len(s_tmp))
+	if ll_len > 0 then s_ret = left(s_tmp, ll_len -1) // the returned data includes the string terminator
+end if
+
+return s_ret
+
+end function
+
+public function string fixdecimal (string as_text);
+string ls_sep, ls_rep
+long p
+
+ls_sep = getlocaleinfo(locale_sdecimal, true)
+
+if ls_sep = ',' then 
+	ls_rep = '.'
+else
+	ls_rep = ','
+end if
+
+p = pos(as_text, ls_rep)
+do while p > 0 
+	as_text = replace(as_text, p, 1, ls_sep)
+	p = pos(as_text, ls_rep)
+loop
+
+return as_text
+
+end function
 
 on w_test.create
 this.cb_1=create cb_1
@@ -163,7 +220,13 @@ string text = "eval"
 end type
 
 event clicked;
-mle_eval.text = i_parser.eval()
+
+long i
+st_tok lst_parsed[]
+
+i_parser.getparsed( lst_parsed[] )
+mle_eval.text = i_parser.eval(lst_parsed[])
+
 
 end event
 
@@ -217,19 +280,23 @@ end type
 
 event clicked;
 long i
-any la_tokens[]
+st_tok lst_tokens[], lst_parsed[]
 
 i_parser.setreverse( cbx_reverse.checked )
-if i_parser.polish() then
-	i_parser.getparsed( la_tokens[] )
-	mle_polish.text = ""
-	for i = 1 to upperbound(la_tokens[])
-		mle_polish.text += la_tokens[i] + ' '
-	next
-else
-	mle_polish.text = i_parser.getlasterror()
-end if
+mle_formula.text = fixdecimal(mle_formula.text)
 
+if i_parser.tokenize( mle_formula.text ) then
+	i_parser.gettokens( lst_tokens[] )
+	if i_parser.polish(lst_tokens[]) then
+		i_parser.getparsed( lst_parsed[] )
+		mle_polish.text = ""
+		for i = 1 to upperbound(lst_parsed[])
+			mle_polish.text += lst_parsed[i].value + ' '
+		next
+	else
+		mle_polish.text = i_parser.getlasterror()
+	end if
+end if
 
 end event
 
@@ -266,13 +333,15 @@ end type
 
 event clicked;
 long i
-any la_tokens[]
+st_tok lst_tokens[]
+
+mle_formula.text = fixdecimal(mle_formula.text)
 
 if i_parser.tokenize( mle_formula.text ) then
-	i_parser.gettokens( la_tokens[] )
+	i_parser.gettokens( lst_tokens[] )
 	mle_tokens.text = ""
-	for i = 1 to upperbound(la_tokens[])
-		mle_tokens.text += la_tokens[i] + ' '
+	for i = 1 to upperbound(lst_tokens[])
+		mle_tokens.text += lst_tokens[i].value + ' '
 	next
 else
 	mle_tokens.text = i_parser.getlasterror()
