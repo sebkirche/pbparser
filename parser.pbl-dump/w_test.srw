@@ -1,13 +1,13 @@
 forward
 global type w_test from window
 end type
-type cb_1 from commandbutton within w_test
+type rte_help from richtextedit within w_test
 end type
 type mle_eval from multilineedit within w_test
 end type
 type cb_eval from commandbutton within w_test
 end type
-type cbx_reverse from checkbox within w_test
+type cbx_postfix from checkbox within w_test
 end type
 type mle_polish from multilineedit within w_test
 end type
@@ -29,20 +29,20 @@ type s_test from structure
 end type
 
 global type w_test from window
-integer width = 1979
-integer height = 1336
+integer width = 3296
+integer height = 1392
 boolean titlebar = true
-string title = "Shunting-Yard"
+string title = "Shunting-Yard evaluator - Seki 2011-2013"
 boolean controlmenu = true
 boolean minbox = true
 boolean maxbox = true
 long backcolor = 67108864
 string icon = "AppIcon!"
 boolean center = true
-cb_1 cb_1
+rte_help rte_help
 mle_eval mle_eval
 cb_eval cb_eval
-cbx_reverse cbx_reverse
+cbx_postfix cbx_postfix
 mle_polish mle_polish
 cb_parse cb_parse
 mle_tokens mle_tokens
@@ -52,18 +52,20 @@ end type
 global w_test w_test
 
 type prototypes
-SUBROUTINE CopyMemory ( REF blob b, s_test s, long l ) LIBRARY "kernel32.dll" ALIAS FOR RtlMoveMemory
+
 Function ULong GetLocaleInfo(ulong Locale, ulong LCType, ref string lpLCData, ulong cchData) Library "kernel32.dll" Alias for "GetLocaleInfoW" 
 Function ULong GetSystemDefaultLCID() Library "kernel32.dll"
 Function ULong GetUserDefaultLCID() Library "kernel32.dll"
 
 end prototypes
+
 type variables
 
 nv_parser i_parser
 constant ulong LOCALE_SDECIMAL = 14 // decimal separator
 
 end variables
+
 forward prototypes
 public function string getlocaleinfo (unsignedlong al_localetype, boolean ab_userlocale)
 public function string fixdecimal (string as_text)
@@ -123,19 +125,19 @@ return as_text
 end function
 
 on w_test.create
-this.cb_1=create cb_1
+this.rte_help=create rte_help
 this.mle_eval=create mle_eval
 this.cb_eval=create cb_eval
-this.cbx_reverse=create cbx_reverse
+this.cbx_postfix=create cbx_postfix
 this.mle_polish=create mle_polish
 this.cb_parse=create cb_parse
 this.mle_tokens=create mle_tokens
 this.cb_tokenize=create cb_tokenize
 this.mle_formula=create mle_formula
-this.Control[]={this.cb_1,&
+this.Control[]={this.rte_help,&
 this.mle_eval,&
 this.cb_eval,&
-this.cbx_reverse,&
+this.cbx_postfix,&
 this.mle_polish,&
 this.cb_parse,&
 this.mle_tokens,&
@@ -144,10 +146,10 @@ this.mle_formula}
 end on
 
 on w_test.destroy
-destroy(this.cb_1)
+destroy(this.rte_help)
 destroy(this.mle_eval)
 destroy(this.cb_eval)
-destroy(this.cbx_reverse)
+destroy(this.cbx_postfix)
 destroy(this.mle_polish)
 destroy(this.cb_parse)
 destroy(this.mle_tokens)
@@ -155,38 +157,30 @@ destroy(this.cb_tokenize)
 destroy(this.mle_formula)
 end on
 
-type cb_1 from commandbutton within w_test
-integer x = 526
-integer y = 288
-integer width = 402
-integer height = 72
-integer taborder = 30
-integer textsize = -10
-integer weight = 400
-fontcharset fontcharset = ansi!
-fontpitch fontpitch = variable!
-fontfamily fontfamily = swiss!
-string facename = "Arial"
-string text = "none"
-end type
+event open;
+//mle_formula.text = "33+42*2.5/(0.1-5)^2^3"
+//mle_formula.text = "1*sum()"
+//mle_formula.text = "2+3*4"
+//mle_formula.text = "answer()*sum(1)"
+mle_formula.text = "2^ (abs  (sum(2 ;-3 ; 4))-1)+1"
+//mle_formula.text = "2^ abs(sum(2;-3;4))"
 
-event clicked;
-s_test s
-blob{512} b
+rte_help.InsertDocument("help.rtf", true)
 
-s.s1 = "qwerty"
-s.l2 = 65535
-//b = blob(s)
-
-long i
-
-CopyMemory(b, s, 24)
-
-mle_tokens.text = ""
-for i = 1 to 32
-	mle_tokens.text += string(asc(string(blobmid(b,i,1))), "00") +' ' 
-next
 end event
+
+type rte_help from richtextedit within w_test
+integer x = 1989
+integer y = 64
+integer width = 1271
+integer height = 1160
+integer taborder = 20
+long init_backcolor = 67108864
+string init_documentname = "help"
+boolean init_displayonly = true
+boolean border = false
+borderstyle borderstyle = stylelowered!
+end type
 
 type mle_eval from multilineedit within w_test
 integer x = 37
@@ -230,10 +224,10 @@ mle_eval.text = i_parser.eval(lst_parsed[])
 
 end event
 
-type cbx_reverse from checkbox within w_test
+type cbx_postfix from checkbox within w_test
 integer x = 471
 integer y = 608
-integer width = 608
+integer width = 1198
 integer height = 80
 integer textsize = -10
 integer weight = 400
@@ -243,7 +237,7 @@ fontfamily fontfamily = swiss!
 string facename = "Arial"
 long textcolor = 33554432
 long backcolor = 67108864
-string text = "Postfix (RPN)"
+string text = "postfix (uncheck for prefix - won~'t evaluate)"
 boolean checked = true
 end type
 
@@ -275,23 +269,23 @@ fontcharset fontcharset = ansi!
 fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!
 string facename = "Arial"
-string text = "polish"
+string text = "parse"
 end type
 
 event clicked;
 long i
 st_tok lst_tokens[], lst_parsed[]
 
-i_parser.setreverse( cbx_reverse.checked )
+i_parser.setreverse( cbx_postfix.checked )
 mle_formula.text = fixdecimal(mle_formula.text)
 
 if i_parser.tokenize( mle_formula.text ) then
 	i_parser.gettokens( lst_tokens[] )
-	if i_parser.polish(lst_tokens[]) then
+	if i_parser.parse(lst_tokens[]) then
 		i_parser.getparsed( lst_parsed[] )
 		mle_polish.text = ""
 		for i = 1 to upperbound(lst_parsed[])
-			mle_polish.text += lst_parsed[i].value + ' '
+			mle_polish.text += i_parser.tokentostring(lst_parsed[i]) + ' '
 		next
 	else
 		mle_polish.text = i_parser.getlasterror()
@@ -341,7 +335,7 @@ if i_parser.tokenize( mle_formula.text ) then
 	i_parser.gettokens( lst_tokens[] )
 	mle_tokens.text = ""
 	for i = 1 to upperbound(lst_tokens[])
-		mle_tokens.text += lst_tokens[i].value + ' '
+		mle_tokens.text += i_parser.tokentostring(lst_tokens[i]) + ' '
 	next
 else
 	mle_tokens.text = i_parser.getlasterror()
@@ -363,7 +357,6 @@ fontpitch fontpitch = fixed!
 fontfamily fontfamily = modern!
 string facename = "Courier New"
 long textcolor = 33554432
-string text = "33+42*2.5/(0.1-5)^2^3"
 borderstyle borderstyle = stylelowered!
 end type
 

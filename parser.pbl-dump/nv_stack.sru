@@ -21,6 +21,8 @@ public subroutine push (any aa_val)
 public function any pop ()
 public function any top ()
 public subroutine reset ()
+public function long size ()
+public subroutine settop (any aa_val)
 end prototypes
 
 public function boolean isempty ();
@@ -62,6 +64,18 @@ any empty[]
 
 ia_values[] = empty[]
 il_pos = 0
+
+end subroutine
+
+public function long size ();
+return il_pos
+
+end function
+
+public subroutine settop (any aa_val);
+if il_pos > 0 then
+	ia_values[il_pos] = aa_val
+end if
 
 end subroutine
 
