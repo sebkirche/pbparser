@@ -275,11 +275,11 @@ event clicked;
 
 long i
 string ls_res
-st_tok lst_parsed[]
+nv_tok lt_parsed[]
 
-i_parser.getparsed( lst_parsed[] )
+i_parser.getparsed( lt_parsed[] )
 
-ls_res = i_parser.eval(lst_parsed[])
+ls_res = i_parser.eval(lt_parsed[])
 
 showerror(ls_res)
 
@@ -338,18 +338,18 @@ end type
 
 event clicked;
 long i
-st_tok lst_tokens[], lst_parsed[]
+nv_tok lt_tokens[], lt_parsed[]
 
 i_parser.setreverse( cbx_postfix.checked )
 mle_formula.text = fixdecimal(mle_formula.text)
 
 if i_parser.tokenize( mle_formula.text ) then
-	i_parser.gettokens( lst_tokens[] )
-	if i_parser.parse(lst_tokens[]) then
-		i_parser.getparsed( lst_parsed[] )
+	i_parser.gettokens( lt_tokens[] )
+	if i_parser.parse(lt_tokens[]) then
+		i_parser.getparsed( lt_parsed[] )
 		mle_polish.text = ""
-		for i = 1 to upperbound(lst_parsed[])
-			mle_polish.text += i_parser.tokentostring(lst_parsed[i]) + ' '
+		for i = 1 to upperbound(lt_parsed[])
+			mle_polish.text += lt_parsed[i].dump() + ' '
 		next
 	else
 		mle_polish.text = i_parser.getlasterror()
@@ -393,7 +393,7 @@ end type
 
 event clicked;
 long i, p
-st_tok lst_tokens[]
+nv_tok lt_tokens[]
 string ls_err, ls_form
 
 ls_form = mle_formula.text
@@ -404,17 +404,17 @@ ls_form = fixdecimal(ls_form)
 mle_formula.text = ls_form
 
 if i_parser.tokenize( ls_form ) then
-	i_parser.gettokens( lst_tokens[] )
+	i_parser.gettokens( lt_tokens[] )
 	mle_tokens.text = ""
 	if cbx_dbgtokens.checked then mle_debug.text = ""
-	for i = 1 to upperbound(lst_tokens[])
-		mle_tokens.text += i_parser.tokentostring(lst_tokens[i]) + ' '
+	for i = 1 to upperbound(lt_tokens[])
+		mle_tokens.text += lt_tokens[i].dump() + ' '
 		if cbx_dbgtokens.checked then 
-			mle_debug.text += i_parser.tokentostring(lst_tokens[i]) + &
-									'[' + i_parser.typename(lst_tokens[i].kind) + ']' +&
-									iif(lst_tokens[i].kind = i_parser.UNARYOP or lst_tokens[i].kind = i_parser.BINARYOP, string(i_parser.getprec(lst_tokens[i])), "") + &
+			mle_debug.text += lt_tokens[i].dump() + &
+									'[' + lt_tokens[i].typename() + ']' +&
+									iif(lt_tokens[i].kind = i_parser.UNARYOP or lt_tokens[i].kind = i_parser.BINARYOP, string(i_parser.getprec(lt_tokens[i])), "") + &
 									'~r~n' 
-		end if
+		end if 
 	next
 else
 	ls_err = i_parser.getlasterror()
