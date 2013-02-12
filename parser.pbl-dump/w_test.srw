@@ -32,7 +32,7 @@ global type w_test from window
 integer width = 3296
 integer height = 1392
 boolean titlebar = true
-string title = "Shunting-Yard evaluator - Seki 2011-2013"
+string title = "Shunting-Yard evaluator"
 boolean controlmenu = true
 boolean minbox = true
 boolean maxbox = true

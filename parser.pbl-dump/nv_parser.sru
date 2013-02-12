@@ -7,6 +7,36 @@ global type nv_parser from nonvisualobject autoinstantiate
 end type
 
 type variables
+/*
+	Shunting-Yard evaluator - Sebastien KIRCHE 2011-2013
+
+	PB implementation of Dijkstra's Shunting-Yard Algorithm
+	for parsing infix math expressions and preparing a postfix 
+	representation to ease the evaluation.
+		
+	The Shunting-Yard algorithm is described on Wikipedia:
+	http://en.wikipedia.org/wiki/Shunting_yard_algorithm
+	
+	This implementation differs from the original Dijkstra by 
+	allowing functions with variable argument number.
+	It is based on the idea described by Robin in his blog:
+	http://www.kallisti.net.nz/blog/2008/02/extension-to-the-shunting-yard-algorithm-to-allow-variable-numbers-of-arguments-to-functions/
+	
+	This code is free software.
+
+	Usage:
+	from a string containing an expression
+	1) tokenize() -> "lexical" parse of the expression, 
+	   identification of unary minus and terms
+	2) parse() -> infix to postfix (or prefix, but the evaluation
+	   only support postfixed tokens), parenthesis removal
+	3) eval() -> process the expression and resolve function calls
+	
+	Addition of new functions:
+	- Add the function name to the isFunc() method 
+	- and implement the function in evalFunc() method
+	
+*/
 
 private:
 
@@ -33,7 +63,6 @@ constant string RPAR = ")"
 
 
 end variables
-
 forward prototypes
 public subroutine setreverse (boolean ab_reverse)
 public function string getlasterror ()
@@ -205,6 +234,14 @@ return true
 end function
 
 public function string eval (st_tok ast_toks[]);
+/*
+	Evaluation of the token stream after parsing
+
+	the evaluator reads the tokens array 
+	and uses a stack for intermediate evaluations 
+	including function calls
+*/
+
 nv_tokstack lst_eval
 st_tok item
 dec ldc_op1, ldc_op2, ldc_res
@@ -302,13 +339,14 @@ return (ast_tok.kind = BINARYOP) or (ast_tok.kind = UNARYOP)
 end function
 
 public function boolean parse (st_tok ast_tokens[]);
-// parse the infix input token flow and transform it into prefix or postfix
+// parse the infix input token stream and transform it into prefix or postfix
 
 boolean lb_ret = true
 st_tok lst_tok, lst_func, empty_toks[]
-nv_queue lq_out
-nv_tokstack lst_op
-nv_stack lst_argcount, lst_hasargs
+nv_queue lq_out			//output queue
+nv_tokstack lst_op		//intermediate operators/funcs stack
+nv_stack lst_argcount	//arguments counter
+nv_stack lst_args		//arguments presence
 long ll_count
 
 is_lasterror = ""
@@ -322,56 +360,69 @@ end if
 long t = 1
 do while t <= upperbound(ast_tokens[])
 	lst_tok = ast_tokens[t]
-	
-	if isnumber(lst_tok.value) then		//number ?
+
+	if isnumber(lst_tok.value) then
+		//if the token is a number, pass it to the output queue
 		lq_out.push(lst_tok)
-		if lst_hasargs.size() > 0 then lst_hasargs.settop(true)
-	elseif isfunc(lst_tok.value) then		//func ?
+		if lst_args.size() > 0 then lst_args.settop(true)
+	elseif isfunc(lst_tok.value) then
+		//if it is a function, push it to the stack
 		lst_tok.kind = FUNC
 		lst_op.push(lst_tok)
-		ll_count = 0
-		lst_argcount.push(ll_count)
-		if lst_hasargs.size() > 0 then lst_hasargs.settop(true)
-		lst_hasargs.push(false)
-	elseif lst_tok.value = ARGSEP then		//arg separator ?
-		do while not lst_op.isempty( ) and lst_op.top().value <> LPAR
+		lst_argcount.push(0)
+		if lst_args.size() > 0 then lst_args.settop(true)
+		lst_args.push(false)
+	elseif lst_tok.value = ARGSEP then
+		//if it is a function argument separator
+		//1) pop all pending operators until getting '('
+		do while not lst_op.isempty() and lst_op.top().value <> LPAR
 			lq_out.push(lst_op.pop())
 		loop
-		if lst_op.isempty( ) or (lst_op.top().value <> LPAR) then
+		if lst_op.isempty() or (lst_op.top().value <> LPAR) then
+			//if stack is empty or we did not get a '('
+			//there is an expression error
 			is_lasterror = "bad argument separator or parenthesis mismatch"
 			lb_ret = false
 			goto end_of_shunt
 		end if
-		if lst_hasargs.top() = true then
+		//2) remember arg count
+		if lst_args.top() = true then
 			ll_count = lst_argcount.top()
 			lst_argcount.settop(ll_count + 1)
 		end if
-		lst_hasargs.push(false)
-	elseif isop(lst_tok) then	//O1
-		//process precedence
-		do while not lst_op.isempty( ) /*O2*/ &
+		lst_args.push(false)
+	elseif isop(lst_tok) then
+		//we have an operator, process operator precedence
+		//if there are other pending operations
+		do while not lst_op.isempty() &
 			and ((getassoc(lst_tok.value) = cc_left and getprec(lst_tok) <= getprec(lst_op.top())) &
-					or &
-					(getassoc(lst_tok.value) = cc_right and getprec(lst_tok) < getprec(lst_op.top()))) 
+			or &
+			(getassoc(lst_tok.value) = cc_right and getprec(lst_tok) < getprec(lst_op.top()))) 
 			lq_out.push(lst_op.pop())
 		loop
 		lst_op.push(lst_tok)
 	elseif lst_tok.value = LPAR then
+		//push a '(' to the stack
 		lst_op.push(lst_tok)
 	elseif lst_tok.value = RPAR then
-		do while not lst_op.isempty( ) and lst_op.top().value <> LPAR
+		//process all pending operations up to '('
+		do while not lst_op.isempty() and lst_op.top().value <> LPAR
 			lq_out.push(lst_op.pop())
 		loop
+		//just pop the '('
 		if lst_op.top().value = LPAR then 
 			lst_op.pop()
 		else
-			is_lasterror = "parenthesis error"
+			//we might have a parenthesis mismatch
+			is_lasterror = "mismatch parenthesis"
 			lb_ret = false
 			goto end_of_shunt
 		end if
 		if isfunc(lst_op.top().value) then 
+			//if there is a function after the paren
+			//add it to the queue with arguments count
 			ll_count = lst_argcount.pop()
-			if lst_hasargs.pop() then ll_count ++
+			if lst_args.pop() then ll_count ++
 			lst_func = lst_op.pop()
 			lst_func.count = ll_count
 			lq_out.push(lst_func)
@@ -379,29 +430,30 @@ do while t <= upperbound(ast_tokens[])
 	end if
 	t++
 loop
-do while not lst_op.isempty( )
+do while not lst_op.isempty()
+	//add the final pending operators to the queue
 	if lst_op.top().value = LPAR or lst_op.top().value = RPAR then
-		is_lasterror = "parenthesis error"
+		//if there are still parenthesis on the stack, we have a problem
+		is_lasterror = "mismatch parenthesis"
 		lb_ret = false
 		goto end_of_shunt
 	end if
-	lq_out.push(lst_op.pop( ))
+	lq_out.push(lst_op.pop())
 loop
 
-//final 
+//put the queue into an array, in postfix or prefix order
 ist_parsed[] = empty_toks[]
 if ib_postfix then
-	//produce the postfixed stream
-	do while not lq_out.isempty( )
-		ist_parsed[upperbound(ist_parsed[]) + 1] = lq_out.pop( )
+	do while not lq_out.isempty()
+		ist_parsed[upperbound(ist_parsed[]) + 1] = lq_out.pop()
 	loop
 else
 	//reverse the reversed => prefixed stream
-	do while not lq_out.isempty( )
+	do while not lq_out.isempty()
 		lst_op.push(lq_out.pop())
 	loop
-	do while not lst_op.isempty( )
-		ist_parsed[upperbound(ist_parsed[]) + 1] = lst_op.pop( )
+	do while not lst_op.isempty()
+		ist_parsed[upperbound(ist_parsed[]) + 1] = lst_op.pop()
 	loop
 end if
 
@@ -411,6 +463,7 @@ return lb_ret
 end function
 
 public function string tokentostring (st_tok ast_token);
+//return a string representation of a token
 string ls_ret
 
 if ast_token.kind = FUNC then
@@ -432,6 +485,7 @@ int li_ret
 
 choose case ast_tok.value
 	case '-'
+		//special minus case
 		if ast_tok.kind = UNARYOP then
 			li_ret = 5
 		else
@@ -439,7 +493,7 @@ choose case ast_tok.value
 		end if
 	case '^'; 		li_ret = 4
 	case '*', '/';	li_ret = 3
-	case '+'/*, '-'*/;	li_ret = 2
+	case '+';	li_ret = 2
 	case else;		li_ret = 0
 end choose
 
