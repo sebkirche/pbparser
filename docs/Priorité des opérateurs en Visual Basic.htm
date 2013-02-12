@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<!-- saved from url=(0062)http://msdn.microsoft.com/fr-fr/library/fw84t893(v=vs.80).aspx -->
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="canonical" href="./Priorité des opérateurs en Visual Basic_files/Priorité des opérateurs en Visual Basic.htm">
+        <title>Priorité des opérateurs en Visual Basic</title>
+
+
+
+
+<meta name="DCS.dcsuri" content="/fr-fr/library/fw84t893(d=default,l=fr-fr,v=vs.80).aspx">
+
+<meta name="NormalizedUrl" content="http://msdn.microsoft.com/fr-fr/library/fw84t893(d=default,l=fr-fr,v=vs.80).aspx">
+
+<meta name="VotingContextUrl" content="http://msdn.microsoft.com/fr-fr/library/fw84t893(d=default,l=fr-fr,v=vs.80).aspx">
+
+<meta name="MN" content="61C41DD4-10:22:25 AM">
+
+<meta name="Search.ShortId" content="fw84t893">
+
+<meta name="Ms.Locale" content="fr-fr">
+
+
+
+
+
+
+
+
+        
+    <link rel="stylesheet" type="text/css" href="./Priorité des opérateurs en Visual Basic_files/Combined.css"><script type="text/javascript" async="" src="./Priorité des opérateurs en Visual Basic_files/ms2.js"></script><script class="mtps-injected">try {
+/**/
+(window.MTPS || (window.MTPS = {})).cdnDomains || (window.MTPS.cdnDomains = { 
+	"image": "http://i.msdn.microsoft.com", 
+	"js": "http://i2.msdn.microsoft.com", 
+	"css": "http://i3.msdn.microsoft.com"
+});
+/**/
+} finally { MTPS._injectNextScript_0 && MTPS._injectNextScript_0(); }</script><script class="mtps-injected">try {
+//
+  var literalNormalizedUrl = '/fr-fr/library/fw84t893(d=default,l=fr-fr,v=vs.80).aspx';
+  var wt_nvr_ru = 'WT_NVR_RU';
+  var wt_fpcdom = '.microsoft.com';
+  var wt_domlist = 'msdn.microsoft.com';
+  var wt_pathlist = '';
+  var wt_paramlist = 'DCSext.mtps_devcenter';
+  var wt_siteid = 'MSDN';
+  var gDomain = 'm.webtrends.com';
+  var gDcsId = 'dcsmgru7m99k7mqmgrhudo0k8_8c6m';
+  var gFpc = 'WT_FPC';
+  if (document.cookie.indexOf(gFpc + "=") == -1) {
+    var wtidJs = document.createElement("script");
+    wtidJs.src = "//" + gDomain + "/" + gDcsId + "/wtid.js";
+    document.getElementsByTagName("head")[0].appendChild(wtidJs);
+  }
+  var detectedLocale = 'fr-fr';
+  var wtsp = 'msdnlib_hp';
+  var gTrackEvents = '0';
+/**/
+} finally { MTPS._injectNextScript_1 && MTPS._injectNextScript_1(); }</script><script class="mtps-injected">try {
+/**/
+  var omni_guid = "20dbb790-8f91-4f2b-aa6a-19829c026680";
+/**/
+} finally { MTPS._injectNextScript_2 && MTPS._injectNextScript_2(); }</script><script class="mtps-injected" src="./Priorité des opérateurs en Visual Basic_files/Combined.js"></script><script class="mtps-injected" src="./Priorité des opérateurs en Visual Basic_files/jquery-1.8.2.min.js"></script><script class="mtps-injected" src="./Priorité des opérateurs en Visual Basic_files/Combined(1).js"></script><style type="text/css">.jlhlebbhengjlhmcjebbkambaekglhkf {top: 0px; left: 0px;min-width: 30px;max-width: 300px;font-size: 13px;font-family: arial, helvetica, sans-serif;opacity: .93;padding:0px;position:absolute;display:block;z-index: 999997;font-style: normal;font-variant: normal;font-weight: normal;}#jlhlebbhengjlhmcjebbkambaekglhkf_up{text-align: center;padding:0px;margin: 0px;}#jlhlebbhengjlhmcjebbkambaekglhkf_cont{background-color: #729FCF;font-family: arial, helvetica, sans-serif-webkit-box-shadow: #729FCF 0px 0px 2px;color: #FFFFFF;padding:7px;-webkit-border-radius: 5px;}#jlhlebbhengjlhmcjebbkambaekglhkf_down{text-align: center;padding:0px;margin: 0px;}</style><script class="mtps-injected" src="./Priorité des opérateurs en Visual Basic_files/SearchBox.jss"></script><script class="mtps-injected" src="./Priorité des opérateurs en Visual Basic_files/Combined(2).js"></script><script class="mtps-injected">try {
+MTPS = window.MTPS || {}; MTPS.LocalizedStrings = window.MTPS.LocalizedStrings || {}; MTPS.LocalizedStrings.ExpandButtonTooltip = 'Développer'; MTPS.LocalizedStrings.CollapseButtonTooltip = 'Réduire';
+} finally { MTPS._injectNextScript_8 && MTPS._injectNextScript_8(); }</script><script class="mtps-injected" src="./Priorité des opérateurs en Visual Basic_files/Feedback.js"></script><script class="mtps-injected" src="./Priorité des opérateurs en Visual Basic_files/jquery.tmpl.min.js"></script><script class="mtps-injected" src="./Priorité des opérateurs en Visual Basic_files/Combined(3).js"></script><script src="./Priorité des opérateurs en Visual Basic_files/broker.js"></script><link type="text/css" rel="stylesheet" href="./Priorité des opérateurs en Visual Basic_files/PrintView.css" media="print"></head>
+    <body class="library">
+        <div id="page">
+            
+            
+  
+            
+  
+
+
+
+    
+    <div id="ux-header" class="Chrome ltr">
+        <div class="BrandLogo">
+            <a href="http://msdn.microsoft.com/fr-fr">
+                <span class="BrandLogoImage msdn" title="MSDN"></span>
+            </a>
+        </div>
+        <div class="GlobalBar">
+            <div id="LocaleSelector">
+                
+<a title="Choisissez votre langue" id="SelectLocale" href="http://msdn.microsoft.com/fr-fr/SelectLocale?fromPage=http%3a%2f%2fmsdn.microsoft.com%2ffr-fr%2flibrary%2ffw84t893(v%3dvs.80).aspx">France (Français)</a>
+        
+            
+            
+            </div>
+
+            <div class="Divide"> | </div>
+            <div class="PassportScarab">
+                    
+<a class="scarabLink" href="https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=11&ct=1360174945&rver=6.0.5276.0&wp=MCLBI&wlcxt=MSDN%24MSDN%24MSDN&wreply=http%3a%2f%2fmsdn.microsoft.com%2ffr-fr%2flibrary%2ffw84t893%2528v%3dvs.80%2529.aspx&lc=1036&id=254354&mkt=fr-FR" title=" Connexion  "> Connexion  </a>
+            </div>
+                
+                <div class="Divide"> | </div>
+                <div class="Icons">
+                    <a href="http://msdn.microsoft.com/fr-fr/library/preferences/experience/?returnurl=%252ffr-fr%252flibrary%252ffw84t893(v%253dvs.80).aspx" title="Préférences" rel="nofollow">
+                        <div class="clip26x23">
+                            <img class="isd_settings" src="./Priorité des opérateurs en Visual Basic_files/ImageSprite.png" alt="">
+                        </div>
+                    </a>
+                </div>
+                <div class="Divide"> | </div>
+                <div class="Icons">
+                    <a href="http://msdn.microsoft.com/fr-fr/library/fw84t893(d=printer,v=vs.80).aspx" title="Imprimer/exporter" rel="nofollow">
+                        <div class="clip26x23">
+                            <img class="isd_print" src="./Priorité des opérateurs en Visual Basic_files/ImageSprite.png" alt="">
+                        </div>
+                    </a>
+                </div>
+        </div>
+        <div class="internav">
+            
+
+    
+
+<div class="SearchBox">
+              <form id="HeaderSearchForm" name="HeaderSearchForm" method="get" action="http://social.msdn.microsoft.com/Search" onsubmit="return Epx.Controls.SearchBox.searchBoxOnSubmit(this, this.title);">
+            <input id="HeaderSearchTextBox" name="query" type="text" maxlength="200" onfocus="Epx.Controls.SearchBox.watermarkFocus(this, this.title, &#39;TextBoxSearch&#39;)" onblur="Epx.Controls.SearchBox.watermarkBlur(this, this.title, &#39;TextBoxSearchLoaded&#39;)" autocomplete="off" title="Rechercher sur MSDN avec Bing" style="color: rgb(170, 170, 170); font-style: italic;">
+            <input id="RefinementId" name="refinement" type="hidden" value="">
+            <button id="HeaderSearchButton" value="" type="submit" class="header-search-button" title="Rechercher sur MSDN avec Bing"></button>
+        <div id="SearchFlyoutContainer" style="display: none; text-align: left; border: 1px solid buttonshadow; position: absolute; z-index: 1000; padding: 2px; background-color: rgb(255, 255, 255); color: rgb(0, 0, 255); font-family: arial;"><div id="SuggestionContainer"><ul style="list-style: none; padding: 4px 2px 0px 1px; cursor: pointer; font-size: 8pt; margin: 1px;"></ul></div><div id="FooterContainer" style="width: 100%; margin: 0px; text-align: right; font-size: 8pt;"><a href="http://msdn.microsoft.com/fr-fr/library/fw84t893(v=vs.80).aspx#">Fermer</a></div></div></form>
+        
+    
+</div>
+
+            <div class="TocNavigation">
+   
+   <div class="toclevel1">
+          <a class="normal" href="http://msdn.microsoft.com/" title="Accueil">Accueil</a>
+          <a class="active" href="http://msdn.microsoft.com/library/default.aspx" title="Library">Library</a>
+          <a class="normal" href="http://msdn.microsoft.com/bb188199" title="Formation">Formation</a>
+          <a class="normal" href="http://beta.code.msdn.microsoft.com/fr-fr" title="Code">Code</a>
+          <a class="normal" href="http://msdn.microsoft.com/aa570309" title="Téléchargements">Téléchargements</a>
+          <a class="normal" href="http://msdn.microsoft.com/ee524794" title="Support">Support</a>
+          <a class="normal" href="http://aka.ms/evenements-developpeurs" title="Evénements">Evénements</a>
+          <a class="normal" href="http://msdn.microsoft.com/aa497440" title="Communautés">Communautés</a>
+          <a class="normal" href="http://social.msdn.microsoft.com/Forums/fr-FR/categories" title="Forums">Forums</a>
+
+    </div>
+  
+</div>
+        </div>
+    </div>
+
+
+        
+            <div id="body">
+                
+
+
+
+
+
+
+
+<div id="leftNav" class="leftNavResize1">
+
+
+
+<div id="tocnav">
+            <div class="toclevel0" data-toclevel="0" style="padding-left: 0px;">
+<a class="toc_collapsed" href="http://msdn.microsoft.com/fr-fr/library/fw84t893(v=vs.80).aspx#"></a><a data-tochassubtree="true" href="http://msdn.microsoft.com/fr-fr/library/ms123401.aspx" id="ms310241_MSDN.10_fr-fr" title="MSDN Library">MSDN Library</a>            </div>
+            <div class="toclevel0" data-toclevel="0" style="padding-left: 0px;">
+<a class="toc_collapsed" href="http://msdn.microsoft.com/fr-fr/library/fw84t893(v=vs.80).aspx#"></a><a data-tochassubtree="true" href="http://msdn.microsoft.com/fr-fr/library/aa187916.aspx" id="aa187916_MSDN.10_fr-fr" title="Langages et outils de développement">Langages et outils de développement</a>            </div>
+            <div class="toclevel0" data-toclevel="0" style="padding-left: 0px;">
+<a class="toc_collapsed" href="http://msdn.microsoft.com/fr-fr/library/fw84t893(v=vs.80).aspx#"></a><a data-tochassubtree="true" href="http://msdn.microsoft.com/fr-fr/library/aa187935.aspx" id="aa187935_MSDN.10_fr-fr" title="Visual Studio 2005">Visual Studio 2005</a>            </div>
+            <div class="toclevel0" data-toclevel="0" style="padding-left: 0px;">
+<a class="toc_collapsed" href="http://msdn.microsoft.com/fr-fr/library/fw84t893(v=vs.80).aspx#"></a><a data-tochassubtree="true" href="http://msdn.microsoft.com/fr-fr/library/ms269115(v=vs.80).aspx" id="ms269115_VS.80_fr-fr" title="Documentation Visual Studio">Documentation Visual Studio</a>            </div>
+            <div class="toclevel0" data-toclevel="0" style="padding-left: 0px;">
+<a class="toc_collapsed" href="http://msdn.microsoft.com/fr-fr/library/fw84t893(v=vs.80).aspx#"></a><a data-tochassubtree="true" href="http://msdn.microsoft.com/fr-fr/library/2x7h1hfk(v=vs.80).aspx" id="ms299791_VS.80_fr-fr" title="Visual Basic">Visual Basic</a>            </div>
+            <div class="toclevel0" data-toclevel="0" style="padding-left: 0px;">
+<a class="toc_collapsed" href="http://msdn.microsoft.com/fr-fr/library/fw84t893(v=vs.80).aspx#"></a><a data-tochassubtree="true" href="http://msdn.microsoft.com/fr-fr/library/25kad608(v=vs.80).aspx" id="ms300189_VS.80_fr-fr" title="Référence (Visual Basic)">Référence (Visual Basic)</a>            </div>
+            <div class="toclevel0" data-toclevel="0" style="padding-left: 0px;">
+<a class="toc_collapsed" href="http://msdn.microsoft.com/fr-fr/library/fw84t893(v=vs.80).aspx#"></a><a data-tochassubtree="true" href="http://msdn.microsoft.com/fr-fr/library/sh9ywfdk(v=vs.80).aspx" id="ms300190_VS.80_fr-fr" title="Référence Visual Basic">Référence Visual Basic</a>            </div>
+            <div class="toclevel1" data-toclevel="1" style="padding-left: 17px;" data-childrenloaded="true">
+<a class="toc_expanded" href="http://msdn.microsoft.com/fr-fr/library/fw84t893(v=vs.80).aspx#"></a><a data-tochassubtree="true" href="http://msdn.microsoft.com/fr-fr/library/f15ea9k8(v=vs.80).aspx" id="ms300248_VS.80_fr-fr" title="Opérateurs">Opérateurs</a>            </div>
+            <div class="toclevel2 current" data-toclevel="2" style="padding-left: 34px;">
+<span class="toc_empty"></span><a href="./Priorité des opérateurs en Visual Basic_files/Priorité des opérateurs en Visual Basic.htm" title="Priorité des opérateurs en Visual Basic">Priorité des opérateurs en Visual Basic</a>            </div>
+            <div class="toclevel2" data-toclevel="2" style="padding-left: 34px;">
+<a class="toc_collapsed" href="http://msdn.microsoft.com/fr-fr/library/fw84t893(v=vs.80).aspx#"></a><a data-tochassubtree="true" href="http://msdn.microsoft.com/fr-fr/library/asfcc119(v=vs.80).aspx" id="ms300249_VS.80_fr-fr" title="Opérateurs répertoriés par fonctionnalité">Opérateurs répertoriés par fonctionnalité</a>            </div>
+            <div class="toclevel2" data-toclevel="2" style="padding-left: 34px;">
+<span class="toc_empty"></span><a href="http://msdn.microsoft.com/fr-fr/library/ms235255(v=vs.80).aspx" title="Types de données des résultats d&#39;opérateur">Types de données des résultats d'opérateur</a>            </div>
+            <div class="toclevel2" data-toclevel="2" style="padding-left: 34px;">
+<span class="toc_empty"></span><a href="http://msdn.microsoft.com/fr-fr/library/w63yd7ax(v=vs.80).aspx" title="Opérateurs arithmétiques">Opérateurs arithmétiques</a>            </div>
+            <div class="toclevel2" data-toclevel="2" style="padding-left: 34px;">
+<span class="toc_empty"></span><a href="http://msdn.microsoft.com/fr-fr/library/3466w64d(v=vs.80).aspx" title="Opérateurs d&#39;assignation">Opérateurs d'assignation</a>            </div>
+            <div class="toclevel2" data-toclevel="2" style="padding-left: 34px;">
+<span class="toc_empty"></span><a href="http://msdn.microsoft.com/fr-fr/library/2d9yb87a(v=vs.80).aspx" title="Opérateurs de décalage de bits">Opérateurs de décalage de bits</a>            </div>
+            <div class="toclevel2" data-toclevel="2" style="padding-left: 34px;">
+<span class="toc_empty"></span><a href="http://msdn.microsoft.com/fr-fr/library/cey92b0t(v=vs.80).aspx" title="Opérateurs de comparaison">Opérateurs de comparaison</a>            </div>
+            <div class="toclevel2" data-toclevel="2" style="padding-left: 34px;">
+<span class="toc_empty"></span><a href="http://msdn.microsoft.com/fr-fr/library/ssh7ye8e(v=vs.80).aspx" title="Opérateurs de concaténation">Opérateurs de concaténation</a>            </div>
+            <div class="toclevel2" data-toclevel="2" style="padding-left: 34px;">
+<span class="toc_empty"></span><a href="http://msdn.microsoft.com/fr-fr/library/2h9cz2eb(v=vs.80).aspx" title="Opérateurs logiques/de bits">Opérateurs logiques/de bits</a>            </div>
+            <div class="toclevel2" data-toclevel="2" style="padding-left: 34px;">
+<span class="toc_empty"></span><a href="http://msdn.microsoft.com/fr-fr/library/ya5290s0(v=vs.80).aspx" title="Opérateurs divers">Opérateurs divers</a>            </div>
+</div>    
+    
+    
+    
+    
+    
+    
+    
+
+<a id="NavigationResize" href="javascript:epx.library.navigationResize.resize()" style="left: 280px; display: inline-block;">
+    <img class="cl_nav_resize_open" src="./Priorité des opérateurs en Visual Basic_files/ImageSprite.png" title="Développer" alt="Développer" style="">
+    <img class="cl_nav_resize_close" src="./Priorité des opérateurs en Visual Basic_files/ImageSprite.png" title="Réduire" alt="Réduire" style="display: none;">
+</a>
+
+
+
+</div>
+<div id="content" class="content" style="width: auto;">
+
+
+
+
+
+
+
+
+
+    
+    
+
+    
+
+    
+
+        
+<div class="topic" xmlns:mtps="http://msdn2.microsoft.com/mtps" xmlns="http://www.w3.org/1999/xhtml">
+  <h1 class="title">Priorité des opérateurs en Visual Basic</h1>
+  
+  <div class="lw_vs">
+    <div id="curversion">
+      <strong>
+            Visual Studio 2005
+        </strong>
+    </div>
+    <div id="versionclick">
+      <div id="vsseperator" class="cl_lw_vs_seperator"></div>
+      <div>
+        <div>
+          <a id="vsLink" href="javascript:;">
+                        Autres versions
+                    </a>
+        </div>
+        <div class="cl_vs_arrow clip10x10">
+          <img class="cl_lw_vs_arrow" id="vsArrow" alt="" src="./Priorité des opérateurs en Visual Basic_files/ImageSprite.png">
+        </div>
+      </div>
+      <ul id="vsPanel" style="display: none;">
+        <li>
+          <a href="http://msdn.microsoft.com/fr-fr/library/fw84t893(v=vs.100).aspx" title="">Visual Studio 2010</a>
+        </li>
+        <li>
+          <a href="http://msdn.microsoft.com/fr-fr/library/fw84t893(v=vs.90).aspx" title="">Visual Studio 2008</a>
+        </li>
+        <li>
+          <a href="http://msdn.microsoft.com/fr-fr/library/fw84t893(v=vs.110).aspx" title="">Visual Studio 2012</a>
+        </li>
+      </ul>
+    </div>
+  <div id="ratingCounterSeperator" class="cl_lw_vs_seperator" style="display: block;"></div><div id="ratingCounter" style="margin: 0px 0px 0px 13px; display: block;">
+        <span id="rcA" class="ratingText">
+            Ce sujet n'a pas encore été évalué <span id="rateThisPrefix">- </span><a id="rateThisTopic" href="http://msdn.microsoft.com/fr-fr/library/fw84t893(v=vs.80).aspx#feedback" title="Évaluez ce sujet">Évaluez ce sujet</a>
+            
+        </span>
+    </div></div>
+  <div style="clear:both;"></div>
+  
+  <div id="mainSection"> <div id="mainBody">  <p> </p><p>Lorsque plusieurs opérations ont lieu dans une même expression, chaque partie est évaluée et résolue dans un ordre prédéterminé. Cet ordre est connu sous le nom de <i>priorité des opérateurs</i>. </p> <div><div class="LW_CollapsibleArea_TitleDiv"><div><a href="javascript:void(0)" class="LW_CollapsibleArea_TitleAhref" title="Réduire"><span class="cl_CollapsibleArea_expanding LW_CollapsibleArea_Img"></span><span class="LW_CollapsibleArea_Title">Règles de priorité</span></a><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr"></div></div></div><div class="sectionblock"><a name="sectionToggle0"></a><p>Lorsque les expressions contiennent des opérateurs issus de plusieurs catégories, elles sont évaluées conformément aux règles suivantes&nbsp;:</p><ul><li><p>Les opérateurs arithmétiques et de concaténation ont l'ordre de priorité décrit ci-dessous et leur priorité est plus élevée que les opérateurs de comparaison, logiques et au niveau du bit.</p></li><li><p>Tous les opérateurs de comparaison ont la même priorité, et leur priorité est plus élevée que les opérateurs logiques et de bits, mais moins élevée que les opérateurs arithmétiques et de concaténation.</p></li><li><p>Les opérateurs logiques et de bits ont l'ordre de priorité décrit ci-dessous et leur priorité est moins élevée que les opérateurs de comparaison, de concaténation et arithmétiques.</p></li><li><p>Les opérateurs ayant la même priorité sont évalués de gauche à droite dans l'ordre où ils apparaissent dans l'expression.</p></li></ul></div></div><div><div class="LW_CollapsibleArea_TitleDiv"><div><a href="javascript:void(0)" class="LW_CollapsibleArea_TitleAhref" title="Réduire"><span class="cl_CollapsibleArea_expanding LW_CollapsibleArea_Img"></span><span class="LW_CollapsibleArea_Title">Ordre de priorité</span></a><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr"></div></div></div><div class="sectionblock"><a name="sectionToggle1"></a><p>Les opérateurs sont évalués dans l'ordre de priorité suivant&nbsp;:</p><h3 class="subHeading">Opérateurs arithmétiques et de concaténation</h3><div class="subSection"><p>Élévation à une puissance (<b>^</b>)</p><p>Identité et négation unaires (<b>+</b>, <b>–</b>)</p><p>Multiplication et division à virgule flottante (<b>*</b>, <b>/</b>)</p><p>Division entière (<b>\</b>)</p><p>Modulo arithmétique (<b>Mod</b>)</p><p>Addition et soustraction (<b>+</b>, <b>–</b>), concaténation de chaînes (<b>+</b>)</p><p>Concaténation de chaînes (<b>&amp;</b>)</p><p>Décalage de bits arithmétique (<b>&lt;&lt;</b>, <b>&gt;&gt;</b>)</p></div><h3 class="subHeading">Opérateurs de comparaison</h3><div class="subSection"><p>Tous les opérateurs de comparaison (<b>=</b>, <b>&lt;&gt;</b>, <b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>Is</b>, <b>IsNot</b>, <b>Like</b>, <b>TypeOf</b>...<b>Is</b>)</p></div><h3 class="subHeading">Opérateurs logiques et au niveau du bit</h3><div class="subSection"><p>Négation (<b>Not</b>)</p><p>Conjonction (<b>And</b>, <b>AndAlso</b>)</p><p>Disjonction inclusive (<b>Or</b>, <b>OrElse</b>)</p><p>Disjonction exclusive (<b>Xor</b>)</p></div><div class="subSection"><p>L'opérateur <b>=</b> est uniquement l'opérateur de comparaison d'égalité, pas l'opérateur d'assignation.</p><p>L'opérateur de concaténation de chaînes (<b>&amp;</b>) n'est pas un opérateur arithmétique, mais il est groupé avec les opérateurs arithmétiques pour établir les priorités.</p><p>Les opérateurs <b>Is</b> et <b>IsNot</b> sont des opérateurs de comparaison de référence d'objet. Ils ne comparent pas les valeurs de deux objets, mais effectuent une vérification pour déterminer si deux variables d'objet désignent la même instance d'objet.</p></div></div></div><div><div class="LW_CollapsibleArea_TitleDiv"><div><a href="javascript:void(0)" class="LW_CollapsibleArea_TitleAhref" title="Réduire"><span class="cl_CollapsibleArea_expanding LW_CollapsibleArea_Img"></span><span class="LW_CollapsibleArea_Title">Associativité</span></a><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr"></div></div></div><div class="sectionblock"><a name="sectionToggle2"></a><p>Lorsque des opérateurs de même priorité apparaissent dans la même expression, par exemple multiplication et division, le compilateur évalue chaque opération dans l'ordre d'apparition de gauche à droite. L'exemple suivant illustre ce comportement&nbsp;:</p> 
+<div id="code-snippet-1" class="codeSnippetContainer" xmlns="">
+    <div class="codeSnippetContainerTabs">
+        
+    </div>
+    <div class="codeSnippetContainerCodeContainer">
+        <div class="codeSnippetToolBar">
+            <div class="codeSnippetToolBarText">
+                <a name="CodeSnippetCopyLink" style="display: none;" title="Copier dans le Presse-papiers." href="javascript:if (window.epx.codeSnippet)window.epx.codeSnippet.copyCode('CodeSnippetContainerCode_a9e85f7d-6e13-4b4b-86f4-0d3a65caf784');">Copier</a>
+            </div>
+        </div>
+        <div id="CodeSnippetContainerCode_a9e85f7d-6e13-4b4b-86f4-0d3a65caf784" class="codeSnippetContainerCode" dir="ltr">
+            <div style="color:Black;"><pre>Dim n1 As Integer = 96 / 8 / 4
+Dim n2 As Integer = (96 / 8) / 4
+Dim n3 As Integer = 96 / (8 / 4)
+</pre></div>
+            
+        </div>
+    </div>
+</div>
+ <p>La première expression évalue la division <i><span class="math">96 / 8</span></i> (le résultat est 12), puis la division <i><span class="math">12 / 4</span></i> (le résultat est 3). Comme le compilateur évalue de gauche à droite les opérations pour <tt>n1</tt>, l'évaluation ne change pas lorsque cet ordre est indiqué explicitement pour <tt>n2</tt>. <tt>n1</tt> et <tt>n2</tt> ont chacun un résultat égal à 3. En revanche, <tt>n3</tt> a un résultat égal à 48, parce que les parenthèses forcent le compilateur à évaluer <i><span class="math">8 / 4</span></i> en premier.</p><p>C'est pourquoi, les opérateurs sont dits <i>associatif à gauche</i> en Visual Basic.</p></div></div><div><div class="LW_CollapsibleArea_TitleDiv"><div><a href="javascript:void(0)" class="LW_CollapsibleArea_TitleAhref" title="Réduire"><span class="cl_CollapsibleArea_expanding LW_CollapsibleArea_Img"></span><span class="LW_CollapsibleArea_Title">Substitution de la priorité et de l'associativité</span></a><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr"></div></div></div><div class="sectionblock"><a name="sectionToggle3"></a><p>Vous pouvez utiliser des parenthèses pour forcer certaines parties d'une expression à être évaluée avant d'autres. Elles peuvent servir de substitution à l'ordre de priorité et à l'associativité à gauche. Visual Basic exécute toujours en priorité des opérations situées entre parenthèses. Toutefois, à l'intérieur des parenthèses, il maintient une priorité et une associativité normale, sauf si vous utilisez des parenthèses dans les parenthèses. L'exemple suivant illustre ce comportement&nbsp;:</p> 
+<div id="code-snippet-2" class="codeSnippetContainer" xmlns="">
+    <div class="codeSnippetContainerTabs">
+        
+    </div>
+    <div class="codeSnippetContainerCodeContainer">
+        <div class="codeSnippetToolBar">
+            <div class="codeSnippetToolBarText">
+                <a name="CodeSnippetCopyLink" style="display: none;" title="Copier dans le Presse-papiers." href="javascript:if (window.epx.codeSnippet)window.epx.codeSnippet.copyCode('CodeSnippetContainerCode_1b9d8e55-b801-45c8-b448-d689d6ae5dc3');">Copier</a>
+            </div>
+        </div>
+        <div id="CodeSnippetContainerCode_1b9d8e55-b801-45c8-b448-d689d6ae5dc3" class="codeSnippetContainerCode" dir="ltr">
+            <div style="color:Black;"><pre>Dim a, b, c, d, e, f, g As Double
+a = 8.0
+b = 3.0
+c = 4.0
+d = 2.0
+e = 1.0
+f = a - b + c / d * e
+' The preceding line sets f to 7.0. Because of natural operator 
+' precedence and associativity, it is exactly equivalent to the 
+' following line.
+f = (a - b) + ((c / d) * e)
+' The following line overrides the natural operator precedence 
+' and left associativity.
+g = (a - (b + c)) / (d * e)
+' The preceding line sets g to 0.5.
+</pre></div>
+            
+        </div>
+    </div>
+</div>
+ </div></div><div><div class="LW_CollapsibleArea_TitleDiv"><div><a href="javascript:void(0)" class="LW_CollapsibleArea_TitleAhref" title="Réduire"><span class="cl_CollapsibleArea_expanding LW_CollapsibleArea_Img"></span><span class="LW_CollapsibleArea_Title">Voir aussi</span></a><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr"></div></div></div><div class="sectionblock"><a name="seeAlsoToggle"></a><h4 class="subHeading">Référence</h4><span class="linkTerms"><a href="http://msdn.microsoft.com/fr-fr/library/41d8z008(v=vs.80).aspx">=, opérateur (Visual Basic)</a></span><br><span class="linkTerms"><a href="http://msdn.microsoft.com/fr-fr/library/kb136x1y(v=vs.80).aspx">Is, opérateur (Visual Basic)</a></span><br><span class="linkTerms"><a href="http://msdn.microsoft.com/fr-fr/library/t3bat82c(v=vs.80).aspx">IsNot, opérateur</a></span><br><span class="linkTerms"><a href="http://msdn.microsoft.com/fr-fr/library/swf8kaxw(v=vs.80).aspx">Like, opérateur</a></span><br><span class="linkTerms"><a href="http://msdn.microsoft.com/fr-fr/library/0ec5kw18(v=vs.80).aspx">TypeOf, opérateur (Visual Basic)</a></span><br><span class="linkTerms"><a href="http://msdn.microsoft.com/fr-fr/library/asfcc119(v=vs.80).aspx">Opérateurs répertoriés par fonctionnalité</a></span><br><h4 class="subHeading">Concepts</h4><span class="linkTerms"><a href="http://msdn.microsoft.com/fr-fr/library/a1w3te48(v=vs.80).aspx">Opérateurs et expressions en Visual Basic</a></span><br><br></div></div></div>  </div>
+</div>
+
+
+
+
+
+<div id="contentFeedback">
+    <form method="post" action="http://msdn.microsoft.com/fr-fr/library/feedback/add/fw84t893(v=vs.80).aspx">
+        <input name="__RequestVerificationToken" type="hidden" value="fPKvTtaknHqqNnxwRQrIgQzVKWFmPKeC_8s-42pn0bB8tB4DQYvk1OF9EBYwg-pLWRC16v0CLpS7UTYKWb3TfRVCnCB4vAvAwFiwUA84JlnPlRwDwk-kA_ruJ2jiArTNVL2cCg2">
+    <div id="contentFeedbackContainer">
+        <div class="FeedbackTitleContainer">
+            <a name="feedback"></a>
+        Cela vous a-t-il été utile&nbsp;?
+            <input id="rdIsUsefulYes" name="rdIsUseful" type="radio" value="1" onclick="toggleContentFeedback(&#39;Yes&#39;);"><label for="rdIsUsefulYes">Oui</label>
+            <input id="rdIsUsefulNo" name="rdIsUseful" type="radio" value="0" onclick="toggleContentFeedback(&#39;No&#39;);"><label for="rdIsUsefulNo">Non</label>
+        
+        </div>
+        
+            <div id="contentFeedbackQAContainer">
+                
+                    <div id="feedbackListNoContainer" class="FeedbackListContainer">
+                        
+                            <div>
+                                <input id="chkbxNo201" name="chkbxNo" type="checkbox" value="201">
+                                <label for="chkbxNo201">Manque de précision</label>
+                            </div>
+                        
+                            <div>
+                                <input id="chkbxNo202" name="chkbxNo" type="checkbox" value="202">
+                                <label for="chkbxNo202">Pas suffisamment approfondi</label>
+                            </div>
+                        
+                            <div>
+                                <input id="chkbxNo203" name="chkbxNo" type="checkbox" value="203">
+                                <label for="chkbxNo203">Besoin d'exemples de code supplémentaires</label>
+                            </div>
+                        
+                            <div>
+                                <input id="chkbxNo204" name="chkbxNo" type="checkbox" value="204">
+                                <label for="chkbxNo204">La traduction a besoin d'être améliorée.</label>
+                            </div>
+                        
+                    </div>
+                
+                <div class="FeedbackTellUsMoreContainer">
+                    <textarea id="feedbackText" name="feedbackText" class="TellUsMoreTextBoxSearchLoaded" onfocus="WatermarkFocus(this, &#39;Dites-nous en plus...&#39;, &#39;TellUsMoreTextBoxSearch&#39;)" onblur="WatermarkBlur(this, &#39;Dites-nous en plus...&#39;, &#39;TellUsMoreTextBoxSearchLoaded&#39;)" onmouseover="TextBoxCharactersCounter(this, document.getElementById(&#39;feedbackTextCounter&#39;), 1500)" onkeydown="TextBoxCharactersCounter(this, document.getElementById(&#39;feedbackTextCounter&#39;), 1500)" onkeyup="TextBoxCharactersCounter(this, document.getElementById(&#39;feedbackTextCounter&#39;), 1500)">Dites-nous en plus...</textarea>
+                </div>
+                <span class="counter">(<span id="feedbackTextCounter">1500</span> caractères restants)</span>
+                <input type="hidden" id="returnUrl" name="returnUrl" value="http://msdn.microsoft.com/fr-fr/library/fw84t893(v=vs.80).aspx">
+                <input type="submit" id="submit" value="Envoyer" title="Cliquez pour envoyer vos commentaires" onclick="WatermarkOnSubmit(document.getElementById(&#39;feedbackText&#39;), &#39;Dites-nous en plus...&#39;, &#39;TellUsMoreTextBoxSearch&#39;)">
+                <div style="clear: both;"></div>
+            </div>  
+        
+    </div>
+    </form>
+</div>
+    
+
+
+
+<script id="CommentTemplate" type="text/x-jquery-tmpl">
+    <div class="communityContentAnnotation">
+        <a name="${Index}"></a>
+        <h3>
+            ${Title}
+        </h3>
+        <div class="communityContentAnnotationBody">
+            {{html Body}}
+        </div>
+        <div class="communityContentAnnotationInfo">
+            <div class="communityContentAnnotationAvatarContainer">
+                <a href="${UserAvatar.Href}" title="${UserAvatar.ToolTip}" class="communityContentAnnotationAvatar"><img src="${UserAvatar.ImageUrl}" alt="${UserAvatar.ImageAltText}" width="34" height="34" /></a>
+            </div>
+            <div class="communityContentAnnotationUserDateContainer">
+                <div class="communityContentAnnotationUserContainer">
+                    <a href="${UserAvatar.Href}">
+                        ${User}
+                    </a>
+                </div>
+                <div class="communityContentAnnotationDateContainer">
+                    <span>${Date}</span>
+                    
+                    {{if EditLink}}
+                        <span>
+                            <a href="${EditLink.Href}" title="${EditLink.ToolTip}" class="communityContentCommentEditLink">${EditLink.Title}</a>
+                        </span>
+                    {{/if}}
+
+                    {{if DeleteLink}}
+                        <span>
+                            <a href="${DeleteLink.Href}" title="${DeleteLink.ToolTip}" class="communityContentDeleteLink">${DeleteLink.Title}</a>
+                        </span>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<div class="communityContentContainer">
+    <div id="CommunityContentHeader" class="communityContentHeader">
+        <div class="communityContentHeaderTitleContainer">
+            <h2>Ajouts de la communauté</h2>
+                <a class="communityContentAddLink" href="http://msdn.microsoft.com/fr-fr/library/community/add/fw84t893(v=vs.80).aspx">
+                    <span class="communityContentAddButton" title="Ajouter">
+                        AJOUTER
+                    </span>
+                </a>
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+    
+    <div id="CommunityComments" data-url="/fr-fr/library/community/comments/fw84t893(v=vs.80).aspx"></div>
+</div>
+
+
+
+
+</div>
+
+
+            </div>
+            <div class="clear"></div>
+        
+            
+    
+   <div id="ux-footer" class="Chrome ltr">
+    <div id="ux-footer-cols">
+        
+
+
+    </div>
+
+    <div class="ux-footer-clear"></div>
+    <div id="footerRight">
+        <div id="FooterLogoContainer"><div id="FooterLogo"></div></div>
+        <div id="FooterCopyright">© 2013 Microsoft. Tous droits réservés.</div> 
+    </div>
+    <div id="footerLeft">
+        <div id="footerGroup">
+            <div id="LinkGroup">
+                <div id="Links1"><div data-fragmentname="FooterLinks" id="Fragment_FooterLinks" xmlns="http://www.w3.org/1999/xhtml">
+  
+  <div class="LinkList">
+    <div>
+      <div class="LinkColumn">
+        <a href="http://msdn.microsoft.com/fr-fr/aa570311.aspx" xmlns="http://www.w3.org/1999/xhtml">Newsletter MSDN</a>
+      </div>
+      <div class="LinksDivider">|</div>
+      <div class="LinkColumn">
+        <a href="http://msdn.microsoft.com/fr-fr/events/default.aspx" xmlns="http://www.w3.org/1999/xhtml">Evénements</a>
+      </div>
+      <div class="LinksDivider">|</div>
+      <div class="LinkColumn">
+        <a href="http://msdn.microsoft.com/fr-fr/magazine/default.aspx" xmlns="http://www.w3.org/1999/xhtml">MSDN Magazine</a>
+      </div>
+      <div class="LinksDivider">|</div>
+      <div class="LinkColumn">
+        <a href="http://social.msdn.microsoft.com/Forums/fr-fr/categories/" xmlns="http://www.w3.org/1999/xhtml">Forums MSDN</a>
+      </div>
+      <div class="LinksDivider">|</div>
+      <div class="LinkColumn">
+        <a href="http://msdn.microsoft.com/fr-fr/bb219575.aspx" xmlns="http://www.w3.org/1999/xhtml">Nous Contacter</a>
+      </div>
+      <div class="LinksDivider">|</div>
+      <div class="LinkColumn">
+        <a href="http://support.microsoft.com/contactus/?ln=fr" xmlns="http://www.w3.org/1999/xhtml">Contactez Microsoft</a>
+      </div>
+      <div class="LinksDivider">|</div>
+      <div class="LinkColumn">
+        <a href="http://profile.microsoft.com/RegSysProfileCenter/default.aspx?lcid=1036" xmlns="http://www.w3.org/1999/xhtml">Gérer votre profil</a>
+      </div>
+      <div class="Clear"></div>
+    </div>
+  </div>
+</div></div>
+            </div>
+            <div id="Feedback">
+                <div class="feedbackListItem">
+                    <div class="LinksDivider">|</div>
+                    <div class="LinkColumn">
+                        
+
+
+
+
+
+<div class="FooterSiteFeedBack">
+    <a id="SiteFeedbackLinkOpener" href="javascript:void(0)">
+        <span class="FeedbackButton clip20x21" id="FeedbackButton">
+            <img id="feedBackImg" class="cl_footer_feedback_icon" src="./Priorité des opérateurs en Visual Basic_files/ImageSprite.png" alt="Site Feedback">
+        </span>
+        Commentaires sur le site
+    </a>
+    
+    <div id="SiteFeedbackLinkContainer" class="SiteFeedbackLinkContainer" style="display: none;">
+    <form id="siteFeedbackForm" method="post" action="http://msdn.microsoft.com/fr-fr/library/feedback/add/fw84t893(v=vs.80).aspx">
+        <input name="__RequestVerificationToken" type="hidden" value="nxB6v1E5UvDEqBlf5wZwJj_5hCLvx5Wo8JmElk5FbJ2KtBVaEk7L7Y2IJOLcFqWBDWGElsoel2DXik423c60TyJAxQU7XIRtrS8_2OgmiPsVnMx_LSmujd0bwW9s_jNLe-Cb0A2">
+        <div class="SiteFeedbackLinkTitleContainer">
+            <div class="SiteFeedbackLinkTitle">
+                Commentaires sur le site
+            </div>
+            <div class="SiteFeedbackLinkCancel">
+                <a id="SiteFeedbackLinkCloser" href="javascript:void(0)">x</a>
+            </div>
+        </div>
+        <div class="SiteFeedbackLinkData">
+            <div class="SiteFeedbackLinkInfoText">
+                Faites-nous part de votre expérience…
+            </div>
+            <div class="QuestionText">
+                La page s'est elle téléchargée rapidement ?
+            </div>
+            <div class="AnswerText">
+                
+                <span>
+                    Oui<span>
+                        <input id="searchBox" name="searchBox" type="radio" value="1"></span></span>
+                
+                <span>
+                    Non<span>
+                        <input id="searchBox" name="searchBox" type="radio" value="0"></span></span>
+                
+            </div>
+            <div class="QuestionText">
+                Êtes-vous satisfait de la conception de la page ?
+            </div>
+            <div class="AnswerText">
+                
+                <span>
+                    Oui<span>
+                        <input id="tabbedCode" name="tabbedCode" type="radio" value="1"></span></span>
+                
+                <span>
+                    Non<span>
+                        <input id="tabbedCode" name="tabbedCode" type="radio" value="0"></span></span>
+                
+            </div>
+            <div class="QuestionText">
+                Tell us more
+            </div>
+            <div class="SiteFeedbackLinkTextAreaContainer">
+                <textarea id="feedbackText" data-maxlength="4000" name="feedbackText" cols="25" rows="5" class="SiteFeedbackLinkTextArea"></textarea>
+                
+                <textarea id="feedbackDescription" name="feedbackDescription" cols="25" rows="10" style="display: none;">Enter description here.</textarea>
+                <input type="hidden" id="feedbackPriority" name="feedbackPriority" value="">
+                <input type="hidden" id="feedbackSourceUrl" name="feedbackSourceUrl" value="">
+                <input type="hidden" id="ClientIP" name="ClientIP" value="">
+                <input type="hidden" id="ClientOS" name="ClientOS" value="">
+                <input type="hidden" id="ClientBrowser" name="ClientBrowser" value="">
+                <input type="hidden" id="ClientTime" name="ClientTime" value="">
+                <input type="hidden" id="ClientTimeZone" name="ClientTimeZone" value="">
+                
+            </div>
+            <div>
+                <input id="siteFeedbackSubmit" type="submit" value="Envoyer" class="SiteFeedbackLinkSubmit">
+            </div>
+        </div>
+        <input type="hidden" id="returnUrl" name="returnUrl" value="http://msdn.microsoft.com/fr-fr/library/fw84t893(v=vs.80).aspx">
+    </form>
+</div>
+    
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="clear:both"></div>
+        <div id="Links2"><div data-fragmentname="FooterLinksBottom" id="Fragment_FooterLinksBottom" xmlns="http://www.w3.org/1999/xhtml">
+  
+  <div class="LinkList">
+    <div>
+      <div class="LinkColumn">
+        <a href="http://www.microsoft.com/france/core/copyright.aspx" xmlns="http://www.w3.org/1999/xhtml">Conditions d'utilisation</a>
+      </div>
+      <div class="LinksDivider">|</div>
+      <div class="LinkColumn">
+        <a href="http://www.microsoft.com/About/Legal/EN/US/IntellectualProperty/Trademarks/EN-US.aspx" xmlns="http://www.w3.org/1999/xhtml">Marques</a>
+      </div>
+      <div class="LinksDivider">|</div>
+      <div class="LinkColumn">
+        <a href="http://go.microsoft.com/fwlink/?LinkId=248681" xmlns="http://www.w3.org/1999/xhtml">Confidentialité et Cookies</a>
+      </div>
+      <div class="LinksDivider">|</div>
+      <div class="LinkColumn">
+        <a href="http://go.microsoft.com/fwlink/?LinkId=248681&clcid=0x040c" xmlns="http://www.w3.org/1999/xhtml">A propos du site</a>
+      </div>
+      <div class="Clear"></div>
+    </div>
+  </div>
+</div></div>
+    </div>
+</div> 
+
+
+            <div class="footerPrintView">
+                <div class="footerCopyrightPrintView">© 2013 Microsoft. Tous droits réservés.</div>
+            </div>
+
+            
+            
+    
+    <input id="tocPaddingPerLevel" type="hidden" value="17">
+
+
+        
+            <input id="MtpsDevice" type="hidden" value="Lightweight">
+
+
+<!--[CDATA[ Third party scripts and code linked to or referenced from this website are licensed to you by the parties that own such code, not by Microsoft.  See ASP.NET Ajax CDN Terms of Use – http://www.asp.net/ajaxlibrary/CDN.ashx. ]]-->
+        
+            
+            
+            
+            
+            
+        
+
+
+
+<noscript>&lt;div&gt;&lt;img alt="DCSIMG" id="Img1" width="1" height="1" src="http://m.webtrends.com/dcsmgru7m99k7mqmgrhudo0k8_8c6m/njs.gif?dcsuri=/nojavascript&amp;amp;WT.js=No" /&gt;&lt;/div&gt;</noscript>
+
+
+
+
+<noscript>
+  &lt;a href="http://www.omniture.com" title="Web Analytics"&gt;
+    &lt;img src="//msstonojsmsdn.112.2o7.net/b/ss/msstonojsmsdn/1/H.20.2--NS/0" height="1" width="1" border="0" alt="" /&gt;
+  &lt;/a&gt;
+</noscript>
+
+
+
+
+
+        </div>
+    <script type="text/javascript" class="mtps-injected">
+/*<![CDATA[*/
+(function(window,document){"use strict";function preload(scripts){for(var result=[],script,e,i=0;i<scripts.length;i++)script=scripts[i],script.hasOwnProperty("url")&&(e=document.createElement("script"),e.src=script.url,script.throwaway=e),result.push(script);return result}function inject(scripts,index){var script,elem;if(index>=scripts.length){delete mtps.injectScripts;return}script=scripts[index],elem=document.createElement("script"),elem.className="mtps-injected",elem.async=!1;var isLoaded=!1,timeoutId=0,injectNextFnName="",injectNext=elem.onerror=function(){isLoaded||(isLoaded=!0,inject(scripts,index+1),window.clearTimeout(timeoutId),elem.onload=elem.onerror=elem.onreadystatechange=null,injectNextFnName&&delete mtps[injectNextFnName],elem.removeEventListener&&elem.removeEventListener("load",injectNext,!1))};elem.addEventListener?elem.addEventListener("load",injectNext,!1):elem.readyState==="uninitialized"?elem.onreadystatechange=function(){(this.readyState==="loaded"||this.readyState==="complete")&&injectNext()}:elem.onload=injectNext,script.hasOwnProperty("url")?(timeoutId=window.setTimeout(injectNext,12e4),elem.src=script.url):(injectNextFnName="_injectNextScript_"+index,mtps[injectNextFnName]=injectNext,timeoutId=window.setTimeout(injectNext,2e3),elem.text="try {\n"+script.txt+"\n} finally { MTPS."+injectNextFnName+" && MTPS."+injectNextFnName+"(); }"),parent.appendChild(elem)}var mtps=window.MTPS||(window.MTPS={}),parent=document.getElementsByTagName("head")[0];mtps.injectScripts=function(scripts){inject(preload(scripts),0)}})(window,document);
+MTPS.injectScripts([
+	{ txt: "/**/\r\n(window.MTPS || (window.MTPS = {})).cdnDomains || (window.MTPS.cdnDomains = { \r\n\t\"image\": \"http://i.msdn.microsoft.com\", \r\n\t\"js\": \"http://i2.msdn.microsoft.com\", \r\n\t\"css\": \"http://i3.msdn.microsoft.com\"\r\n});\r\n/**/" },
+	{ txt: "//\n  var literalNormalizedUrl = \u0027/fr-fr/library/fw84t893(d=default,l=fr-fr,v=vs.80).aspx\u0027;\n  var wt_nvr_ru = \u0027WT_NVR_RU\u0027;\n  var wt_fpcdom = \u0027.microsoft.com\u0027;\n  var wt_domlist = \u0027msdn.microsoft.com\u0027;\n  var wt_pathlist = \u0027\u0027;\n  var wt_paramlist = \u0027DCSext.mtps_devcenter\u0027;\n  var wt_siteid = \u0027MSDN\u0027;\n  var gDomain = \u0027m.webtrends.com\u0027;\n  var gDcsId = \u0027dcsmgru7m99k7mqmgrhudo0k8_8c6m\u0027;\n  var gFpc = \u0027WT_FPC\u0027;\n  if (document.cookie.indexOf(gFpc + \"=\") == -1) {\n    var wtidJs = document.createElement(\"script\");\n    wtidJs.src = \"//\" + gDomain + \"/\" + gDcsId + \"/wtid.js\";\n    document.getElementsByTagName(\"head\")[0].appendChild(wtidJs);\n  }\n  var detectedLocale = \u0027fr-fr\u0027;\n  var wtsp = \u0027msdnlib_hp\u0027;\n  var gTrackEvents = \u00270\u0027;\n/**/" },
+	{ txt: "/**/\n  var omni_guid = \"20dbb790-8f91-4f2b-aa6a-19829c026680\";\n/**/" },
+	{ url: "http://i2.msdn.microsoft.com/Combined.js?resources=0:webtrendsscript,1:omni_rsid_MSDN;/Areas/Global/Content/Webtrends/resources:0,/Areas/Global/Content/Omniture/resources/MSDN:1&amp;hashKey=8FFA6D1FF710842E9298ABD38B734B38" },
+	{ url: "http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js" },
+	{ url: "http://i2.msdn.microsoft.com/Combined.js?resources=0:Utilities,1:Base\\Content\\SearchBox;/Areas/Epx/Content/Scripts:0,/\\Areas/Epx/Themes:1&amp;hashKey=17071977F041503512079A5875D83B09" },
+	{ url: "http://i1.services.social.microsoft.com/search/Widgets/SearchBox.jss?boxid=HeaderSearchTextBox&btnid=HeaderSearchButton&brand=MSDN&loc=fr-fr&watermark=MSDN" },
+	{ url: "http://i2.msdn.microsoft.com/Combined.js?resources=0:Toc,0:NavigationResize,1:FeedbackCounter;/Areas/Epx/Library/Content:0,/Areas/Epx/Shared/Content:1&amp;hashKey=A494786E5B94AB9A92D22560BC59E6E8" },
+	{ txt: "MTPS = window.MTPS || {}; MTPS.LocalizedStrings = window.MTPS.LocalizedStrings || {}; MTPS.LocalizedStrings.ExpandButtonTooltip = \u0027Développer\u0027; MTPS.LocalizedStrings.CollapseButtonTooltip = \u0027Réduire\u0027;" },
+	{ url: "http://i2.msdn.microsoft.com/Areas/Epx/Shared/Content/Feedback.js" },
+	{ url: "http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js" },
+	{ url: "http://i2.msdn.microsoft.com/Combined.js?resources=0:CommunityContent,0:SiteFeedbackLink,0:Topic,0:CodeSnippet,0:TopicNotInScope,0:CollapsibleArea,0:VersionSelector,0:SurveyBroker;/Areas/Epx/Content/Scripts:0&amp;hashKey=ED7A3D1C12AEF89E6D6FCF90A2DDAB5A" }
+]);
+
+/*]]>*/
+</script>
+<div style="display: none;" id="orbiousinterest_dialog"><div class="container">  <div class="header">Mark as unread</div>  URL <input type="text" value="" class="url" readonly="readonly"><br>  Title <input type="text" value="" class="title"><br>  Tags <input type="text" value="tags, seperated by commas" class="tags empty">  <div class="buttons">     <input type="button" value="Cancel" class="cancel">     <input type="button" value="Save" class="save">  </div></div></div><a id="ORBVIOUS_DOMWindowHost" href="http://msdn.microsoft.com/fr-fr/library/fw84t893(v=vs.80).aspx#orbiousinterest_dialog"></a><script src="./Priorité des opérateurs en Visual Basic_files/broker-config.js"></script><div style="display: none;" id="_WEDCSInsertedData"><iframe id="_msnFrame" src="./Priorité des opérateurs en Visual Basic_files/c.gif" style="z-index:-1;height:1px;width:1px;display:none;visibility:hidden;" onload="javascript:MscomBeacon();"></iframe></div></body></html>

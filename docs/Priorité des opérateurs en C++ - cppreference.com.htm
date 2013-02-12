@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<!-- saved from url=(0061)http://fr.cppreference.com/w/cpp/language/operator_precedence -->
+<html lang="fr" dir="ltr" class="client-js"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Priorité des opérateurs en C++ - cppreference.com</title>
+<meta charset="UTF-8">
+<meta name="generator" content="MediaWiki 1.18.2">
+<link rel="alternate" type="application/x-wiki" title="Modifier" href="http://fr.cppreference.com/mwiki/index.php?title=cpp/language/operator_precedence&action=edit">
+<link rel="edit" title="Modifier" href="http://fr.cppreference.com/mwiki/index.php?title=cpp/language/operator_precedence&action=edit">
+<link rel="shortcut icon" href="http://fr.cppreference.com/favicon.ico">
+<link rel="search" type="application/opensearchdescription+xml" href="http://fr.cppreference.com/mwiki/opensearch_desc.php" title="cppreference.com (fr)">
+<link rel="EditURI" type="application/rsd+xml" href="http://fr.cppreference.com/mwiki/api.php?action=rsd">
+<link rel="alternate" type="application/atom+xml" title="Flux Atom de cppreference.com" href="http://fr.cppreference.com/mwiki/index.php?title=Sp%C3%A9cial:Modifications_r%C3%A9centes&feed=atom">
+<link rel="stylesheet" href="http://fr.cppreference.com/mwiki/load.php?debug=false&lang=fr&modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.cppreference2&only=styles&skin=cppreference2&*">
+<style type="text/css" media="all">.mw-collapsible-toggle{float:right} li .mw-collapsible-toggle{float:none} .mw-collapsible-toggle-li{list-style:none}
+
+/* cache key: mwiki1-mwiki_fr_:resourceloader:filter:minify-css:4:4250852ed2349a0d4d0fc6509a3e7d4c */</style><style type="text/css" media="all">.js-messagebox{margin:1em 5%;padding:0.5em 2.5%;border:1px solid #ccc;background-color:#fcfcfc;font-size:0.8em}.js-messagebox .js-messagebox-group{margin:1px;padding:0.5em 2.5%;border-bottom:1px solid #ddd}.js-messagebox .js-messagebox-group:last-child{border-bottom:thin none transparent}
+
+/* cache key: mwiki1-mwiki_fr_:resourceloader:filter:minify-css:4:8b08bdc91c52a9ffba396dccfb5b473c */</style><meta name="ResourceLoaderDynamicStyles" content="">
+<link rel="stylesheet" href="http://fr.cppreference.com/mwiki/load.php?debug=false&lang=fr&modules=site&only=styles&skin=cppreference2&*">
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}#toc{display:none}.editsection{display:none}
+
+/* cache key: mwiki1-mwiki_fr_:resourceloader:filter:minify-css:4:b677bc2b5ec37947892a2d0853532528 */</style>
+<script src="./Priorité des opérateurs en C++ - cppreference.com_files/load.php"></script><script src="./Priorité des opérateurs en C++ - cppreference.com_files/load(1).php"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "cpp/language/operator_precedence", "wgTitle": "cpp/language/operator precedence", "wgCurRevisionId": 41886, "wgArticleId": 417, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script><script>if(window.mw){
+	mw.loader.load(["mediawiki.page.startup"]);
+}
+</script><script type="text/javascript" src="./Priorité des opérateurs en C++ - cppreference.com_files/load(2).php"></script>
+<style type="text/css">/*<![CDATA[*/
+.source-cpp {line-height: normal;}
+.source-cpp li, .source-cpp pre {
+	line-height: normal; border: 0px none white;
+}
+/**
+ * GeSHi Dynamically Generated Stylesheet
+ * --------------------------------------
+ * Dynamically generated stylesheet for cpp
+ * CSS class: source-cpp, CSS id: 
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ * --------------------------------------
+ */
+.cpp.source-cpp .de1, .cpp.source-cpp .de2 {font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;}
+.cpp.source-cpp  {font-family:monospace;}
+.cpp.source-cpp .imp {font-weight: bold; color: red;}
+.cpp.source-cpp li, .cpp.source-cpp .li1 {font-weight: normal; vertical-align:top;}
+.cpp.source-cpp .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.cpp.source-cpp .li2 {font-weight: bold; vertical-align:top;}
+.cpp.source-cpp .kw1 {color: #0000dd;}
+.cpp.source-cpp .kw2 {color: #0000ff;}
+.cpp.source-cpp .kw3 {color: #0000dd;}
+.cpp.source-cpp .kw4 {color: #0000ff;}
+.cpp.source-cpp .co1 {color: #909090;}
+.cpp.source-cpp .co2 {color: #339900;}
+.cpp.source-cpp .coMULTI {color: #ff0000; font-style: italic;}
+.cpp.source-cpp .es0 {color: #008000; font-weight: bold;}
+.cpp.source-cpp .es1 {color: #008000; font-weight: bold;}
+.cpp.source-cpp .es2 {color: #008000; font-weight: bold;}
+.cpp.source-cpp .es3 {color: #008000; font-weight: bold;}
+.cpp.source-cpp .es4 {color: #008000; font-weight: bold;}
+.cpp.source-cpp .es5 {color: #008000; font-weight: bold;}
+.cpp.source-cpp .br0 {color: #008000;}
+.cpp.source-cpp .sy0 {color: #008000;}
+.cpp.source-cpp .sy1 {color: #000080;}
+.cpp.source-cpp .sy2 {color: #000040;}
+.cpp.source-cpp .sy3 {color: #000040;}
+.cpp.source-cpp .sy4 {color: #008080;}
+.cpp.source-cpp .st0 {color: #008000;}
+.cpp.source-cpp .nu0 {color: #000080;}
+.cpp.source-cpp .nu6 {color: #000080;}
+.cpp.source-cpp .nu8 {color: #000080;}
+.cpp.source-cpp .nu12 {color: #000080;}
+.cpp.source-cpp .nu16 {color:#000080;}
+.cpp.source-cpp .nu17 {color:#000080;}
+.cpp.source-cpp .nu18 {color:#000080;}
+.cpp.source-cpp .nu19 {color:#000080;}
+.cpp.source-cpp .ln-xtra, .cpp.source-cpp li.ln-xtra, .cpp.source-cpp div.ln-xtra {background-color: #ffc;}
+.cpp.source-cpp span.xtra { display:block; }
+
+/*]]>*/
+</style><!--[if lt IE 7]><style type="text/css">body{behavior:url("/mwiki/skins/cppreference2/csshover.min.htc")}</style><![endif]--><style type="text/css">.jlhlebbhengjlhmcjebbkambaekglhkf {top: 0px; left: 0px;min-width: 30px;max-width: 300px;font-size: 13px;font-family: arial, helvetica, sans-serif;opacity: .93;padding:0px;position:absolute;display:block;z-index: 999997;font-style: normal;font-variant: normal;font-weight: normal;}#jlhlebbhengjlhmcjebbkambaekglhkf_up{text-align: center;padding:0px;margin: 0px;}#jlhlebbhengjlhmcjebbkambaekglhkf_cont{background-color: #729FCF;font-family: arial, helvetica, sans-serif-webkit-box-shadow: #729FCF 0px 0px 2px;color: #FFFFFF;padding:7px;-webkit-border-radius: 5px;}#jlhlebbhengjlhmcjebbkambaekglhkf_down{text-align: center;padding:0px;margin: 0px;}</style></head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-cpp_language_operator_precedence action-view skin-cppreference2 cpp-navbar">
+        <!-- header -->
+        <div id="mw-head" class="noprint">
+            <div id="cpp-head-first-base">
+                <div id="cpp-head-first">
+                    <h5><a href="http://fr.cppreference.com/">cppreference.com</a></h5>
+                    <div id="cpp-head-search">
+                        
+<!-- 0 -->
+<div id="p-search">
+	<h5><label for="searchInput">Rechercher</label></h5>
+	<form action="http://fr.cppreference.com/mwiki/index.php" id="searchform">
+		<input type="hidden" name="title" value="Spécial:Recherche">
+				<div id="simpleSearch">
+						<input name="search" title="Rechercher dans cppreference.com [alt-f]" accesskey="f" id="searchInput">						<button name="button" title="Rechercher les pages comportant ce texte." id="searchButton"><img src="./Priorité des opérateurs en C++ - cppreference.com_files/search-ltr.png" alt="Rechercher"></button>					</div>
+			</form>
+</div>
+
+<!-- /0 -->
+                    </div>
+                    <div id="cpp-head-personal">
+                        
+<!-- 0 -->
+<div id="p-personal" class="">
+<span id="pt-login"><a href="http://fr.cppreference.com/mwiki/index.php?title=Sp%C3%A9cial:Connexion&returnto=cpp%2Flanguage%2Foperator+precedence" title="Vous êtes encouragé(e) à vous identifier ; ce n’est cependant pas obligatoire. [alt-o]" accesskey="o">Créer un compte ou se connecter</a></span></div>
+
+<!-- /0 -->
+                    </div>
+
+                </div>
+            </div>
+            <div id="cpp-head-second-base">
+                <div id="cpp-head-second">
+                    <div id="cpp-head-tools-left">
+                        
+<!-- 0 -->
+<div id="p-namespaces" class="vectorTabs">
+	<h5>Espaces de noms</h5>
+	<ul>
+					<li id="ca-nstab-main" class="selected"><span><a href="./Priorité des opérateurs en C++ - cppreference.com_files/Priorité des opérateurs en C++ - cppreference.com.htm" title="Voir la page de contenu [alt-c]" accesskey="c">Page</a></span></li>
+					<li id="ca-talk" class="new"><span><a href="http://fr.cppreference.com/mwiki/index.php?title=Discussion:cpp/language/operator_precedence&action=edit&redlink=1" title="Discussion au sujet de cette page de contenu [alt-t]" accesskey="t">Discussion</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-variants" class="vectorMenu emptyPortlet">
+		<h5><span>Variantes</span><a href="http://fr.cppreference.com/w/cpp/language/operator_precedence#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+                    </div>
+                    <div id="cpp-head-tools-right">
+                        
+<!-- 0 -->
+<div id="p-views" class="vectorTabs">
+	<h5>Affichages</h5>
+	<ul>
+					<li id="ca-view" class="selected"><span><a href="./Priorité des opérateurs en C++ - cppreference.com_files/Priorité des opérateurs en C++ - cppreference.com.htm">Lire</a></span></li>
+					<li id="ca-edit"><span><a href="http://fr.cppreference.com/mwiki/index.php?title=cpp/language/operator_precedence&action=edit" title="Vous pouvez modifier cette page.
+Veuillez utiliser le bouton de prévisualisation avant d’enregistrer. [alt-e]" accesskey="e">Modifier</a></span></li>
+					<li id="ca-history" class="collapsible"><span><a href="http://fr.cppreference.com/mwiki/index.php?title=cpp/language/operator_precedence&action=history" title="Les versions passées de cette page (avec leurs contributeurs) [alt-h]" accesskey="h">Historique</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-cactions" class="vectorMenu emptyPortlet">
+	<h5><span>Actions</span><a href="http://fr.cppreference.com/w/cpp/language/operator_precedence#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /header -->
+        <!-- content -->
+        <div id="cpp-content-base">
+            <div id="content">
+                <a id="top"></a>
+                <div id="mw-js-message" style="display:none;" class="js-messagebox"></div>
+                                <!-- firstHeading -->
+                <h1 id="firstHeading" class="firstHeading">Priorité des opérateurs en C++</h1>
+                <!-- /firstHeading -->
+                <!-- bodyContent -->
+                <div id="bodyContent">
+                                        <!-- tagline -->
+                    <div id="siteSub">De cppreference.com.</div>
+                    <!-- /tagline -->
+                                        <!-- subtitle -->
+                    <div id="contentSub"><span class="subpages">&lt; <a href="http://fr.cppreference.com/w/cpp" title="cpp">cpp</a> | <a href="http://fr.cppreference.com/w/cpp/language" title="cpp/language">language</a></span></div>
+                    <!-- /subtitle -->
+                                                            <!-- bodycontent -->
+                    <div lang="fr" dir="ltr" class="mw-content-ltr"><table class="plainlinks fmbox fmbox-system" style="font-size:0.9em; line-height: 1em">
+<tbody><tr>
+<td class="mbox-image">
+  <img alt="" src="./Priorité des opérateurs en C++ - cppreference.com_files/Imbox_notice.png" width="40" height="40"></td>
+<td class="mbox-text" style=""> <p>This page has been machine-translated from the English version of the wiki using <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.
+</p><p>
+</p><p>The translation may contain errors and awkward wording. Hover over text to see the original version. You can help to fix errors and improve the translation. For instructions click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a>.
+</p>
+<p></p>
+<p class="t-tr-note-click">
+<a href="http://en.cppreference.com/w/cpp/language/operator_precedence" class="extiw" title="en:cpp/language/operator precedence"> Click here for the English version of this page</a>
+</p> </td>
+</tr>
+</tbody></table>
+<div class="t-navbar" style=""><div class="t-navbar-sep">&nbsp;</div><div class="t-navbar-head"><a href="http://fr.cppreference.com/w/cpp" title="cpp"> C++</a><div class="t-navbar-menu"><div><div>
+<table class="t-sb-list" cellpadding="0" style="line-height:1.1em;">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language" title="cpp/language">Langue</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/concept" title="cpp/concept">Concepts</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/utility" title="cpp/utility">Bibliothèque d'utilitaires</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/string" title="cpp/string">Bibliothèque cordes</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/container" title="cpp/container">Conteneurs bibliothèque</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/algorithm" title="cpp/algorithm">Bibliothèque d'algorithmes</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/iterator" title="cpp/iterator">Bibliothèque itérateurs</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/numeric" title="cpp/numeric">Bibliothèque Numerics</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/io" title="cpp/io">D'entrée / sortie de bibliothèque</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/locale" title="cpp/locale">Bibliothèque localisations</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/regex" title="cpp/regex">Regular expressions bibliothèque</a> <span class="t-mark"> (C++11)</span>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/atomic" title="cpp/atomic">Atomique opérations de la bibliothèque</a> <span class="t-mark"> (C++11)</span>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/thread" title="cpp/thread">Bibliothèque de support fil</a> <span class="t-mark"> (C++11)</span>
+</td></tr>
+</tbody></table>
+</div><div><span class="editsection noprint plainlinks" title="Edit this template"><a rel="nofollow" class="external text" href="http://fr.cppreference.com/mwiki/index.php?title=Mod%C3%A8le:cpp/navbar_content&action=edit">[edit]</a></span></div></div></div></div><div class="t-navbar-sep">&nbsp;</div><div class="t-navbar-head"><a href="http://fr.cppreference.com/w/cpp/language" title="cpp/language">Langage C++</a><div class="t-navbar-menu"><div><div style="display:inline-block">
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr class="t-sb-list-h1">
+<td colspan="5">  Sujets généraux
+</td></tr>
+<tr>
+<td>
+</td></tr>
+<tr>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/preprocessor" title="cpp/preprocessor">Préprocesseur</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/comments" title="cpp/comments" class="mw-redirect">Commentaires</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/keyword" title="cpp/keyword">Mots-clés</a>
+</td></tr>
+</tbody></table>
+</div>
+</td>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/ascii" title="cpp/language/ascii">Table ASCII</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/escape" title="cpp/language/escape">Séquences d'échappement</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/history" title="cpp/language/history">Histoire du C++</a>
+</td></tr>
+</tbody></table>
+</div>
+</td></tr>
+
+
+<tr class="t-sb-list-h1">
+<td colspan="5">  Contrôle de flux
+</td></tr>
+
+<tr class="t-sb-list-h2">
+<td colspan="5">  Instructions conditionnelles
+</td></tr>
+<tr>
+<td>
+</td></tr>
+<tr>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/if" title="cpp/language/if">instruction <code>if</code></a>
+</td></tr>
+</tbody></table>
+</div>
+</td>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/switch" title="cpp/language/switch">instruction <code>switch</code></a>
+</td></tr>
+</tbody></table>
+</div>
+</td></tr>
+
+
+<tr class="t-sb-list-h2">
+<td colspan="5">  Instructions d'itération
+</td></tr>
+<tr>
+<td>
+</td></tr>
+<tr>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/for" title="cpp/language/for">boucle <code>for</code></a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/range-for" title="cpp/language/range-for">boucle <code>for</code> à intervalle</a> <span class="t-mark"> (C++11)</span>
+</td></tr>
+</tbody></table>
+</div>
+</td>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/while" title="cpp/language/while">boucle <code>while</code></a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/do" title="cpp/language/do">boucle <code>do-while</code></a>
+</td></tr>
+</tbody></table>
+</div>
+</td></tr>
+
+
+<tr class="t-sb-list-h2">
+<td colspan="5">  Instructions de saut
+</td></tr>
+<tr>
+<td>
+</td></tr>
+<tr>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/continue" title="cpp/language/continue">instruction <code>continue</code></a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/break" title="cpp/language/break">instruction  <code>break</code></a>
+</td></tr>
+</tbody></table>
+</div>
+</td>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/goto" title="cpp/language/goto">instruction  <code>goto</code></a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/return" title="cpp/language/return">instruction <code>return</code></a>
+</td></tr>
+</tbody></table>
+</div>
+</td></tr>
+
+
+<tr class="t-sb-list-h1">
+<td colspan="5">  Fonctions
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/function" title="cpp/language/function">déclaration de fonction</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/lambda" title="cpp/language/lambda">expression lambda</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/function_template" title="cpp/language/function template">fonction générique</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/inline" title="cpp/language/inline">spécificateur <code>inline</code></a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/except_spec" title="cpp/language/except spec">spécification d'exception</a> <span class="t-mark"> (obsolète)</span>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/noexcept_spec" title="cpp/language/noexcept spec">spécificateur <code>noexcept</code></a> <span class="t-mark"> (C++11)</span>
+</td></tr>
+
+
+<tr class="t-sb-list-h1">
+<td colspan="5">  Exceptions
+</td></tr>
+<tr>
+<td>
+</td></tr>
+<tr>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/throw" title="cpp/language/throw">expression throw</a>
+</td></tr>
+</tbody></table>
+</div>
+</td>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/try_catch" title="cpp/language/try catch">bloc try-catch</a>
+</td></tr>
+</tbody></table>
+</div>
+</td></tr>
+
+
+<tr class="t-sb-list-h1">
+<td colspan="5"> Espaces de noms
+</td></tr>
+<tr>
+<td>
+</td></tr>
+<tr>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/namespace" title="cpp/language/namespace">déclaration d'espace</a>
+</td></tr>
+</tbody></table>
+</div>
+</td>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/namespace_alias" title="cpp/language/namespace alias">alias d'espace de noms</a>
+</td></tr>
+</tbody></table>
+</div>
+</td></tr>
+
+
+<tr class="t-sb-list-h1">
+<td colspan="5"> Types
+</td></tr>
+<tr>
+<td>
+</td></tr>
+<tr>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/types" title="cpp/language/types">types fondamentaux</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/class" title="cpp/language/class">classes</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/enum" title="cpp/language/enum">énumérations</a>
+</td></tr>
+</tbody></table>
+</div>
+</td>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/union" title="cpp/language/union">unions de types</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/function" title="cpp/language/function">types fonctions</a>
+</td></tr>
+</tbody></table>
+</div>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/decltype" title="cpp/language/decltype">spécificateur <code>decltype</code></a> <span class="t-mark"> (C++11)</span>
+</td></tr>
+
+
+<tr class="t-sb-list-h2">
+<td colspan="5">  Qualificatifs
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/cv" title="cpp/language/cv">qualificatifs <code>const</code> et <code>volatile</code></a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/storage_duration" title="cpp/language/storage duration">qualificatifs de stockage</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/constexpr" title="cpp/language/constexpr">qualificatif <code>constexpr</code></a> <span class="t-mark"> (C++11)</span>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/auto" title="cpp/language/auto">qualificatif <code>auto</code></a> <span class="t-mark"> (C++11)</span>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/alignas" title="cpp/language/alignas">qualificatif <code>alignas</code></a> <span class="t-mark"> (C++11)</span>
+</td></tr>
+
+
+<tr class="t-sb-list-h2">
+<td colspan="5">  Initialisation
+</td></tr>
+<tr>
+<td>
+</td></tr>
+<tr>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/default_initialization" title="cpp/language/default initialization">initialisation par défaut</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/value_initialization" title="cpp/language/value initialization">initialisation par valeur</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/zero_initialization" title="cpp/language/zero initialization">initialisation à zéro</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/copy_initialization" title="cpp/language/copy initialization">initialisation par copie</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/direct_initialization" title="cpp/language/direct initialization">initialisation directe</a>
+</td></tr>
+</tbody></table>
+</div>
+</td>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/aggregate_initialization" title="cpp/language/aggregate initialization">initialisation d'agrégats</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/list_initialization" title="cpp/language/list initialization">liste d'initialisation</a> <span class="t-mark"> (C++11)</span>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/constant_initialization" title="cpp/language/constant initialization">initialisation de constante</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/reference_initialization" title="cpp/language/reference initialization">initialisation de référence</a>
+</td></tr>
+</tbody></table>
+</div>
+</td></tr>
+</tbody></table>
+</div>
+</div>
+<div style="display:inline-block">
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr class="t-sb-list-h2">
+<td colspan="5">  Littéraux
+</td></tr>
+<tr>
+<td>
+</td></tr>
+<tr>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/integer_literal" title="cpp/language/integer literal">littéraux entiers</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/character_literal" title="cpp/language/character literal">caractères littéraux</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/floating_literal" title="cpp/language/floating literal">littéraux à virgule flottante</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/string_literal" title="cpp/language/string literal">chaînes littérales</a>
+</td></tr>
+</tbody></table>
+</div>
+</td>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/bool_literal" title="cpp/language/bool literal">littéraux booléens</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/nullptr" title="cpp/language/nullptr"><code>nullptr</code></a> <span class="t-mark"> (C++11)</span>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/user_literal" title="cpp/language/user literal">spécification de littéraux personnalisés</a> <span class="t-mark"> (C++11)</span>
+</td></tr>
+</tbody></table>
+</div>
+</td></tr>
+
+
+<tr class="t-sb-list-h1">
+<td colspan="5">  Expressions
+</td></tr>
+<tr>
+<td>
+</td></tr>
+<tr>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/value_category" title="cpp/language/value category">catégories de valeurs</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/eval_order" title="cpp/language/eval order">ordre d'évaluation</a>
+</td></tr>
+</tbody></table>
+</div>
+</td>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/operators" title="cpp/language/operators">opérateurs</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <strong class="selflink">priorité des opérateurs</strong>
+</td></tr>
+</tbody></table>
+</div>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/operator_alternative" title="cpp/language/operator alternative">opérateurs alternatifs</a>
+</td></tr>
+
+
+<tr class="t-sb-list-h1">
+<td colspan="5">  Utilitaires
+</td></tr>
+
+<tr class="t-sb-list-h2">
+<td colspan="5">  Types
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/typedef" title="cpp/language/typedef">déclaration <code>typedef</code></a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/type_alias" title="cpp/language/type alias">déclaration  d'alias de type</a> <span class="t-mark"> (C++11)</span>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/attributes" title="cpp/language/attributes">attributs</a> <span class="t-mark"> (C++11)</span>
+</td></tr>
+
+<tr class="t-sb-list-h2">
+<td colspan="5"> <div class="t-tr-text"> Jette<div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig"> Casts</div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/implicit_cast" title="cpp/language/implicit cast">conversions implicites</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/const_cast" title="cpp/language/const cast">conversion <code>const_cast</code></a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/static_cast" title="cpp/language/static cast">conversion <code>static_cast</code></a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/dynamic_cast" title="cpp/language/dynamic cast">conversion <code>dynamic_cast</code></a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/reinterpret_cast" title="cpp/language/reinterpret cast">conversion <code>reinterpret_cast</code></a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/explicit_cast" title="cpp/language/explicit cast">conversions style C et style fonction</a>
+</td></tr>
+
+
+<tr class="t-sb-list-h2">
+<td colspan="5">  Allocation de mémoire
+</td></tr>
+<tr>
+<td>
+</td></tr>
+<tr>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/new" title="cpp/language/new">opération <code>new</code></a>
+</td></tr>
+</tbody></table>
+</div>
+</td>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/delete" title="cpp/language/delete">opération <code>delete</code></a>
+</td></tr>
+</tbody></table>
+</div>
+</td></tr>
+
+
+<tr class="t-sb-list-h1">
+<td colspan="5">  Classes
+</td></tr>
+<tr>
+<td>
+</td></tr>
+<tr>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/class" title="cpp/language/class">déclaration de classe</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/this" title="cpp/language/this">pointeur <code>this</code></a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/access" title="cpp/language/access">accès aux membres</a>
+</td></tr>
+</tbody></table>
+</div>
+</td>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/friend" title="cpp/language/friend">spécificateur <code>friend</code></a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/initializer_list" title="cpp/language/initializer list">listes d'initialisation</a>
+</td></tr>
+</tbody></table>
+</div>
+</td></tr>
+
+
+<tr class="t-sb-list-h2">
+<td colspan="5">  Qualificatifs spécifiques aux membres de classe
+</td></tr>
+<tr>
+<td>
+</td></tr>
+<tr>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/virtual" title="cpp/language/virtual">qualificatif <code>virtual</code></a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/override" title="cpp/language/override">qualificatif  <code>override</code></a>  <span class="t-mark"> (C++11)</span>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/final" title="cpp/language/final">qualificatif <code>final</code></a>  <span class="t-mark"> (C++11)</span>
+</td></tr>
+</tbody></table>
+</div>
+</td>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/explicit" title="cpp/language/explicit">qualificatif <code>explicit</code></a>  <span class="t-mark"> (C++11)</span>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/static" title="cpp/language/static">qualificatif <code>static</code></a>
+</td></tr>
+</tbody></table>
+</div>
+</td></tr>
+
+
+<tr class="t-sb-list-h2">
+<td colspan="5">  Fonctions membres spéciales
+</td></tr>
+<tr>
+<td>
+</td></tr>
+<tr>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/default_constructor" title="cpp/language/default constructor">constructeur par défaut</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/copy_constructor" title="cpp/language/copy constructor">constructeur par copie</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/move_constructor" title="cpp/language/move constructor">constructeur par déplacement</a> <span class="t-mark"> (C++11)</span>
+</td></tr>
+</tbody></table>
+</div>
+</td>
+<td>
+<div>
+<table class="t-sb-list" cellpadding="0" style="">
+
+<tbody><tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/as_operator" title="cpp/language/as operator">opérateur <code>as</code></a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/move_operator" title="cpp/language/move operator">opérateur <code>move</code></a> <span class="t-mark"> (C++11)</span>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/destructor" title="cpp/language/destructor">destructeur</a>
+</td></tr>
+</tbody></table>
+</div>
+</td></tr>
+
+<tr class="t-sb-list-h1">
+<td colspan="5">  Modèles
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/class_template" title="cpp/language/class template">classes génériques</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/function_template" title="cpp/language/function template">fonctions génériques</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/template_specialization" title="cpp/language/template specialization">spécialisation de modèles</a>
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/mwiki/index.php?title=cpp/language/parameter_pack&action=edit&redlink=1" class="new" title="cpp/language/parameter pack (page inexistante)">paquets de paramètres</a> <span class="t-mark"> (C++11)</span>
+</td></tr>
+
+<tr class="t-sb-list-h1">
+<td colspan="5">  Divers
+</td></tr>
+
+<tr>
+<td colspan="5">  <a href="http://fr.cppreference.com/w/cpp/language/asm" title="cpp/language/asm">Assembleur</a>
+</td></tr>
+</tbody></table>
+</div>
+</div><div><span class="editsection noprint plainlinks" title="Edit this template"><a rel="nofollow" class="external text" href="http://fr.cppreference.com/mwiki/index.php?title=Mod%C3%A8le:cpp/language/navbar_content&action=edit">[edit]</a></span></div></div></div></div><div class="t-navbar-sep">&nbsp;</div></div>
+<p>Le tableau suivant liste la priorité et l'associativité des opérateurs C++. Les opérateurs sont triés par ordre décroissant de priorité.
+</p>
+<table class="wikitable">
+
+<tbody><tr>
+<th style="text-align: left"> Priorité
+</th>
+<th style="text-align: left"> Opérateur
+</th>
+<th style="text-align: left"> Description
+</th>
+<th style="text-align: left"> Associativité
+</th></tr>
+<tr>
+<th> 1
+</th>
+<td> <code>::</code>
+</td>
+<td> Scope resolution
+</td>
+<td style="vertical-align: top" rowspan="6"> Gauche à droite
+</td></tr>
+<tr>
+<th rowspan="5"> 2
+</th>
+<td style="border-bottom-style: none"> <code>++</code>&nbsp;&nbsp; <code>--</code>
+</td>
+<td style="border-bottom-style: none"> Incrémentation et décrementation suffixe/postfixe
+</td></tr>
+<tr>
+<td style="border-bottom-style: none; border-top-style: none"> <code>()</code>
+</td>
+<td style="border-bottom-style: none; border-top-style: none"> Appel de fonction
+</td></tr>
+<tr>
+<td style="border-bottom-style: none; border-top-style: none"> <code>[]</code>
+</td>
+<td style="border-bottom-style: none; border-top-style: none"> Array subscripting
+</td></tr>
+<tr>
+<td style="border-bottom-style: none; border-top-style: none"> <code>.</code>
+</td>
+<td style="border-bottom-style: none; border-top-style: none"> Sélection membre par référence
+</td></tr>
+<tr>
+<td style="border-bottom-style: none; border-top-style: none"> <code>−&gt;</code>
+</td>
+<td style="border-bottom-style: none; border-top-style: none"> Sélection membre par pointeur
+</td></tr>
+<tr>
+<th rowspan="9"> 3
+</th>
+<td style="border-bottom-style: none"> <code>++</code>&nbsp;&nbsp; <code>--</code>
+</td>
+<td style="border-bottom-style: none"> Incrementation et décrementation préfixe
+</td>
+<td style="vertical-align: top" rowspan="9"> Droite à gauche
+</td></tr>
+<tr>
+<td style="border-bottom-style: none; border-top-style: none"> <code>+</code>&nbsp;&nbsp; <code>−</code>
+</td>
+<td style="border-bottom-style: none; border-top-style: none"> Plus et moins unaires
+</td></tr>
+<tr>
+<td style="border-bottom-style: none; border-top-style: none"> <code>!</code>&nbsp;&nbsp; <code>~</code>
+</td>
+<td style="border-bottom-style: none; border-top-style: none"> NON logique et NON binaire
+</td></tr>
+<tr>
+<td style="border-bottom-style: none; border-top-style: none"> <code>(<i>type</i>)</code>
+</td>
+<td style="border-bottom-style: none; border-top-style: none"> Transtypage
+</td></tr>
+<tr>
+<td style="border-bottom-style: none; border-top-style: none"> <code>*</code>
+</td>
+<td style="border-bottom-style: none; border-top-style: none"> Indirection (dereference)
+</td></tr>
+<tr>
+<td style="border-bottom-style: none; border-top-style: none"> <code>&amp;</code>
+</td>
+<td style="border-bottom-style: none; border-top-style: none"> Adresse de
+</td></tr>
+<tr>
+<td style="border-bottom-style: none; border-top-style: none"> <code>sizeof</code>
+</td>
+<td style="border-bottom-style: none; border-top-style: none"> Taille de
+</td></tr>
+<tr>
+<td style="border-bottom-style: none; border-top-style: none"> <code>new</code>, <code>new[]</code>
+</td>
+<td style="border-bottom-style: none; border-top-style: none"> Allocation mémoire dynamique
+</td></tr>
+<tr>
+<td style="border-top-style: none"> <code>delete</code>, <code>delete[]</code>
+</td>
+<td style="border-top-style: none"> Désallocation mémoire dynamique
+</td></tr>
+<tr>
+<th> 4
+</th>
+<td> <code>.*</code>&nbsp;&nbsp; <code>-&gt;*</code>
+</td>
+<td> Pointeur vers un membre
+</td>
+<td style="vertical-align: top" rowspan="12"> Gauche à droite
+</td></tr>
+<tr>
+<th> 5
+</th>
+<td> <code>*</code>&nbsp;&nbsp; <code>/</code>&nbsp;&nbsp; <code>%</code>
+</td>
+<td> Multiplication, division, et reste
+</td></tr>
+<tr>
+<th> 6
+</th>
+<td> <code>+</code>&nbsp;&nbsp; <code>−</code>
+</td>
+<td> Addition et soustraction
+</td></tr>
+<tr>
+<th> 7
+</th>
+<td> <code>&lt;&lt;</code>&nbsp;&nbsp; <code>&gt;&gt;</code>
+</td>
+<td> Décalage binaire à gauche et à droite
+</td></tr>
+<tr>
+<th rowspan="2"> 8
+</th>
+<td style="border-bottom-style: none"> <code>&lt;</code>&nbsp;&nbsp; <code>&lt;=</code>
+</td>
+<td style="border-bottom-style: none"> Respectivement pour les opérateurs de comparaison &lt; et ≤
+</td></tr>
+<tr>
+<td style="border-top-style: none"> <code>&gt;</code>&nbsp;&nbsp; <code>&gt;=</code>
+</td>
+<td style="border-top-style: none"> Respectivement pour les opérateurs de comparaison &gt; et ≥
+</td></tr>
+<tr>
+<th> 9
+</th>
+<td> <code>==</code>&nbsp;&nbsp; <code>!=</code>
+</td>
+<td> Respectivement pour les comparaisons = et ≠
+</td></tr>
+<tr>
+<th> 10
+</th>
+<td> <code>&amp;</code>
+</td>
+<td> ET binaire
+</td></tr>
+<tr>
+<th> 11
+</th>
+<td> <code>^</code>
+</td>
+<td> XOR binaire (ou exclusif)
+</td></tr>
+<tr>
+<th> 12
+</th>
+<td> <code>|</code>
+</td>
+<td> OU binaire (ou inclusif)
+</td></tr>
+<tr>
+<th> 13
+</th>
+<td> <code>&amp;&amp;</code>
+</td>
+<td> ET logique
+</td></tr>
+<tr>
+<th> 14
+</th>
+<td> <code>||</code>
+</td>
+<td> OU logique
+</td></tr>
+<tr>
+<th rowspan="6"> 15
+</th>
+<td style="border-bottom-style: none"> <code>?:</code>
+</td>
+<td style="border-bottom-style: none"> Ternary conditional
+</td>
+<td style="vertical-align: top" rowspan="7"> Droite à gauche
+</td></tr>
+<tr>
+<td style="border-bottom-style: none; border-top-style: none"> <code>=</code>
+</td>
+<td style="border-bottom-style: none; border-top-style: none"> Affectation directe (fourni par défaut pour les classes C++)
+</td></tr>
+<tr>
+<td style="border-bottom-style: none; border-top-style: none"> <code>+=</code>&nbsp;&nbsp; <code>−=</code>
+</td>
+<td style="border-bottom-style: none; border-top-style: none"> Affectation par somme ou différence
+</td></tr>
+<tr>
+<td style="border-bottom-style: none; border-top-style: none"> <code>*=</code>&nbsp;&nbsp; <code>/=</code>&nbsp;&nbsp; <code>%=</code>
+</td>
+<td style="border-bottom-style: none; border-top-style: none"> Affectation par produit, division ou reste
+</td></tr>
+<tr>
+<td style="border-bottom-style: none; border-top-style: none"> <code>&lt;&lt;=</code>&nbsp;&nbsp; <code>&gt;&gt;=</code>
+</td>
+<td style="border-bottom-style: none; border-top-style: none"> Affectation par décalage binaire à gauche ou à droite
+</td></tr>
+<tr>
+<td style="border-top-style: none"> <code>&amp;=</code>&nbsp;&nbsp; <code>^=</code>&nbsp;&nbsp; <code>|=</code>
+</td>
+<td style="border-top-style: none"> Affectation par ET, XOR ou OU binaire
+</td></tr>
+<tr>
+<th> 16
+</th>
+<td> <code>throw</code>
+</td>
+<td> Throw operator (for exceptions)
+</td></tr>
+<tr>
+<th> 17
+</th>
+<td> <code>,</code>
+</td>
+<td> Virgule
+</td>
+<td> Gauche à droite
+</td></tr></tbody></table>
+<div class="t-tr-text">Lors de l'analyse d'une expression, un opérateur qui figure sur certaines lignes sera lié serré (comme par parenthèses) à ses arguments que tout opérateur qui est inscrite sur une rangée supplémentaire en dessous. Par exemple, les expressions <span class="mw-geshi cpp source-cpp"><a href="http://fr.cppreference.com/w/cpp/io/basic_ostream"><span class="kw1424">std::<span class="me2">cout</span></span></a><span class="sy1">&lt;&lt;</span>a<span class="sy3">&amp;</span>b</span> et <span class="mw-geshi cpp source-cpp"><span class="sy2">*</span>p<span class="sy2">++</span></span> sont analysés comme <span class="mw-geshi cpp source-cpp"><span class="br0">(</span><a href="http://fr.cppreference.com/w/cpp/io/basic_ostream"><span class="kw1424">std::<span class="me2">cout</span></span></a><span class="sy1">&lt;&lt;</span>a<span class="br0">)</span><span class="sy3">&amp;</span>b</span> et <span class="mw-geshi cpp source-cpp"><span class="sy2">*</span><span class="br0">(</span>p<span class="sy2">++</span><span class="br0">)</span></span>, et non pas comme <span class="mw-geshi cpp source-cpp"><a href="http://fr.cppreference.com/w/cpp/io/basic_ostream"><span class="kw1424">std::<span class="me2">cout</span></span></a><span class="sy1">&lt;&lt;</span><span class="br0">(</span>a<span class="sy3">&amp;</span>b<span class="br0">)</span></span> ou <span class="mw-geshi cpp source-cpp"><span class="br0">(</span><span class="sy2">*</span>p<span class="br0">)</span><span class="sy2">++</span></span> .<div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig">When parsing an expression, an operator which is listed on some row will be bound tighter (as if by parentheses) to its arguments than any operator that is listed on a row further below it. For example, the expressions <span class="mw-geshi cpp source-cpp"><a href="http://fr.cppreference.com/w/cpp/io/basic_ostream"><span class="kw1424">std::<span class="me2">cout</span></span></a><span class="sy1">&lt;&lt;</span>a<span class="sy3">&amp;</span>b</span> and  <span class="mw-geshi cpp source-cpp"><span class="sy2">*</span>p<span class="sy2">++</span></span> are parsed as <span class="mw-geshi cpp source-cpp"><span class="br0">(</span><a href="http://fr.cppreference.com/w/cpp/io/basic_ostream"><span class="kw1424">std::<span class="me2">cout</span></span></a><span class="sy1">&lt;&lt;</span>a<span class="br0">)</span><span class="sy3">&amp;</span>b</span> and <span class="mw-geshi cpp source-cpp"><span class="sy2">*</span><span class="br0">(</span>p<span class="sy2">++</span><span class="br0">)</span></span>, and not as <span class="mw-geshi cpp source-cpp"><a href="http://fr.cppreference.com/w/cpp/io/basic_ostream"><span class="kw1424">std::<span class="me2">cout</span></span></a><span class="sy1">&lt;&lt;</span><span class="br0">(</span>a<span class="sy3">&amp;</span>b<span class="br0">)</span></span> or <span class="mw-geshi cpp source-cpp"><span class="br0">(</span><span class="sy2">*</span>p<span class="br0">)</span><span class="sy2">++</span></span>.</div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+<div class="t-tr-text">Opérateurs qui sont dans la même cellule (il peut y avoir plusieurs lignes d'opérateurs répertoriés dans une cellule) sont évaluées avec le même niveau de priorité, dans la direction donnée. Par exemple, le <span class="mw-geshi cpp source-cpp">a<span class="sy1">=</span>b<span class="sy1">=</span>c</span> expression est analysée comme <span class="mw-geshi cpp source-cpp">a<span class="sy1">=</span><span class="br0">(</span>b<span class="sy1">=</span>c<span class="br0">)</span></span>, et non pas comme <span class="mw-geshi cpp source-cpp"><span class="br0">(</span>a<span class="sy1">=</span>b<span class="br0">)</span><span class="sy1">=</span>c</span> en raison du droit-à-gauche associativité .<div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig">Operators that are in the same cell (there may be several rows of operators listed in a cell) are evaluated with the same precedence, in the given direction. For example, the expression <span class="mw-geshi cpp source-cpp">a<span class="sy1">=</span>b<span class="sy1">=</span>c</span> is parsed as <span class="mw-geshi cpp source-cpp">a<span class="sy1">=</span><span class="br0">(</span>b<span class="sy1">=</span>c<span class="br0">)</span></span>, and not as <span class="mw-geshi cpp source-cpp"><span class="br0">(</span>a<span class="sy1">=</span>b<span class="br0">)</span><span class="sy1">=</span>c</span> because of right-to-left associativity.</div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+<div class="t-tr-text">Priorité d'un opérateur n'est pas affecté par la surcharge .<div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig">An operator's precedence is unaffected by overloading.</div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+<h3><span class="editsection">[<a href="http://fr.cppreference.com/mwiki/index.php?title=cpp/language/operator_precedence&action=edit&section=1" title="Modifier la section : Notes">modifier</a>]</span> <span class="mw-headline" id="Notes">Notes</span></h3>
+<div class="t-tr-text">La norme ne précise pas les niveaux de priorité. Ils sont issus de la grammaire .<div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig">The standard itself doesn't specify precedence levels. They are derived from the grammar.</div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+<div class="t-tr-text"><a href="http://fr.cppreference.com/w/cpp/language/const_cast" title="cpp/language/const cast"><tt>const_cast</tt></a>, <a href="http://fr.cppreference.com/w/cpp/language/static_cast" title="cpp/language/static cast"><tt>static_cast</tt></a>, <a href="http://fr.cppreference.com/w/cpp/language/dynamic_cast" title="cpp/language/dynamic cast"><tt>dynamic_cast</tt></a>, <a href="http://fr.cppreference.com/w/cpp/language/reinterpret_cast" title="cpp/language/reinterpret cast"><tt>reinterpret_cast</tt></a> et <a href="http://fr.cppreference.com/w/cpp/language/typeid" title="cpp/language/typeid"><tt>typeid</tt></a> ne sont pas inclus car ils ne sont jamais ambiguës .<div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig"><a href="http://fr.cppreference.com/w/cpp/language/const_cast" title="cpp/language/const cast"><tt>const_cast</tt></a>, <a href="http://fr.cppreference.com/w/cpp/language/static_cast" title="cpp/language/static cast"><tt>static_cast</tt></a>, <a href="http://fr.cppreference.com/w/cpp/language/dynamic_cast" title="cpp/language/dynamic cast"><tt>dynamic_cast</tt></a>, <a href="http://fr.cppreference.com/w/cpp/language/reinterpret_cast" title="cpp/language/reinterpret cast"><tt>reinterpret_cast</tt></a> and <a href="http://fr.cppreference.com/w/cpp/language/typeid" title="cpp/language/typeid"><tt>typeid</tt></a> are not included since they are never ambiguous.</div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+<div class="t-tr-text">Certains opérateurs ont <a href="http://fr.cppreference.com/w/cpp/language/operator_alternative" title="cpp/language/operator alternative">des variantes orthographiques</a> (par exemple, pour <span class="mw-geshi cpp source-cpp">and</span> <code>&amp;&amp;</code>, <span class="mw-geshi cpp source-cpp">or</span> pour <code>||</code>, <span class="mw-geshi cpp source-cpp">not</span> pour <code>!</code>, etc) .<div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig">Some of the operators have <a href="http://fr.cppreference.com/w/cpp/language/operator_alternative" title="cpp/language/operator alternative">des variantes orthographiques</a> (e.g., <span class="mw-geshi cpp source-cpp">and</span> for <code>&amp;&amp;</code>, <span class="mw-geshi cpp source-cpp">or</span> for <code>||</code>, <span class="mw-geshi cpp source-cpp">not</span> for <code>!</code>, etc.).</div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+<h3><span class="editsection">[<a href="http://fr.cppreference.com/mwiki/index.php?title=cpp/language/operator_precedence&action=edit&section=2" title="Modifier la section : Voir aussi">modifier</a>]</span> <span class="mw-headline" id="Voir_aussi">Voir aussi</span></h3>
+<div class="t-tr-text"><a href="http://fr.cppreference.com/w/cpp/language/eval_order" title="cpp/language/eval order">Ordre d'évaluation</a> des arguments de l'opérateur au moment de l'exécution .<div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig"><a href="http://fr.cppreference.com/w/cpp/language/eval_order" title="cpp/language/eval order">Ordre d'évaluation</a> of operator arguments at run time.</div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+<table class="wikitable">
+
+<tbody><tr style="text-align:center">
+<th colspan="7"> Common operators
+</th></tr>
+<tr style="text-align:center">
+<td> <a href="http://fr.cppreference.com/w/cpp/language/operator_assignment" title="cpp/language/operator assignment">affectation</a>
+</td>
+<td> <a href="http://fr.cppreference.com/w/cpp/language/operator_incdec" title="cpp/language/operator incdec">incrémentation décrémentation</a>
+</td>
+<td> <a href="http://fr.cppreference.com/w/cpp/language/operator_arithmetic" title="cpp/language/operator arithmetic">arithmétique</a>
+</td>
+<td> <a href="http://fr.cppreference.com/w/cpp/language/operator_logical" title="cpp/language/operator logical">logique</a>
+</td>
+<td> <a href="http://fr.cppreference.com/w/cpp/language/operator_comparison" title="cpp/language/operator comparison">comparaison</a>
+</td>
+<td> <a href="http://fr.cppreference.com/w/cpp/language/operator_member_access" title="cpp/language/operator member access">accès aux membre</a>
+</td>
+<td> <a href="http://fr.cppreference.com/w/cpp/language/operator_other" title="cpp/language/operator other">autre</a>
+</td></tr>
+<tr style="text-align:center">
+<td>
+<p><span class="mw-geshi cpp source-cpp">a <span class="sy1">=</span> b<br>
+a <span class="sy1">=</span> rvalue<br>
+a <span class="sy2">+</span><span class="sy1">=</span> b<br>
+a <span class="sy2">-</span><span class="sy1">=</span> b<br>
+a <span class="sy2">*</span><span class="sy1">=</span> b<br>
+a <span class="sy2">/</span><span class="sy1">=</span> b<br>
+a <span class="sy2">%</span><span class="sy1">=</span> b<br>
+a <span class="sy3">&amp;</span><span class="sy1">=</span> b<br>
+a <span class="sy3">|</span><span class="sy1">=</span> b<br>
+a <span class="sy3">^</span><span class="sy1">=</span> b<br>
+a <span class="sy1">&lt;&lt;=</span> b<br>
+a <span class="sy1">&gt;&gt;=</span> b</span>
+</p>
+</td>
+<td>
+<p><span class="mw-geshi cpp source-cpp"><span class="sy2">++</span>a<br>
+<span class="sy2">--</span>a<br>
+a<span class="sy2">++</span><br>
+a<span class="sy2">--</span></span>
+</p>
+</td>
+<td>
+<p><span class="mw-geshi cpp source-cpp"><span class="sy2">+</span>a<br>
+<span class="sy2">-</span>a<br>
+a <span class="sy2">+</span> b<br>
+a <span class="sy2">-</span> b<br>
+a <span class="sy2">*</span> b<br>
+a <span class="sy2">/</span> b<br>
+a <span class="sy2">%</span> b<br>
+~a<br>
+a <span class="sy3">&amp;</span> b<br>
+a <span class="sy3">|</span> b<br>
+a <span class="sy3">^</span> b<br>
+a <span class="sy1">&lt;&lt;</span> b<br>
+a <span class="sy1">&gt;&gt;</span> b</span>
+</p>
+</td>
+<td>
+<p><span class="mw-geshi cpp source-cpp"><span class="sy3">!</span>a<br>
+a <span class="sy3">&amp;&amp;</span> b<br>
+a <span class="sy3">||</span> b</span>
+</p>
+</td>
+<td>
+<p><span class="mw-geshi cpp source-cpp">a <span class="sy1">==</span> b<br>
+a <span class="sy3">!</span><span class="sy1">=</span> b<br>
+a <span class="sy1">&lt;</span> b<br>
+a <span class="sy1">&gt;</span> b<br>
+a <span class="sy1">&lt;=</span> b<br>
+a <span class="sy1">&gt;=</span> b</span>
+</p>
+</td>
+<td>
+<p><span class="mw-geshi cpp source-cpp">a<span class="br0">[</span>b<span class="br0">]</span><br>
+<span class="sy2">*</span>a<br>
+<span class="sy3">&amp;</span>a<br>
+a<span class="sy2">-</span><span class="sy1">&gt;</span>b<br>
+a.<span class="me1">b</span><br>
+a<span class="sy2">-</span><span class="sy1">&gt;</span><span class="sy2">*</span>b<br>
+a.<span class="sy2">*</span>b</span>
+</p>
+</td>
+<td>
+<p><span class="mw-geshi cpp source-cpp">a<span class="br0">(</span>...<span class="br0">)</span><br>
+a, b<br>
+<span class="br0">(</span>type<span class="br0">)</span> a<br>
+<span class="sy4">?</span> <span class="sy4">:</span></span>
+</p>
+</td></tr>
+<tr>
+<th colspan="7"> Opérateurs spéciaux
+</th></tr>
+<tr>
+<td colspan="7">
+<div class="t-tr-text"><a href="http://fr.cppreference.com/w/cpp/language/static_cast" title="cpp/language/static cast"><tt>static_cast</tt></a> convertit un type à un autre <br> type compatible<div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig"><a href="http://fr.cppreference.com/w/cpp/language/static_cast" title="cpp/language/static cast"><tt>static_cast</tt></a> converts one type to another compatible type <br></div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+<div class="t-tr-text"><a href="http://fr.cppreference.com/w/cpp/language/dynamic_cast" title="cpp/language/dynamic cast"><tt>dynamic_cast</tt></a> convertit classe de base virtuelle à class<br> dérivée<div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig"><a href="http://fr.cppreference.com/w/cpp/language/dynamic_cast" title="cpp/language/dynamic cast"><tt>dynamic_cast</tt></a> converts virtual base class to derived class<br></div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+<div class="t-tr-text"><a href="http://fr.cppreference.com/w/cpp/language/const_cast" title="cpp/language/const cast"><tt>const_cast</tt></a> convertit un type à l'autre compatible avec <a href="http://fr.cppreference.com/w/cpp/language/cv" title="cpp/language/cv">cv</a> qualifiers<br><div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig"><a href="http://fr.cppreference.com/w/cpp/language/const_cast" title="cpp/language/const cast"><tt>const_cast</tt></a> converts type to compatible type with different <a href="http://fr.cppreference.com/w/cpp/language/cv" title="cpp/language/cv">cv</a> qualifiers<br></div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+<div class="t-tr-text"><a href="http://fr.cppreference.com/w/cpp/language/reinterpret_cast" title="cpp/language/reinterpret cast"><tt>reinterpret_cast</tt></a> convertit type type<br> incompatibles<div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig"><a href="http://fr.cppreference.com/w/cpp/language/reinterpret_cast" title="cpp/language/reinterpret cast"><tt>reinterpret_cast</tt></a> converts type to incompatible type<br></div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+<div class="t-tr-text"><a href="http://fr.cppreference.com/w/cpp/memory/new/operator_new" title="cpp/memory/new/operator new"><tt>new</tt></a> alloue memory<br><div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig"><a href="http://fr.cppreference.com/w/cpp/memory/new/operator_new" title="cpp/memory/new/operator new"><tt>new</tt></a> allocates memory<br></div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+<div class="t-tr-text"><a href="http://fr.cppreference.com/w/cpp/memory/new/operator_delete" title="cpp/memory/new/operator delete"><tt>delete</tt></a> libère memory<br><div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig"><a href="http://fr.cppreference.com/w/cpp/memory/new/operator_delete" title="cpp/memory/new/operator delete"><tt>delete</tt></a> deallocates memory<br></div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+<div class="t-tr-text"><a href="http://fr.cppreference.com/w/cpp/language/sizeof" title="cpp/language/sizeof"><tt>sizeof</tt></a> interroge la taille d'un type<br><div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig"><a href="http://fr.cppreference.com/w/cpp/language/sizeof" title="cpp/language/sizeof"><tt>sizeof</tt></a> queries the size of a type<br></div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+<div class="t-tr-text"><a href="http://fr.cppreference.com/w/cpp/language/sizeof..." title="cpp/language/sizeof..."><tt>sizeof...</tt></a> interroge la taille d'un <a href="http://fr.cppreference.com/mwiki/index.php?title=cpp/language/parameter_pack&action=edit&redlink=1" class="new" title="cpp/language/parameter pack (page inexistante)">Paquet de paramètre</a> <span class="t-mark"> (depuis C++11)</span><br><div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig"><a href="http://fr.cppreference.com/w/cpp/language/sizeof..." title="cpp/language/sizeof..."><tt>sizeof...</tt></a> queries the size of a <a href="http://fr.cppreference.com/mwiki/index.php?title=cpp/language/parameter_pack&action=edit&redlink=1" class="new" title="cpp/language/parameter pack (page inexistante)">Paquet de paramètre</a> <span class="t-mark"> (depuis C++11)</span><br></div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+<div class="t-tr-text"><a href="http://fr.cppreference.com/w/cpp/language/typeid" title="cpp/language/typeid"><tt>typeid</tt></a> interroge les informations de type d'une type<br><div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig"><a href="http://fr.cppreference.com/w/cpp/language/typeid" title="cpp/language/typeid"><tt>typeid</tt></a> queries the type information of a type<br></div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+<div class="t-tr-text"><a href="http://fr.cppreference.com/w/cpp/language/noexcept" title="cpp/language/noexcept"><tt>noexcept</tt></a> vérifie si une expression peut jeter une exception <span class="t-mark"> (depuis C++11)</span><br><div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig"><a href="http://fr.cppreference.com/w/cpp/language/noexcept" title="cpp/language/noexcept"><tt>noexcept</tt></a> checks if an expression can throw an exception <span class="t-mark"> (depuis C++11)</span><br></div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+<div class="t-tr-text"><a href="http://fr.cppreference.com/w/cpp/language/alignof" title="cpp/language/alignof"><tt>alignof</tt></a> requêtes exigences d'alignement d'un <span class="t-mark"> (depuis C++11)</span> type<div class="t-tr-dropdown"><div><div><div class="t-tr-dropdown-arrow-border"></div><div class="t-tr-dropdown-arrow"></div><div class="t-tr-dropdown-h">Original:</div><div class="t-tr-dropdown-orig"><a href="http://fr.cppreference.com/w/cpp/language/alignof" title="cpp/language/alignof"><tt>alignof</tt></a> queries alignment requirements of a type <span class="t-mark"> (depuis C++11)</span></div><div class="t-tr-dropdown-notes">The text has been machine-translated via <a rel="nofollow" class="external text" href="http://translate.google.com/">Google Translate</a>.<br> You can help to correct and verify the translation. Click <a rel="nofollow" class="external text" href="http://en.cppreference.com/w/Cppreference:MachineTranslations">here</a> for instructions.</div></div></div></div></div>
+</td></tr></tbody></table>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 2682/1000000
+Post-expand include size: 117235/2097152 bytes
+Template argument size: 18544/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key mwiki1-mwiki_fr_:pcache:idhash:417-0!*!0!!*!2!* and timestamp 20130125041529 -->
+</div>                    <!-- /bodycontent -->
+                                        <!-- printfooter -->
+                    <div class="printfooter">
+                    Récupérée de « <a href="http://fr.cppreference.com/mwiki/index.php?title=cpp/language/operator_precedence&oldid=41886">http://fr.cppreference.com/mwiki/index.php?title=cpp/language/operator_precedence&amp;oldid=41886</a> »                    </div>
+                    <!-- /printfooter -->
+                                                            <!-- catlinks -->
+                    <div id="catlinks" class="catlinks catlinks-allhidden"></div>                    <!-- /catlinks -->
+                                                            <div class="visualClear"></div>
+                    <!-- debughtml -->
+                                        <!-- /debughtml -->
+                </div>
+                <!-- /bodyContent -->
+            </div>
+        </div>
+        <!-- /content -->
+        <!-- footer -->
+        <div id="cpp-footer-base" class="noprint">
+            <div id="footer">
+                        <div id="cpp-navigation">
+            <h5>Navigation</h5>
+            <ul>
+<li id="n-mainpage-description"><a href="http://fr.cppreference.com/w/Accueil" title="Aller à l’accueil [z]" accesskey="z">Accueil</a></li><li id="n-portal"><a href="http://fr.cppreference.com/w/Cppreference:Accueil" title="À propos du projet">Communauté</a></li><li id="n-currentevents"><a href="http://fr.cppreference.com/w/Cppreference:Actualit%C3%A9s" title="Trouver les informations de fond sur l’actualité du moment">Actualités</a></li><li id="n-recentchanges"><a href="http://fr.cppreference.com/w/Sp%C3%A9cial:Modifications_r%C3%A9centes" title="Liste des modifications récentes sur le wiki [r]" accesskey="r">Modifications récentes</a></li><li id="n-randompage"><a href="http://fr.cppreference.com/w/Sp%C3%A9cial:Page_au_hasard" title="Afficher une page au hasard [x]" accesskey="x">Page au hasard</a></li><li id="n-help"><a href="http://fr.cppreference.com/w/Aide:Accueil" title="Aide">Aide</a></li>            </ul>
+        </div>
+                        <div id="cpp-toolbox">
+            <h5><span>Boîte à outils</span><a href="http://fr.cppreference.com/w/cpp/language/operator_precedence#"></a></h5>
+            <ul>
+<li id="t-whatlinkshere"><a href="http://fr.cppreference.com/w/Sp%C3%A9cial:Pages_li%C3%A9es/cpp/language/operator_precedence" title="Liste des pages liées à celle-ci [j]" accesskey="j">Pages liées</a></li><li id="t-recentchangeslinked"><a href="http://fr.cppreference.com/w/Sp%C3%A9cial:Suivi_des_liens/cpp/language/operator_precedence" title="Liste des modifications récentes des pages liées à celle-ci [k]" accesskey="k">Suivi des pages liées</a></li><li id="t-upload"><a href="http://upload.cppreference.com/w/Special:Upload" title="Envoyer une image ou fichier média sur le serveur [u]" accesskey="u">Importer un fichier</a></li><li id="t-specialpages"><a href="http://fr.cppreference.com/w/Sp%C3%A9cial:Pages_sp%C3%A9ciales" title="Liste de toutes les pages spéciales [q]" accesskey="q">Pages spéciales</a></li><li><a href="http://fr.cppreference.com/mwiki/index.php?title=cpp/language/operator_precedence&printable=yes" rel="alternate">Version imprimable</a></li><li id="t-permalink"><a href="http://fr.cppreference.com/mwiki/index.php?title=cpp/language/operator_precedence&oldid=41886" title="Lien permanent vers cette version de la page">Adresse de cette version</a></li>            </ul>
+        </div>
+                        <div id="cpp-languages">
+            <div><ul><li>Autres langues</li></ul></div>
+            <div><ul>
+<li class="interwiki-ar"><a href="http://ar.cppreference.com/w/cpp/language/operator_precedence" title="cpp/language/operator precedence" lang="ar" hreflang="ar">العربية</a></li><li class="interwiki-de"><a href="http://de.cppreference.com/w/cpp/language/operator_precedence" title="cpp/language/operator precedence" lang="de" hreflang="de">Deutsch</a></li><li class="interwiki-en"><a href="http://en.cppreference.com/w/cpp/language/operator_precedence" title="cpp/language/operator precedence" lang="en" hreflang="en">English</a></li><li class="interwiki-es"><a href="http://es.cppreference.com/w/cpp/language/operator_precedence" title="cpp/language/operator precedence" lang="es" hreflang="es">Español</a></li><li class="interwiki-it"><a href="http://it.cppreference.com/w/cpp/language/operator_precedence" title="cpp/language/operator precedence" lang="it" hreflang="it">Italiano</a></li><li class="interwiki-ja"><a href="http://ja.cppreference.com/w/cpp/language/operator_precedence" title="cpp/language/operator precedence" lang="ja" hreflang="ja">日本語</a></li><li class="interwiki-pt"><a href="http://pt.cppreference.com/w/cpp/language/operator_precedence" title="cpp/language/operator precedence" lang="pt" hreflang="pt">Português</a></li><li class="interwiki-ru"><a href="http://ru.cppreference.com/w/cpp/language/operator_precedence" title="cpp/language/operator precedence" lang="ru" hreflang="ru">Русский</a></li><li class="interwiki-tr"><a href="http://tr.cppreference.com/w/cpp/language/operator_precedence" title="cpp/language/operator precedence" lang="tr" hreflang="tr">Türkçe</a></li><li class="interwiki-zh"><a href="http://zh.cppreference.com/w/cpp/language/operator_precedence" title="cpp/language/operator precedence" lang="zh" hreflang="zh">中文</a></li>            </ul></div>
+        </div>
+            <ul id="footer-info">
+                                    <li id="footer-info-lastmod"> Dernière modification de cette page le 14 novembre 2012 à 14:59.<br></li>
+                                    <li id="footer-info-viewcount">Cette page a été consultée 30 fois.</li>
+                            </ul>
+                    <ul id="footer-places">
+                                    <li id="footer-places-privacy"><a href="http://fr.cppreference.com/w/Cppreference:Confidentialit%C3%A9" title="Cppreference:Confidentialité">Politique de confidentialité</a></li>
+                                    <li id="footer-places-about"><a href="http://fr.cppreference.com/w/Cppreference:%C3%80_propos" title="Cppreference:À propos">À propos de cppreference.com</a></li>
+                                    <li id="footer-places-disclaimer"><a href="http://fr.cppreference.com/w/Cppreference:Avertissements_g%C3%A9n%C3%A9raux" title="Cppreference:Avertissements généraux">Avertissements</a></li>
+                            </ul>
+                                    <ul id="footer-icons" class="noprint">
+                                    <li id="footer-poweredbyico">
+                                            <a href="http://www.mediawiki.org/"><img src="./Priorité des opérateurs en C++ - cppreference.com_files/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31"></a>                                            <a href="http://qbnz.com/highlighter/"><img src="./Priorité des opérateurs en C++ - cppreference.com_files/powered_by_geshi_88x31.png" alt="Powered by GeSHi" height="31" width="88"></a>                                        </li>
+                                </ul>
+                        <div style="clear:both">
+            </div>
+            </div>
+        </div>
+        <!-- /footer -->
+        <script src="./Priorité des opérateurs en C++ - cppreference.com_files/load(3).php"></script>
+<script>if(window.mw){
+	mw.loader.load(["mediawiki.user", "mediawiki.util", "mediawiki.page.ready", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+}
+</script><script type="text/javascript" src="./Priorité des opérateurs en C++ - cppreference.com_files/load(4).php"></script>
+<script src="./Priorité des opérateurs en C++ - cppreference.com_files/load(5).php"></script>
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":0,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":0,"showtoolbar":1,"skin":"cppreference2","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0
+	,"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"fr","language":"fr","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: mwiki1-mwiki_fr_:resourceloader:filter:minify-js:4:86d491085eb800ee5ab6dfa910165654 */
+}
+</script><script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script src="./Priorité des opérateurs en C++ - cppreference.com_files/ga.js" type="text/javascript"></script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-2828341-1");
+pageTracker._trackPageview();
+</script><!-- Served in 3.365 secs. -->        
+	
+<!-- Cached 20130125041529 -->
+
+<div style="display: none;" id="orbiousinterest_dialog"><div class="container">  <div class="header">Mark as unread</div>  URL <input type="text" value="" class="url" readonly="readonly"><br>  Title <input type="text" value="" class="title"><br>  Tags <input type="text" value="tags, seperated by commas" class="tags empty">  <div class="buttons">     <input type="button" value="Cancel" class="cancel">     <input type="button" value="Save" class="save">  </div></div></div><a id="ORBVIOUS_DOMWindowHost" href="http://fr.cppreference.com/w/cpp/language/operator_precedence#orbiousinterest_dialog"></a></body></html>

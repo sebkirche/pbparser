@@ -52,7 +52,8 @@ constant char CC_RIGHT = 'R'
 
 //types of tokens
 constant char ARGSEP = ';'				//argument separator for funcalls
-constant string NUMERIC = "Num"		//numeric type
+constant string NUM = "Num"			//numeric type
+constant string BOOL = "Bool"			//boolean type
 constant string STR = "Str"			//string type
 constant string UNARYOP = "UnOp"		//unary operator
 constant string BINARYOP = "BinOp"	//binary operator 
@@ -79,6 +80,7 @@ public function boolean parse (st_tok ast_tokens[])
 public function string tokentostring (st_tok ast_token)
 public function integer getprec (st_tok ast_tok)
 public function decimal evalfunc (st_tok ast_func, ref nv_tokstack ast_args)
+public function boolean isbool (any aa_tok)
 end prototypes
 
 public subroutine setreverse (boolean ab_reverse);
@@ -96,16 +98,16 @@ public function boolean tokenize (string as_input);
 // the produced tokens will be processed by parse()
 
 boolean lb_ret = true
-long ll_tk_start = 1, ll_tk_end, ll_in_len, ll_tokens
+long ll_tk_start = 1, ll_tk_end, ll_inplen, ll_tokens
 st_tok lst_tok
 any la_empty[]
 char lc, prec
 
 is_lasterror = ""
 ist_tokens = la_empty[]
-ll_in_len= len(as_input)
+ll_inplen= len(as_input)
 
-do while ll_tk_start <= ll_in_len
+do while ll_tk_start <= ll_inplen
 	lst_tok.value = ""
 	lst_tok.kind = ""
 	ll_tk_end = ll_tk_start
@@ -113,13 +115,20 @@ do while ll_tk_start <= ll_in_len
 	lc = mid(as_input, ll_tk_start, 1)
 	choose case lc
 		case '0' to '9' 
-			do while (ll_tk_end <= ll_in_len) and isNumber(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start + 1))
+			do while (ll_tk_end <= ll_inplen) and isNumber(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start + 1))
 				ll_tk_end++
 			loop 
 			lst_tok.value = trim(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start))
-			lst_tok.kind = NUMERIC
-		case '+', '*', '/', '^'
+			lst_tok.kind = NUM
+		case '+', '*', '/', '^', '%', '=', '<', '>'
 			ll_tk_end++
+			if lc = '<' or lc = '>' and ll_tk_end < ll_inplen then //lookahead ;)
+				if mid(as_input, ll_tk_end, 1) = '=' &
+				or mid(as_input, ll_tk_end, 1) = '>' then
+					//TODO warning, can have >>
+					ll_tk_end++	
+				end if
+			end if
 			lst_tok.value = mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start)
 			lst_tok.kind = BINARYOP
 		case '-'
@@ -128,7 +137,7 @@ do while ll_tk_start <= ll_in_len
 			ll_tokens = upperbound(ist_tokens[])
 			if ll_tokens = 0 then
 				lst_tok.kind = UNARYOP
-			elseif ist_tokens[ll_tokens].kind = NUMERIC &
+			elseif ist_tokens[ll_tokens].kind = NUM &
 				or ist_tokens[ll_tokens].kind = IDENT &
 				or ist_tokens[ll_tokens].kind = RPAR  then
 				lst_tok.kind = BINARYOP
@@ -136,7 +145,7 @@ do while ll_tk_start <= ll_in_len
 				lst_tok.kind = UNARYOP
 			end if
 		case 'A' to 'Z', 'a' to 'z', '_'
-			do while (ll_tk_end <= ll_in_len) and isWordChar(mid(as_input, ll_tk_end, 1))
+			do while (ll_tk_end <= ll_inplen) and isWordChar(mid(as_input, ll_tk_end, 1))
 				ll_tk_end++
 			loop 
 			lst_tok.value = trim(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start))
@@ -175,7 +184,7 @@ public function boolean isfunc (any aa_tok);
 boolean lb_ret = false
 
 choose case lower(aa_tok)
-	case 'answer', "sum", "mul", "abs", "min", "max"
+	case 'answer', "sum", "mul", "abs", "min", "max", "not"
 		lb_ret = true
 end choose
 
@@ -191,7 +200,7 @@ char lc_ret
 choose case string(aa_op, "[general]")
 	case '^'
 		lc_ret = CC_RIGHT
-	case '*', '/'
+	case '*', '/', '%'
 		lc_ret = CC_LEFT
 	case '+', '-'
 		lc_ret = CC_LEFT
@@ -245,8 +254,10 @@ public function string eval (st_tok ast_toks[]);
 */
 
 nv_tokstack lst_eval
-st_tok item
+st_tok item, st_op1, st_op2
 dec ldc_op1, ldc_op2, ldc_res
+any la_op1, la_op2
+boolean lb_res
 string ls_ret = "", ls_val
 long i, n
 
@@ -256,7 +267,9 @@ if n = 0 then return ""
 for i = 1 to n
 	ls_val = ast_toks[i].value
 	choose case ast_toks[i].kind
-		case NUMERIC
+		case NUM
+			lst_eval.push(ast_toks[i])
+		case BOOL
 			lst_eval.push(ast_toks[i])
 		case UNARYOP
 			choose case ls_val
@@ -265,46 +278,85 @@ for i = 1 to n
 					ldc_res = - ldc_op1
 			end choose
 			item.value = ldc_res
-			item.kind = NUMERIC
+			item.kind = NUM
 			lst_eval.push(item)
 		case BINARYOP
-			choose case ls_val
-				case '+', '-', '*', '/', '^'
-					if lst_eval.size() >= 2 then
+			if lst_eval.size() >= 2 then
+				//TODO, assume this is 2 numerical tokens
+				//need to improve type checking / inference
+				choose case ls_val
+					case '+', '-', '*', '/', '%', '^'
 						ldc_op2 = dec(lst_eval.pop().value)
 						ldc_op1 = dec(lst_eval.pop().value)
-						if ls_val = '+' then
-							ldc_res = ldc_op1 + ldc_op2
-						elseif ls_val = '-' then
-							ldc_res = ldc_op1 - ldc_op2
-						elseif ls_val = '*' then
-							ldc_res = ldc_op1 * ldc_op2
-						elseif ls_val = '/' then
-							ldc_res = ldc_op1 / ldc_op2
-						elseif ls_val = '^' then
-							ldc_res = ldc_op1 ^ ldc_op2
-						end if
+						choose case ls_val
+							case '+'
+								ldc_res = ldc_op1 + ldc_op2
+							case '-'
+								ldc_res = ldc_op1 - ldc_op2
+							case '*'
+								ldc_res = ldc_op1 * ldc_op2
+							case '/'
+								ldc_res = ldc_op1 / ldc_op2
+							case '%'
+								ldc_res = mod(ldc_op1, ldc_op2)
+							case '^'
+								ldc_res = ldc_op1 ^ ldc_op2
+						end choose
 						item.value = ldc_res
-						item.kind = NUMERIC
+						item.kind = NUM
 						lst_eval.push(item)
-					else
-						ls_ret = "broken expression : not enough operands for " + ls_val + " at " + string(ast_toks[i].position)
+					case '<', '<=', '>', '>='
+						la_op2 = lst_eval.pop().value
+						la_op1 = lst_eval.pop().value
+						choose case ls_val
+							case '<'
+								lb_res = la_op1 < la_op2
+							case '<=', '=<'
+								lb_res = la_op1 <= la_op2
+							case '>'
+								lb_res = la_op1 > la_op2
+							case '>=', '=>'
+								lb_res = la_op1 >= la_op2
+						end choose
+						item.value = lb_res
+						item.kind = BOOL
+						lst_eval.push(item)
+					case '=', '<>'
+						st_op2 = lst_eval.pop()
+						st_op1 = lst_eval.pop()
+						//TODO : remplacer "true"/"false" par true/false lors du parsing
+						if st_op1.kind = BOOL then st_op1.value = iif(string(st_op1.value) = "true", true, false)
+						if st_op2.kind = BOOL then st_op2.value = iif(string(st_op2.value) = "true", true, false)
+						choose case ls_val
+							case '='
+								lb_res = (st_op1.value = st_op2.value)
+							case '<>'
+								lb_res = (st_op1.value <> st_op2.value)
+						end choose
+						item.value = lb_res
+						item.kind = BOOL
+						lst_eval.push(item)
+					case else
+						ls_ret = "unknown op " + ls_val
 						goto end_eval
-					end if
-				case else
-					ls_ret = "unknown op " + ls_val
-					goto end_eval
-			end choose
+				end choose
+			else
+				ls_ret = "broken expression : wrong number of operands for " + ls_val + " at " + string(ast_toks[i].position)
+				goto end_eval
+			end if
+
 		case FUNC
-			item.kind = NUMERIC //TODO we can implement string funcs too
+			item.kind = NUM //TODO we can implement string funcs too
 			item.value = evalfunc(ast_toks[i], lst_eval)
 			lst_eval.push(item)
 	end choose
 next
 if lst_eval.size() = 1 then
 	item = lst_eval.pop()
-	if item.kind = NUMERIC then
+	if item.kind = NUM then
 		ls_ret = string(item.value)
+	elseif item.kind = BOOL then
+		ls_ret = iif(item.value, 'True', 'False')
 	elseif item.kind = STR then
 		ls_ret = item.value
 	else
@@ -374,6 +426,10 @@ do while t <= upperbound(ast_tokens[])
 		lst_argcount.push(0)
 		if lst_args.size() > 0 then lst_args.settop(true)
 		lst_args.push(false)
+	elseif isbool(lst_tok.value) then
+		lst_tok.kind = BOOL
+		lst_tok.value = lower(lst_tok.value)
+		lq_out.push(lst_tok)
 	elseif lst_tok.value = ARGSEP then
 		//if it is a function argument separator
 		//1) pop all pending operators until getting '('
@@ -470,8 +526,8 @@ string ls_ret
 
 if ast_token.kind = FUNC then
 	ls_ret = ast_token.value + '(' + string(ast_token.count) + ')'
-elseif ast_token.kind = UNARYOP and ast_token.value = '-' then
-	ls_ret = '_'
+elseif ast_token.kind = UNARYOP then
+	if ast_token.value = '-' then ls_ret = '_'
 else
 	ls_ret = ast_token.value
 end if
@@ -486,17 +542,20 @@ public function integer getprec (st_tok ast_tok);
 int li_ret
 
 choose case ast_tok.value
+	case '^'; 					li_ret = 6
 	case '-'
 		//special minus case
-		if ast_tok.kind = UNARYOP then
+		if ast_tok.kind = UNARYOP then 
 			li_ret = 5
 		else
 			li_ret = 2
 		end if
-	case '^'; 		li_ret = 4
-	case '*', '/';	li_ret = 3
-	case '+';	li_ret = 2
-	case else;		li_ret = 0
+	case '*', '/', '%';		li_ret = 4
+	case '+' /*- above*/;	li_ret = 3
+	case '<', '<=', '=<', &
+			'>', '>=', '=>';	li_ret = 2
+	case '=', '<>';			li_ret = 1
+	case else;					li_ret = 0
 end choose
 
 return li_ret
@@ -529,6 +588,12 @@ choose case ast_func.value
 		else
 			is_lasterror = "abs() needs 1 argument"
 		end if
+//	case "not" TODO : JE DOIS RETOURNER UN ST_TOK à la place de DECIMAL
+//		if ast_func.count = 1 then 
+//			ldc_ret = abs(dec(ast_args.pop().value))
+//		else
+//			is_lasterror = "abs() needs 1 argument"
+//		end if
 	case "min"
 		if ast_args.size() > 0 then 
 			ldc_ret = dec(ast_args.pop().value)
@@ -553,6 +618,20 @@ choose case ast_func.value
 end choose
 
 return ldc_ret
+
+end function
+
+public function boolean isbool (any aa_tok);
+//check if the given identifier is a boolean literal
+
+boolean lb_ret = false
+
+choose case lower(aa_tok)
+	case 'true', "false"
+		lb_ret = true
+end choose
+
+return lb_ret
 
 end function
 

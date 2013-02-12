@@ -1,8 +1,6 @@
 forward
 global type w_test from window
 end type
-type rte_help from richtextedit within w_test
-end type
 type mle_eval from multilineedit within w_test
 end type
 type cb_eval from commandbutton within w_test
@@ -29,17 +27,17 @@ type s_test from structure
 end type
 
 global type w_test from window
-integer width = 3296
-integer height = 1392
+integer width = 2597
+integer height = 1464
 boolean titlebar = true
 string title = "Shunting-Yard evaluator"
+string menuname = "m_main"
 boolean controlmenu = true
 boolean minbox = true
 boolean maxbox = true
 long backcolor = 67108864
 string icon = "AppIcon!"
 boolean center = true
-rte_help rte_help
 mle_eval mle_eval
 cb_eval cb_eval
 cbx_postfix cbx_postfix
@@ -125,7 +123,7 @@ return as_text
 end function
 
 on w_test.create
-this.rte_help=create rte_help
+if this.MenuName = "m_main" then this.MenuID = create m_main
 this.mle_eval=create mle_eval
 this.cb_eval=create cb_eval
 this.cbx_postfix=create cbx_postfix
@@ -134,8 +132,7 @@ this.cb_parse=create cb_parse
 this.mle_tokens=create mle_tokens
 this.cb_tokenize=create cb_tokenize
 this.mle_formula=create mle_formula
-this.Control[]={this.rte_help,&
-this.mle_eval,&
+this.Control[]={this.mle_eval,&
 this.cb_eval,&
 this.cbx_postfix,&
 this.mle_polish,&
@@ -146,7 +143,7 @@ this.mle_formula}
 end on
 
 on w_test.destroy
-destroy(this.rte_help)
+if IsValid(MenuID) then destroy(MenuID)
 destroy(this.mle_eval)
 destroy(this.cb_eval)
 destroy(this.cbx_postfix)
@@ -162,30 +159,18 @@ event open;
 //mle_formula.text = "1*sum()"
 //mle_formula.text = "2+3*4"
 //mle_formula.text = "answer()*sum(1)"
-mle_formula.text = "2^ (abs  (sum(2 ;-3 ; 4))-1)+1"
+//mle_formula.text = "2^ (abs  (sum(2 ;-3 ; 4))-1)+1"
 //mle_formula.text = "2^ abs(sum(2;-3;4))"
+//mle_formula.text = "2 - 1 <= 1 + 1"
+mle_formula.text = "1 + --1" // attendu 2
 
-rte_help.InsertDocument("help.rtf", true)
 
 end event
-
-type rte_help from richtextedit within w_test
-integer x = 1989
-integer y = 64
-integer width = 1271
-integer height = 1160
-integer taborder = 20
-long init_backcolor = 67108864
-string init_documentname = "help"
-boolean init_displayonly = true
-boolean border = false
-borderstyle borderstyle = stylelowered!
-end type
 
 type mle_eval from multilineedit within w_test
 integer x = 37
 integer y = 1028
-integer width = 1906
+integer width = 2501
 integer height = 196
 integer taborder = 50
 integer textsize = -10
@@ -244,7 +229,7 @@ end type
 type mle_polish from multilineedit within w_test
 integer x = 37
 integer y = 704
-integer width = 1906
+integer width = 2501
 integer height = 196
 integer taborder = 40
 integer textsize = -10
@@ -297,7 +282,7 @@ end event
 type mle_tokens from multilineedit within w_test
 integer x = 37
 integer y = 388
-integer width = 1906
+integer width = 2501
 integer height = 196
 integer taborder = 30
 integer textsize = -10
@@ -347,7 +332,7 @@ end event
 type mle_formula from multilineedit within w_test
 integer x = 37
 integer y = 64
-integer width = 1906
+integer width = 2501
 integer height = 196
 integer taborder = 10
 integer textsize = -10

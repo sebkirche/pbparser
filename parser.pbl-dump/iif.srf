@@ -1,0 +1,18 @@
+global type iif from function_object
+end type
+
+forward prototypes
+global function any iif (boolean ab_cond, any aa_true, any aa_false)
+end prototypes
+
+global function any iif (boolean ab_cond, any aa_true, any aa_false);
+// simulates the VB iif or C ternary operator
+
+if ab_cond then
+	return aa_true
+else
+	return aa_false
+end if
+
+end function
+
