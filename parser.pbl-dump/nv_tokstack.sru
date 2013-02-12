@@ -43,7 +43,7 @@ st_tok lst_ret
 
 if il_pos = 0 then 
 	lst_ret.value = ""
-	lst_ret.kind = ""
+	lst_ret.kind = 0
 	return lst_ret	
 end if
 
@@ -65,7 +65,7 @@ st_tok lst_ret
 
 if il_pos = 0 then 
 	lst_ret.value = ""
-	lst_ret.kind = ""
+	lst_ret.kind = 0
 	return lst_ret	
 end if
 

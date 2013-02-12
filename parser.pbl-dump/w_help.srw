@@ -28,6 +28,8 @@ mle_help.text = "Supported operators (by order of precedence) ~r~n&
 	* / % (modulo)~r~n&
 	+ - (binary) ~r~n&
 	< <= > >= = <> ~r~n&
+	not ~r~n&
+	and or xor ~r~n&
 ~r~n&
 Functions (can have any number of parameters) ~r~n&
 	answer()		: 42 (dummy func) ~r~n&
@@ -36,6 +38,7 @@ Functions (can have any number of parameters) ~r~n&
 	abs(x)		: return absolute value of x ~r~n&
 	min(a;b;c;...)	: returns the minimum of arguments~r~n&
 	max(a;b;c;...)	: returns the maximum of arguments~r~n&
+	len(string)	: returns the length of the given string ~r~n&
 "
 
 end event

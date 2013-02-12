@@ -1,6 +1,10 @@
 forward
 global type w_test from window
 end type
+type cbx_dbgtokens from checkbox within w_test
+end type
+type mle_debug from multilineedit within w_test
+end type
 type mle_eval from multilineedit within w_test
 end type
 type cb_eval from commandbutton within w_test
@@ -27,8 +31,8 @@ type s_test from structure
 end type
 
 global type w_test from window
-integer width = 2597
-integer height = 1464
+integer width = 2203
+integer height = 1536
 boolean titlebar = true
 string title = "Shunting-Yard evaluator"
 string menuname = "m_main"
@@ -38,6 +42,8 @@ boolean maxbox = true
 long backcolor = 67108864
 string icon = "AppIcon!"
 boolean center = true
+cbx_dbgtokens cbx_dbgtokens
+mle_debug mle_debug
 mle_eval mle_eval
 cb_eval cb_eval
 cbx_postfix cbx_postfix
@@ -67,6 +73,7 @@ end variables
 forward prototypes
 public function string getlocaleinfo (unsignedlong al_localetype, boolean ab_userlocale)
 public function string fixdecimal (string as_text)
+public subroutine showerror (string as_return)
 end prototypes
 
 public function string getlocaleinfo (unsignedlong al_localetype, boolean ab_userlocale);// returns the LOCALE setting of the given type
@@ -122,8 +129,23 @@ return as_text
 
 end function
 
+public subroutine showerror (string as_return);
+
+if match(as_return, "at [0-9]+$") then
+	long offset
+	string ls_tmp
+	offset = long(mid(as_return,lastpos(as_return,' ')))
+	ls_tmp = fill('-', offset - 1) + "^"
+	mle_formula.text += "~r~n" + ls_tmp
+end if
+
+
+end subroutine
+
 on w_test.create
 if this.MenuName = "m_main" then this.MenuID = create m_main
+this.cbx_dbgtokens=create cbx_dbgtokens
+this.mle_debug=create mle_debug
 this.mle_eval=create mle_eval
 this.cb_eval=create cb_eval
 this.cbx_postfix=create cbx_postfix
@@ -132,7 +154,9 @@ this.cb_parse=create cb_parse
 this.mle_tokens=create mle_tokens
 this.cb_tokenize=create cb_tokenize
 this.mle_formula=create mle_formula
-this.Control[]={this.mle_eval,&
+this.Control[]={this.cbx_dbgtokens,&
+this.mle_debug,&
+this.mle_eval,&
 this.cb_eval,&
 this.cbx_postfix,&
 this.mle_polish,&
@@ -144,6 +168,8 @@ end on
 
 on w_test.destroy
 if IsValid(MenuID) then destroy(MenuID)
+destroy(this.cbx_dbgtokens)
+destroy(this.mle_debug)
 destroy(this.mle_eval)
 destroy(this.cb_eval)
 destroy(this.cbx_postfix)
@@ -163,15 +189,59 @@ event open;
 //mle_formula.text = "2^ abs(sum(2;-3;4))"
 //mle_formula.text = "2 - 1 <= 1 + 1"
 //mle_formula.text = "+1 + --+1 = 2 = not(true)"
-mle_formula.text = "+1 + --+1" // attendu 2
-
+//mle_formula.text = "+1 + --+1" // attendu 2
+//mle_formula.text = "true and not false"
+//mle_formula.text = "len('toto') = 4"
+mle_formula.text = "min(len('toto')+7;-len(~"machin~");4.2)"
 
 end event
+
+type cbx_dbgtokens from checkbox within w_test
+integer x = 1810
+integer y = 288
+integer width = 343
+integer height = 64
+integer textsize = -8
+integer weight = 400
+fontcharset fontcharset = ansi!
+fontpitch fontpitch = variable!
+fontfamily fontfamily = swiss!
+string facename = "Tahoma"
+long textcolor = 33554432
+long backcolor = 67108864
+string text = "debug --->"
+end type
+
+event clicked;
+if checked then
+	parent.width = 3287
+else
+	parent.width = 2203
+end if
+
+end event
+
+type mle_debug from multilineedit within w_test
+integer x = 2199
+integer y = 64
+integer width = 1015
+integer height = 1160
+integer taborder = 20
+integer textsize = -10
+integer weight = 400
+fontcharset fontcharset = ansi!
+fontpitch fontpitch = fixed!
+fontfamily fontfamily = modern!
+string facename = "Courier New"
+long textcolor = 33554432
+boolean vscrollbar = true
+borderstyle borderstyle = stylelowered!
+end type
 
 type mle_eval from multilineedit within w_test
 integer x = 37
 integer y = 1028
-integer width = 2501
+integer width = 2117
 integer height = 196
 integer taborder = 50
 integer textsize = -10
@@ -181,6 +251,8 @@ fontpitch fontpitch = fixed!
 fontfamily fontfamily = modern!
 string facename = "Courier New"
 long textcolor = 33554432
+boolean autohscroll = true
+boolean autovscroll = true
 borderstyle borderstyle = stylelowered!
 end type
 
@@ -202,18 +274,22 @@ end type
 event clicked;
 
 long i
+string ls_res
 st_tok lst_parsed[]
 
 i_parser.getparsed( lst_parsed[] )
-mle_eval.text = i_parser.eval(lst_parsed[])
 
+ls_res = i_parser.eval(lst_parsed[])
 
+showerror(ls_res)
+
+mle_eval.text = ls_res
 end event
 
 type cbx_postfix from checkbox within w_test
 integer x = 471
 integer y = 608
-integer width = 1198
+integer width = 1074
 integer height = 80
 integer textsize = -8
 integer weight = 400
@@ -230,7 +306,7 @@ end type
 type mle_polish from multilineedit within w_test
 integer x = 37
 integer y = 704
-integer width = 2501
+integer width = 2117
 integer height = 196
 integer taborder = 40
 integer textsize = -10
@@ -240,6 +316,8 @@ fontpitch fontpitch = fixed!
 fontfamily fontfamily = modern!
 string facename = "Courier New"
 long textcolor = 33554432
+boolean autohscroll = true
+boolean autovscroll = true
 borderstyle borderstyle = stylelowered!
 end type
 
@@ -283,7 +361,7 @@ end event
 type mle_tokens from multilineedit within w_test
 integer x = 37
 integer y = 388
-integer width = 2501
+integer width = 2117
 integer height = 196
 integer taborder = 30
 integer textsize = -10
@@ -293,6 +371,8 @@ fontpitch fontpitch = fixed!
 fontfamily fontfamily = modern!
 string facename = "Courier New"
 long textcolor = 33554432
+boolean autohscroll = true
+boolean autovscroll = true
 borderstyle borderstyle = stylelowered!
 end type
 
@@ -312,19 +392,34 @@ string text = "&tokenize"
 end type
 
 event clicked;
-long i
+long i, p
 st_tok lst_tokens[]
+string ls_err, ls_form
 
-mle_formula.text = fixdecimal(mle_formula.text)
+ls_form = mle_formula.text
+p = pos(ls_form, "~r~n")
+if p > 0 then ls_form = left(ls_form, p - 1)
 
-if i_parser.tokenize( mle_formula.text ) then
+ls_form = fixdecimal(ls_form)
+mle_formula.text = ls_form
+
+if i_parser.tokenize( ls_form ) then
 	i_parser.gettokens( lst_tokens[] )
 	mle_tokens.text = ""
+	if cbx_dbgtokens.checked then mle_debug.text = ""
 	for i = 1 to upperbound(lst_tokens[])
 		mle_tokens.text += i_parser.tokentostring(lst_tokens[i]) + ' '
+		if cbx_dbgtokens.checked then 
+			mle_debug.text += i_parser.tokentostring(lst_tokens[i]) + &
+									'[' + i_parser.typename(lst_tokens[i].kind) + ']' +&
+									iif(lst_tokens[i].kind = i_parser.UNARYOP or lst_tokens[i].kind = i_parser.BINARYOP, string(i_parser.getprec(lst_tokens[i])), "") + &
+									'~r~n' 
+		end if
 	next
 else
-	mle_tokens.text = i_parser.getlasterror()
+	ls_err = i_parser.getlasterror()
+	showerror(ls_err)
+	mle_tokens.text = ls_err
 end if
 
 
@@ -333,7 +428,7 @@ end event
 type mle_formula from multilineedit within w_test
 integer x = 37
 integer y = 64
-integer width = 2501
+integer width = 2117
 integer height = 196
 integer taborder = 10
 integer textsize = -10
@@ -343,6 +438,8 @@ fontpitch fontpitch = fixed!
 fontfamily fontfamily = modern!
 string facename = "Courier New"
 long textcolor = 33554432
+boolean autohscroll = true
+boolean autovscroll = true
 borderstyle borderstyle = stylelowered!
 end type
 

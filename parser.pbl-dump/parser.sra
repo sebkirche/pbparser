@@ -11,6 +11,7 @@ end forward
 global variables
 
 end variables
+
 global type parser from application
 string appname = "parser"
 end type

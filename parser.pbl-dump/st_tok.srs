@@ -1,6 +1,6 @@
 global type st_tok from structure
 	any		value
-	string		kind
+	integer		kind
 	long		position
 	long		count
 end type

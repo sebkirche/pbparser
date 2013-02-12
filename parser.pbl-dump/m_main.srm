@@ -58,7 +58,7 @@ type m_about from menu within m_help
 end type
 
 event clicked;
-MessageBox("parser", "A parser object by Sébastien Kirche~r~n(c) 2012-2013")
+MessageBox("parser", "A parser object by Sébastien Kirche~r~n(c) 2011-2013")
 
 end event
 
