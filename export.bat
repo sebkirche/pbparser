@@ -1,1 +1,1 @@
-pbdumper -sf parser.pbl 
+pbdumper -sdo ANSI parser.pbl 
