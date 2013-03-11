@@ -699,8 +699,12 @@ do while anv_tokens.size() > 0
 	elseif lnv_term.kind = nv_term.TARGSEP then
 		//if it is a function argument separator
 		//1) pop all pending operators until getting '('
-		do while not lt_op.isempty() and lt_op.top().value <> LPAR
-			lq_out.push(lt_op.pop())
+		do while not lt_op.isempty() 
+			if lt_op.top().value <> LPAR then
+				lq_out.push(lt_op.pop())
+			else
+				exit //while
+			end if
 		loop
 		if lt_op.isempty() or (lt_op.top().value <> LPAR) then
 			//if stack is empty or we did not get a '('
@@ -710,21 +714,24 @@ do while anv_tokens.size() > 0
 			goto exit_parsing
 		end if
 		//2) remember arg count
-		//if lt_args.size() > 0 then
+		if lt_args.size() > 0 then
 			if lt_args.top() = true then
 				ll_count = lt_argcount.top()
 				lt_argcount.settop(ll_count + 1)
 			end if
-		//end if
+		end if
 		lt_args.push(false)
 	elseif isop(lnv_term) then
 		//we have an operator, process operator precedence
 		//if there are other pending operations
-		do while not lt_op.isempty() &
-			and ((getassoc(lnv_term) = cc_left and getprec(lnv_term) <= getprec(lt_op.top())) &
-			or &
-			(getassoc(lnv_term) = cc_right and getprec(lnv_term) < getprec(lt_op.top()))) 
-			lq_out.push(lt_op.pop())
+		do while not lt_op.isempty()
+			if ((getassoc(lnv_term) = cc_left and getprec(lnv_term) <= getprec(lt_op.top())) &
+				or &
+				(getassoc(lnv_term) = cc_right and getprec(lnv_term) < getprec(lt_op.top()))) then
+				lq_out.push(lt_op.pop())
+			else
+				exit //while
+			end if
 		loop
 		lt_op.push(lnv_term)
 	elseif lnv_term.value = LPAR then
@@ -732,8 +739,12 @@ do while anv_tokens.size() > 0
 		lt_op.push(lnv_term)
 	elseif lnv_term.value = RPAR then
 		//process all pending operations up to '('
-		do while not lt_op.isempty() and lt_op.top().value <> LPAR
-			lq_out.push(lt_op.pop())
+		do while not lt_op.isempty() 
+			if lt_op.top().value <> LPAR then
+				lq_out.push(lt_op.pop())
+			else
+				exit //while
+			end if
 		loop
 		//just pop the '('
 		if lt_op.top().value = LPAR then

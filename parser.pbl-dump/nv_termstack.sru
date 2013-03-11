@@ -16,6 +16,7 @@ nv_term it_values[]
 long il_pos = 0
 
 end variables
+
 forward prototypes
 public function boolean isempty ()
 public subroutine reset ()
@@ -67,10 +68,7 @@ public function nv_term pop ();
 nv_term lt_ret
 
 if il_pos = 0 then 
-	lt_ret = create nv_term
-	lt_ret.value = ""
-	lt_ret.kind = 0
-	return lt_ret	
+	return lt_ret	//null
 end if
 
 lt_ret = it_values[il_pos]
@@ -91,10 +89,7 @@ public function nv_term top ();
 nv_term lt_ret
 
 if il_pos = 0 then
-	lt_ret = create nv_term
-	lt_ret.value = ""
-	lt_ret.kind = 0
-	return lt_ret	
+	return lt_ret	//null
 end if
 
 lt_ret = it_values[il_pos]
