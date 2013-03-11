@@ -385,8 +385,12 @@ do while t <= upperbound(anv_tokens[])
 	elseif lnv_tok.kind = TARGSEP then
 		//if it is a function argument separator
 		//1) pop all pending operators until getting '('
-		do while not lt_op.isempty() and lt_op.top().value <> LPAR
-			lq_out.push(lt_op.pop())
+		do while not lt_op.isempty() 
+			if lt_op.top().value <> LPAR then
+				lq_out.push(lt_op.pop())
+			else
+				exit //while
+			end if
 		loop
 		if lt_op.isempty() or (lt_op.top().value <> LPAR) then
 			//if stack is empty or we did not get a '('
@@ -406,11 +410,14 @@ do while t <= upperbound(anv_tokens[])
 	elseif isop(lnv_tok) then
 		//we have an operator, process operator precedence
 		//if there are other pending operations
-		do while not lt_op.isempty() &
-			and ((getassoc(lnv_tok) = cc_left and getprec(lnv_tok) <= getprec(lt_op.top())) &
+		do while not lt_op.isempty() 
+			if ((getassoc(lnv_tok) = cc_left and getprec(lnv_tok) <= getprec(lt_op.top())) &
 			or &
-			(getassoc(lnv_tok) = cc_right and getprec(lnv_tok) < getprec(lt_op.top()))) 
-			lq_out.push(lt_op.pop())
+			(getassoc(lnv_tok) = cc_right and getprec(lnv_tok) < getprec(lt_op.top()))) then
+				lq_out.push(lt_op.pop())
+			else
+				exit //while
+			end if
 		loop
 		lt_op.push(lnv_tok)
 	elseif lnv_tok.value = LPAR then
@@ -418,8 +425,12 @@ do while t <= upperbound(anv_tokens[])
 		lt_op.push(lnv_tok)
 	elseif lnv_tok.value = RPAR then
 		//process all pending operations up to '('
-		do while not lt_op.isempty() and lt_op.top().value <> LPAR
-			lq_out.push(lt_op.pop())
+		do while not lt_op.isempty() 
+			if lt_op.top().value <> LPAR then
+				lq_out.push(lt_op.pop())
+			else
+				exit //while
+			end if
 		loop
 		//just pop the '('
 		if lt_op.top().value = LPAR then

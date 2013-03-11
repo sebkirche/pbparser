@@ -48,10 +48,7 @@ public function nv_tok pop ();
 nv_tok lt_ret
 
 if il_pos = 0 then 
-	lt_ret = create nv_tok
-	lt_ret.value = ""
-	lt_ret.kind = 0
-	return lt_ret	
+	return lt_ret	//null
 end if
 
 lt_ret = it_values[il_pos]
@@ -72,9 +69,7 @@ public function nv_tok top ();
 nv_tok lt_ret
 
 if il_pos = 0 then 
-	lt_ret.value = ""
-	lt_ret.kind = 0
-	return lt_ret	
+	return lt_ret	//null
 end if
 
 lt_ret = it_values[il_pos]
