@@ -1,4 +1,6 @@
-Generated Application Objectforward
+$PBExportHeader$parser.sra
+$PBExportComments$Generated Application Object
+forward
 global type parser from application
 end type
 global transaction sqlca

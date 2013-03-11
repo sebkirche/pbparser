@@ -1,3 +1,4 @@
+$PBExportHeader$nv_term_basicop.sru
 forward
 global type nv_term_basicop from nv_term
 end type

@@ -1,3 +1,4 @@
+$PBExportHeader$m_main.srm
 forward
 global type m_main from menu
 end type

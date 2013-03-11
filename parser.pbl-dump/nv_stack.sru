@@ -1,3 +1,4 @@
+$PBExportHeader$nv_stack.sru
 forward
 global type nv_stack from nonvisualobject
 end type

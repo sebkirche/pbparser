@@ -1,3 +1,4 @@
+$PBExportHeader$nv_parser.sru
 forward
 global type nv_parser from nonvisualobject
 end type

@@ -1,3 +1,4 @@
+$PBExportHeader$w_test.srw
 forward
 global type w_test from window
 end type
@@ -139,7 +140,7 @@ event open;
 //mle_formula.text = "len('toto') = 4"
 //mle_formula.text = "min(len('toto')+7;-len(~"machin~");4.2)"
 //mle_formula.text = "12.3 'toto' 42 false myvar"
-mle_formula.text = "2+4"
+mle_formula.text = "min(len('toto')+7;-len(~"machin~");4.2)+13"
 
 end event
 

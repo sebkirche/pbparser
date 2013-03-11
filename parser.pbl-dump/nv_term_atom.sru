@@ -1,3 +1,4 @@
+$PBExportHeader$nv_term_atom.sru
 forward
 global type nv_term_atom from nv_term
 end type

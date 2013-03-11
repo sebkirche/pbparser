@@ -1,3 +1,4 @@
+$PBExportHeader$nv_term_test.sru
 forward
 global type nv_term_test from nv_term
 end type

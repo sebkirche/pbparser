@@ -1,3 +1,4 @@
+$PBExportHeader$nv_term.sru
 forward
 global type nv_term from nonvisualobject
 end type
