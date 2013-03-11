@@ -1,3 +1,4 @@
+$PBExportHeader$nv_tok.sru
 forward
 global type nv_tok from nonvisualobject
 end type

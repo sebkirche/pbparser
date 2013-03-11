@@ -1,3 +1,4 @@
+$PBExportHeader$w_test.srw
 forward
 global type w_test from window
 end type

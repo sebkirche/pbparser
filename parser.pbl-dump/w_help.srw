@@ -1,3 +1,4 @@
+$PBExportHeader$w_help.srw
 forward
 global type w_help from window
 end type
