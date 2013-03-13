@@ -24,7 +24,8 @@ Examples of expressions :
 - 'aa' + 42 -> 'aa42'
 - 40 + '2' -> 42
 - so due to coercion len('aa'+42) -> 4 but len(40+'2') -> "len() can only take string argument at 1"
-
+- 'aa'='bb' = false -> True
+- 'aa'='bb' = vrai (vrai is a variable set to true) -> False
 
 The addition of new operators or functions needs currently to modify the code, but an attempt
 to define seperate objects that allow clean declaration for new items is in progress in a dedicated branch.
