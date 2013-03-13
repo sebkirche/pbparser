@@ -7,6 +7,14 @@ end forward
 global type nv_parser from nonvisualobject autoinstantiate
 end type
 
+type prototypes
+
+Function ULong GetLocaleInfo(ulong Locale, ulong LCType, ref string lpLCData, ulong cchData) Library "kernel32.dll" Alias for "GetLocaleInfoW" 
+Function ULong GetSystemDefaultLCID() Library "kernel32.dll"
+Function ULong GetUserDefaultLCID() Library "kernel32.dll"
+
+end prototypes
+
 type variables
 /*
 	Shunting-Yard evaluator v0.9 - (c) Sebastien KIRCHE 2011-2013
@@ -43,21 +51,8 @@ public:
 constant char CC_LEFT = 'L'
 constant char CC_RIGHT = 'R'
 
-//types of tokens
-constant integer UNDEF = 0
-constant integer DECIM = 2			//numeric type
-constant integer BOOL = 3			//boolean type
-constant integer STR = 4			//string type
-constant integer UNARYOP = 5		//unary operator
-constant integer BINARYOP = 6		//binary operator 
-constant integer IDENT = 7			//identifier (variable)
-constant integer FUNC = 8			//function
-constant integer TARGSEP = 9		//function
-constant integer TLPAR = 10		//function
-constant integer TRPAR = 11		//function
-constant integer ERR = 12			//error
-
-constant char ARGSEP = ';'			//argument separator for funcalls
+constant char DECSEP = '.'		//decimal separator
+constant char ARGSEP = ','		//argument separator for funcalls
 constant char LPAR = '('
 constant char RPAR = ')'
 
@@ -66,11 +61,14 @@ nv_tok inv_tokens[]	//array for tokenized input
 nv_tok ist_parsed[]	//array for parsed tokens
 any ia_vars[]			//array for variables (pairs of ident-value)
 string is_lasterror
+string is_numbercharpattern
+
+constant ulong LOCALE_SDECIMAL = 14 // decimal separator
+string is_SYSDECSEP
 
 boolean ib_postfix = true //for debug
 
 end variables
-
 forward prototypes
 public subroutine setreverse (boolean ab_reverse)
 public function string getlasterror ()
@@ -84,11 +82,13 @@ public function boolean parse (nv_tok anv_tokens[])
 public function integer getprec (nv_tok anv_tok)
 public function boolean isbool (any aa_tok)
 public function character getassoc (nv_tok ast_op)
-public function nv_tok evalfunc (nv_tok ast_func, ref nv_tokstack ast_args)
 public function nv_tok evalident (nv_tok ast_ident)
 public function nv_tok evalop (nv_tok ast_op, ref nv_tokstack ast_args)
 public function boolean isfunc (string as_name)
+public function string getlocaleinfo (unsignedlong al_localetype, boolean ab_userlocale)
+public function string fixdecimal (string as_text)
 public function boolean setvariables (any aa_vals[])
+protected function nv_tok evalfunc (nv_tok ast_func, ref nv_tokstack ast_args)
 end prototypes
 
 public subroutine setreverse (boolean ab_reverse);
@@ -105,7 +105,7 @@ public function boolean tokenize (string as_input);
 // simple tokenizer
 // the produced tokens will be processed by parse()
 
-boolean lb_ret = true
+boolean lb_ret = true, lb_isdec
 long ll_tk_start = 1, ll_tk_end, ll_inplen, ll_tokens
 nv_tok lnv_tok
 any la_empty[]
@@ -120,13 +120,15 @@ do while ll_tk_start <= ll_inplen
 	
 	lc = mid(as_input, ll_tk_start, 1)
 	choose case lc
-		case '0' to '9' 
-			do while (ll_tk_end <= ll_inplen) and isNumber(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start + 1))
+		case '0' to '9', DECSEP
+			lb_isdec = false
+			do while (ll_tk_end <= ll_inplen) and match(mid(as_input, ll_tk_end, 1), is_numbercharpattern)
+				if pos(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start + 1), DECSEP) > 0 then lb_isdec = true
 				ll_tk_end++
 			loop 
 			lnv_tok = create nv_tok
-			lnv_tok.value = dec(trim(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start)))
-			lnv_tok.kind = DECIM
+			lnv_tok.value = dec(fixdecimal(trim(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start))))
+			lnv_tok.kind = iif(lb_isdec, nv_tok.DECIM, nv_tok.INTG)
 		case '*', '/', '^', '%', '=', '<', '>'
 			ll_tk_end++
 			if lc = '<' or lc = '>' and ll_tk_end < ll_inplen then //lookahead ;)
@@ -138,21 +140,22 @@ do while ll_tk_start <= ll_inplen
 			end if
 			lnv_tok = create nv_tok
 			lnv_tok.value = mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start)
-			lnv_tok.kind = BINARYOP
+			lnv_tok.kind = nv_tok.BINARYOP
 		case '+', '-'
 			ll_tk_end++
 			lnv_tok = create nv_tok
 			lnv_tok.value = mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start)
 			ll_tokens = upperbound(inv_tokens[])
 			if ll_tokens = 0 then
-				lnv_tok.kind = UNARYOP
-			elseif inv_tokens[ll_tokens].kind = DECIM &
-				or inv_tokens[ll_tokens].kind = STR &
-				or inv_tokens[ll_tokens].kind = IDENT &
-				or inv_tokens[ll_tokens].kind = TRPAR  then
-				lnv_tok.kind = BINARYOP
+				lnv_tok.kind = nv_tok.UNARYOP
+			elseif inv_tokens[ll_tokens].kind = nv_tok.INTG &
+				or inv_tokens[ll_tokens].kind = nv_tok.DECIM &
+				or inv_tokens[ll_tokens].kind = nv_tok.STR &
+				or inv_tokens[ll_tokens].kind = nv_tok.IDENT &
+				or inv_tokens[ll_tokens].kind = nv_tok.TRPAR  then
+				lnv_tok.kind = nv_tok.BINARYOP
 			else
-				lnv_tok.kind = UNARYOP
+				lnv_tok.kind = nv_tok.UNARYOP
 			end if
 		case 'A' to 'Z', 'a' to 'z', '_'
 			do while (ll_tk_end <= ll_inplen) and isWordChar(mid(as_input, ll_tk_end, 1))
@@ -162,18 +165,18 @@ do while ll_tk_start <= ll_inplen
 			lnv_tok.value = lower(trim(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start)))
 			if isbool(lnv_tok.value) then
 				lnv_tok.value = iif(lower(lnv_tok.value)="true", true, false)
-				lnv_tok.kind = BOOL
+				lnv_tok.kind = nv_tok.BOOL
 			elseif isfunc(lnv_tok.value) then
-				lnv_tok.kind = FUNC
+				lnv_tok.kind = nv_tok.FUNC
 				lnv_tok.count = -1
 			elseif lower(lnv_tok.value) = "and" or lower(lnv_tok.value) = "or" or lower(lnv_tok.value) = "xor" then
 				lnv_tok.value = lower(lnv_tok.value)
-				lnv_tok.kind = BINARYOP
+				lnv_tok.kind = nv_tok.BINARYOP
 			elseif lower(lnv_tok.value) = "not" then
 				lnv_tok.value = lower(lnv_tok.value)
-				lnv_tok.kind = UNARYOP
+				lnv_tok.kind = nv_tok.UNARYOP
 			else
-				lnv_tok.kind = IDENT
+				lnv_tok.kind = nv_tok.IDENT
 			end if
 		case "'", '"', '`'
 			long ll_begin, ll_cur
@@ -192,16 +195,16 @@ do while ll_tk_start <= ll_inplen
 				ll_tk_end = ll_cur + 1
 				lnv_tok = create nv_tok
 				lnv_tok.value = mid(as_input, ll_begin + 1, ll_cur - ll_begin - 1)
-				lnv_tok.kind = STR
+				lnv_tok.kind = nv_tok.STR
 			end if			
 		case ARGSEP, LPAR, RPAR
 			ll_tk_end++
 			lnv_tok = create nv_tok
 			lnv_tok.value = mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start)
 			choose case lc
-				case ARGSEP; lnv_tok.kind = TARGSEP
-				case LPAR; lnv_tok.kind = TLPAR
-				case RPAR; lnv_tok.kind = TRPAR
+				case ARGSEP; lnv_tok.kind = nv_tok.TARGSEP
+				case LPAR; lnv_tok.kind = nv_tok.TLPAR
+				case RPAR; lnv_tok.kind = nv_tok.TRPAR
 			end choose
 		case ' ' 
 			ll_tk_start++		//ignore blanks
@@ -282,27 +285,27 @@ if n = 0 then return ""
 for i = 1 to n
 	ls_val = lower(string(anv_toks[i].value))
 	choose case anv_toks[i].kind
-		case DECIM, BOOL, STR
+		case nv_tok.INTG, nv_tok.DECIM, nv_tok.BOOL, nv_tok.STR
 			lt_eval.push(anv_toks[i])
-		case IDENT
+		case nv_tok.IDENT
 			item = evalident(anv_toks[i])
-			if item.kind <> ERR then
+			if item.kind <> nv_tok.ERR then
 				lt_eval.push(item)
 			else
 				ls_ret = item.value
 				goto end_eval
 			end if
-		case UNARYOP, BINARYOP
+		case nv_tok.UNARYOP, nv_tok.BINARYOP
 			item = evalop(anv_toks[i], lt_eval)
-			if item.kind <> ERR then
+			if item.kind <> nv_tok.ERR then
 				lt_eval.push(item)
 			else
 				ls_ret = item.value
 				goto end_eval
 			end if
-		case FUNC
+		case nv_tok.FUNC
 			item = evalfunc(anv_toks[i], lt_eval)
-			if item.kind <> ERR then
+			if item.kind <> nv_tok.ERR then
 				lt_eval.push(item)
 			else
 				ls_ret = item.value
@@ -312,11 +315,11 @@ for i = 1 to n
 next
 if lt_eval.size() = 1 then
 	item = lt_eval.pop()
-	if item.kind = DECIM then
+	if item.kind = nv_tok.INTG or item.kind = nv_tok.DECIM then
 		ls_ret = string(item.value)
-	elseif item.kind = BOOL then
+	elseif item.kind = nv_tok.BOOL then
 		ls_ret = iif(item.value, 'True', 'False')
-	elseif item.kind = STR then
+	elseif item.kind = nv_tok.STR then
 		ls_ret = '"' + item.value + '"'
 	else
 		ls_ret = "not sure how to process " + item.typename() + " `" + string(item.value) + "`"
@@ -347,7 +350,7 @@ end choose
 return lb_ret
 */
 
-return (anv_tok.kind = BINARYOP) or (anv_tok.kind = UNARYOP)
+return (anv_tok.kind = nv_tok.BINARYOP) or (anv_tok.kind = nv_tok.UNARYOP)
 
 end function
 
@@ -374,17 +377,17 @@ long t = 1
 do while t <= upperbound(anv_tokens[])
 	lnv_tok = anv_tokens[t]
 
-	if lnv_tok.kind = DECIM or lnv_tok.kind = BOOL or lnv_tok.kind = IDENT or lnv_tok.kind = STR then
+	if lnv_tok.kind = nv_tok.INTG or lnv_tok.kind = nv_tok.DECIM or lnv_tok.kind = nv_tok.BOOL or lnv_tok.kind = nv_tok.IDENT or lnv_tok.kind = nv_tok.STR then
 		//if the token is an operand, pass it to the output queue
 		lq_out.push(lnv_tok)
 		if lt_args.size() > 0 then lt_args.settop(true)
-	elseif lnv_tok.kind = FUNC then
+	elseif lnv_tok.kind = nv_tok.FUNC then
 		//if it is a function, push it to the stack
 		lt_op.push(lnv_tok)
 		lt_argcount.push(0)
 		if lt_args.size() > 0 then lt_args.settop(true)
 		lt_args.push(false)
-	elseif lnv_tok.kind = TARGSEP then
+	elseif lnv_tok.kind = nv_tok.TARGSEP then
 		//if it is a function argument separator
 		//1) pop all pending operators until getting '('
 		do while not lt_op.isempty() 
@@ -444,7 +447,7 @@ do while t <= upperbound(anv_tokens[])
 			lb_ret = false
 			goto end_of_shunt
 		end if
-		if lt_op.top().kind = FUNC then 
+		if lt_op.top().kind = nv_tok.FUNC then 
 			//if there is a function after the paren
 			//add it to the queue with arguments count
 			ll_count = lt_argcount.pop()
@@ -494,13 +497,13 @@ public function integer getprec (nv_tok anv_tok);
 
 int li_ret
 
-if anv_tok.kind <> UNARYOP and anv_tok.kind <> BINARYOP then return 0
+if anv_tok.kind <> nv_tok.UNARYOP and anv_tok.kind <> nv_tok.BINARYOP then return 0
 
 choose case anv_tok.value
 	case '^'; 					li_ret = 8
 	case '-'
 		//special minus case
-		if anv_tok.kind = UNARYOP then 
+		if anv_tok.kind = nv_tok.UNARYOP then 
 			li_ret = 7
 		else
 			li_ret = 5
@@ -543,7 +546,7 @@ choose case ast_op.value
 	case '*', '/', '%'
 		lc_ret = CC_LEFT
 	case '+', '-', 'and', 'or', 'xor'
-		if ast_op.kind = UNARYOP then
+		if ast_op.kind = nv_tok.UNARYOP then
 			lc_ret = CC_RIGHT
 		else
 			lc_ret = CC_LEFT
@@ -553,111 +556,6 @@ choose case ast_op.value
 end choose
 
 return lc_ret
-
-end function
-
-public function nv_tok evalfunc (nv_tok ast_func, ref nv_tokstack ast_args);
-// evaluate the value of a function
-
-nv_tok lt_ret, item
-dec ldc_ret = 0, ldc_val
-long i
-
-lt_ret = create nv_tok
-choose case ast_func.value
-	case "answer"	//dummy function
-		lt_ret.kind = DECIM
-		lt_ret.value = 42
-	case "sum"
-		for i = 1 to ast_func.count
-			ldc_val = dec(ast_args.pop().value)
-			ldc_ret += ldc_val
-		next
-		lt_ret.kind = DECIM
-		lt_ret.value = ldc_ret
-	case "mul"
-		if ast_args.size() > 0 then ldc_ret = dec(ast_args.pop().value)
-		for i = 2 to ast_func.count
-			ldc_val = dec(ast_args.pop().value)
-			ldc_ret *= ldc_val
-		next
-		lt_ret.kind = DECIM
-		lt_ret.value = ldc_ret
-	case "abs"
-		if ast_func.count = 1 then 
-			ldc_ret = abs(dec(ast_args.pop().value))
-			lt_ret.kind = DECIM
-			lt_ret.value = ldc_ret
-		else
-			is_lasterror = "abs() needs 1 argument"
-			lt_ret.kind = ERR
-			lt_ret.value = is_lasterror
-		end if
-	/*case "not"
-		if ast_func.count = 1 then
-			lt_ret.kind = BOOL
-			lt_ret.value = not(ast_args.pop().value)
-		else
-			is_lasterror = "abs() needs 1 argument"
-		end if*/
-	case "min"
-		if ast_args.size() > 0 then 
-			ldc_ret = dec(ast_args.pop().value)
-			for i = 2 to ast_func.count
-				ldc_val = dec(ast_args.pop().value)
-				if ldc_val < ldc_ret then ldc_ret = ldc_val
-			next
-			lt_ret.kind = DECIM
-			lt_ret.value = ldc_ret
-		else
-			is_lasterror = "missing argument"
-			lt_ret.kind = ERR
-			lt_ret.value = is_lasterror
-		end if
-	case "max"
-		if ast_args.size() > 0 then 
-			ldc_ret = dec(ast_args.pop().value)
-			for i = 2 to ast_func.count
-				ldc_val = dec(ast_args.pop().value)
-				if ldc_val > ldc_ret then ldc_ret = ldc_val
-			next
-			lt_ret.kind = DECIM
-			lt_ret.value = ldc_ret
-		else
-			is_lasterror = "missing argument"
-			lt_ret.kind = ERR
-			lt_ret.value = is_lasterror
-		end if
-	case "len"
-		if ast_func.count = 1 then 
-			if ast_args.top().kind = STR then
-				ldc_ret = len(string(ast_args.pop().value))
-				lt_ret.kind = DECIM
-				lt_ret.value = ldc_ret
-			else
-				is_lasterror = "len() can only take string argument, given " + ast_args.top().typename()
-				lt_ret.kind = ERR
-				lt_ret.value = is_lasterror
-			end if
-		else
-			is_lasterror = "len() needs 1 argument"
-			lt_ret.kind = ERR
-			lt_ret.value = is_lasterror
-		end if
-	case else
-		is_lasterror = "cannot evaluate function `" + ast_func.value + "`"
-		lt_ret.kind = ERR
-		lt_ret.value = is_lasterror
-end choose
-
-if lt_ret.kind = ERR then 
-	string ls_tmp
-	ls_tmp = lt_ret.value
-	ls_tmp += " at " + string(ast_func.position)
-	lt_ret.value = ls_tmp
-end if
-
-return lt_ret
 
 end function
 
@@ -674,7 +572,7 @@ lt_ret = create nv_tok
 
 choose case lower(ast_ident.value)
 	case "pi"	//dummy function
-		lt_ret.kind = DECIM
+		lt_ret.kind = nv_tok.DECIM
 		lt_ret.value = 3.14
 	case else
 		max = upperbound(ia_vars[]) - 1
@@ -684,7 +582,7 @@ choose case lower(ast_ident.value)
 				goto eval_done
 			end if
 		next
-		lt_ret.kind = ERR
+		lt_ret.kind = nv_tok.ERR
 		is_lasterror = "cannot resolve `" + ast_ident.value + "`"
 		lt_ret.value = is_lasterror
 end choose
@@ -706,12 +604,12 @@ long i
 lt_ret = create nv_tok
 
 choose case ast_op.kind
-	case UNARYOP
+	case nv_tok.UNARYOP
 		choose case ast_op.value
 			case '-', '+'
 				st_op1 = ast_args.pop()
-				if st_op1.kind <> DECIM then
-					lt_ret.kind = ERR
+				if st_op1.kind <> nv_tok.DECIM and st_op1.kind <> nv_tok.INTG then
+					lt_ret.kind = nv_tok.ERR
 					lt_ret.value = "`" + ast_op.value + "` cannot handle " + st_op1.typename() + " `" + string(st_op1.value) + "` at " + string(ast_op.position)
 					goto end_eval
 				end if
@@ -721,42 +619,42 @@ choose case ast_op.kind
 				elseif ast_op.value = '+' then
 					ldc_res = ldc_op1
 				end if
-				lt_ret.kind = DECIM
+				lt_ret.kind = nv_tok.DECIM
 				lt_ret.value = ldc_res
 			case 'not'
 				st_op1 = ast_args.pop()
 				//TODO pourra être traité par un nv_tok.tobool
-				if st_op1.kind <> BOOL then
-					lt_ret.kind = ERR
+				if st_op1.kind <> nv_tok.BOOL then
+					lt_ret.kind = nv_tok.ERR
 					lt_ret.value = "`" + ast_op.value + "` cannot handle " + st_op1.typename() + " `" + string(st_op1.value) + "` at " + string(ast_op.position)
 					goto end_eval
 				end if
-				lt_ret.kind = BOOL
+				lt_ret.kind = nv_tok.BOOL
 				lt_ret.value = not(st_op1.value)
 		end choose
-	case BINARYOP
+	case nv_tok.BINARYOP
 			if ast_args.size() >= 2 then
 				//TODO, assume this is 2 numerical tokens
 				//need to improve type checking / inference
 				choose case ast_op.value
 					case '+', '-', '*', '/', '%', '^'
-						if ast_args.top().kind <> ast_args.peek(1).kind then
+						if not ast_args.top().iscompatiblewith(ast_args.peek(1)) then
 							//Coercion to first operand
-							if ast_args.peek(1).kind = STR then
+							if ast_args.peek(1).kind = nv_tok.STR then
 								if ast_op.value <> '+' then
-									lt_ret.kind = ERR
+									lt_ret.kind = nv_tok.ERR
 									lt_ret.value = "eval failed: mismatch operands (" + ast_args.peek(1).typename() + '/' + ast_args.top().typename() + ") for `" + ast_op.value + "` at " + string(ast_op.position)
 									goto end_eval
 								else
 									la_op2 = string(ast_args.pop().value)
-									lt_ret.kind = STR
+									lt_ret.kind = nv_tok.STR
 								end if
-							elseif ast_args.peek(1).kind = DECIM then
-								if isnumber(ast_args.top().value) then
-									la_op2 = dec(ast_args.pop().value)
-									lt_ret.kind = DECIM
+							elseif ast_args.peek(1).kind = nv_tok.DECIM or ast_args.peek(1).kind = nv_tok.INTG then
+								if match(ast_args.top().value, is_numbercharpattern) then
+									la_op2 = dec(fixdecimal(ast_args.pop().value))
+									lt_ret.kind = nv_tok.DECIM
 								else
-									lt_ret.kind = ERR
+									lt_ret.kind = nv_tok.ERR
 									lt_ret.value = "eval failed: cannot convert `" + ast_args.top().value + "` to numeric for `" + ast_op.value + "` at " + string(ast_op.position)
 									goto end_eval
 								end if
@@ -796,19 +694,19 @@ choose case ast_op.kind
 							case '>=', '=>'
 								lb_val = la_op1 >= la_op2
 						end choose
-						lt_ret.kind = BOOL
+						lt_ret.kind = nv_tok.BOOL
 						lt_ret.value = lb_val
 					case '=', '<>', 'and', 'or', 'xor'
 						st_op2 = ast_args.pop()
 						st_op1 = ast_args.pop()
 						if st_op1.kind <> st_op2.kind then
-							lt_ret.kind = ERR
+							lt_ret.kind = nv_tok.ERR
 							lt_ret.value = "eval failed: mismatch operands (" + st_op1.typename() + '/' + st_op2.typename() + ") for `" + ast_op.value + "` at " + string(ast_op.position)
 							goto end_eval
 						end if
 						//TODO pourra être traité par un nv_tok.tobool
-						if (ast_op.value = 'and' or ast_op.value = 'or') and st_op1.kind <> BOOL then
-							lt_ret.kind = ERR
+						if (ast_op.value = 'and' or ast_op.value = 'or') and st_op1.kind <> nv_tok.BOOL then
+							lt_ret.kind = nv_tok.ERR
 							lt_ret.value = "`" + ast_op.value + "` cannot handle `" + st_op1.typename() + "` at " + string(ast_op.position)
 							goto end_eval
 						end if
@@ -824,21 +722,21 @@ choose case ast_op.kind
 							case 'xor'
 								lb_val = (st_op1.value and not st_op2.value) or (not st_op1.value and st_op2.value)
 						end choose
-						lt_ret.kind = BOOL
+						lt_ret.kind = nv_tok.BOOL
 						lt_ret.value = lb_val
 					case else
-						lt_ret.kind = ERR
+						lt_ret.kind = nv_tok.ERR
 						lt_ret.value = "unknown op " + ast_op.value
 						goto end_eval
 				end choose
 			else
-				lt_ret.kind = ERR
+				lt_ret.kind = nv_tok.ERR
 				lt_ret.value = "broken expression : wrong number of operands for `" + ast_op.value + "` at " + string(ast_op.position)
 				goto end_eval
 			end if
 	case else
 		is_lasterror = "cannot evaluate op `" + ast_op.value + "`"
-		lt_ret.kind = ERR
+		lt_ret.kind = nv_tok.ERR
 		lt_ret.value = is_lasterror
 end choose
 
@@ -853,11 +751,64 @@ public function boolean isfunc (string as_name);
 boolean lb_ret = false
 
 choose case lower(as_name)
-	case 'answer', "sum", "mul", "abs", "min", "max", "len"//, "not"
+	case 'answer', "sum", "mul", "abs", "min", "max", "len", "msgbox" /*, "not"*/
 		lb_ret = true
 end choose
 
 return lb_ret
+
+end function
+
+public function string getlocaleinfo (unsignedlong al_localetype, boolean ab_userlocale);// returns the LOCALE setting of the given type
+//
+// al_localetype = the local we want to get
+// ab_userlocale = TRUE - use the user locales /  FALSE - use the system locales
+
+
+ulong ll_cid
+ulong ll_len
+string s_ret = "", s_tmp = ""
+
+if ab_userlocale then
+  ll_cid = getuserdefaultlcid( )
+else
+  ll_cid = getsystemdefaultlcid( )
+end if
+
+// first call to get the correct length for the data to return
+ll_len = getlocaleinfo(ll_cid, al_localetype, s_tmp , len(s_tmp))
+
+if ll_len > 0 then
+  s_tmp = space(ll_len)
+  
+  //second call to get the data
+  ll_len = getlocaleinfo(ll_cid, al_localetype, s_tmp , len(s_tmp))
+  if ll_len > 0 then s_ret = left(s_tmp, ll_len -1) // the returned data includes the string terminator
+end if
+
+return s_ret
+
+end function
+
+public function string fixdecimal (string as_text);
+// adapt a decimal value to the format suitable for the system
+// because dec() use the decimal separator locales setting to be able to get decimals
+string ls_rep
+long p
+
+if is_SYSDECSEP = ',' then 
+  ls_rep = '.'
+else
+  ls_rep = ','
+end if
+
+p = pos(as_text, ls_rep)
+do while p > 0 
+  as_text = replace(as_text, p, 1, is_SYSDECSEP)
+  p = pos(as_text, ls_rep)
+loop
+
+return as_text
 
 end function
 
@@ -880,14 +831,17 @@ for i = 1 to max step 2
 		lt_tok = create nv_tok
 		choose case classname(aa_vals[i+1])
 			case "boolean"
-				lt_tok.kind = BOOL
+				lt_tok.kind = nv_tok.BOOL
 				lt_tok.value = aa_vals[i+1] //iif(lower(string(aa_vals[i+1])) = "true", true, false)
+			case "integer"
+				lt_tok.kind = nv_tok.INTG
+				lt_tok.value = aa_vals[i+1]
 			case "decimal"
-				lt_tok.kind = DECIM
+				lt_tok.kind = nv_tok.DECIM
 				lt_tok.value = aa_vals[i+1]
 			case "string"
 				if left(aa_vals[i+1],1) = right(aa_vals[i+1],1) then
-					lt_tok.kind = STR
+					lt_tok.kind = nv_tok.STR
 					lt_tok.value = mid(aa_vals[i+1], 2, len(string(aa_vals[i+1])) - 2)
 				end if
 		end choose
@@ -901,6 +855,127 @@ return true
 
 end function
 
+protected function nv_tok evalfunc (nv_tok ast_func, ref nv_tokstack ast_args);
+// evaluate the value of a function
+
+nv_tok lt_ret, item
+dec ldc_ret = 0, ldc_val
+long i
+
+lt_ret = create nv_tok
+choose case ast_func.value
+	case "answer"	//dummy function
+		lt_ret.kind = nv_tok.DECIM
+		lt_ret.value = 42
+	case "sum"
+		for i = 1 to ast_func.count
+			ldc_val = dec(ast_args.pop().value)
+			ldc_ret += ldc_val
+		next
+		lt_ret.kind = nv_tok.DECIM
+		lt_ret.value = ldc_ret
+	case "mul"
+		if ast_args.size() > 0 then ldc_ret = dec(ast_args.pop().value)
+		for i = 2 to ast_func.count
+			ldc_val = dec(ast_args.pop().value)
+			ldc_ret *= ldc_val
+		next
+		lt_ret.kind = nv_tok.DECIM
+		lt_ret.value = ldc_ret
+	case "abs"
+		if ast_func.count = 1 then 
+			ldc_ret = abs(dec(ast_args.pop().value))
+			lt_ret.kind = nv_tok.DECIM
+			lt_ret.value = ldc_ret
+		else
+			is_lasterror = "abs() needs 1 argument"
+			lt_ret.kind = nv_tok.ERR
+			lt_ret.value = is_lasterror
+		end if
+	/*case "not"
+		if ast_func.count = 1 then
+			lt_ret.kind = BOOL
+			lt_ret.value = not(ast_args.pop().value)
+		else
+			is_lasterror = "abs() needs 1 argument"
+		end if*/
+	case "min"
+		if ast_args.size() > 0 then 
+			ldc_ret = dec(ast_args.pop().value)
+			for i = 2 to ast_func.count
+				ldc_val = dec(ast_args.pop().value)
+				if ldc_val < ldc_ret then ldc_ret = ldc_val
+			next
+			lt_ret.kind = nv_tok.DECIM
+			lt_ret.value = ldc_ret
+		else
+			is_lasterror = "missing argument"
+			lt_ret.kind = nv_tok.ERR
+			lt_ret.value = is_lasterror
+		end if
+	case "max"
+		if ast_args.size() > 0 then 
+			ldc_ret = dec(ast_args.pop().value)
+			for i = 2 to ast_func.count
+				ldc_val = dec(ast_args.pop().value)
+				if ldc_val > ldc_ret then ldc_ret = ldc_val
+			next
+			lt_ret.kind = nv_tok.DECIM
+			lt_ret.value = ldc_ret
+		else
+			is_lasterror = "missing argument"
+			lt_ret.kind = nv_tok.ERR
+			lt_ret.value = is_lasterror
+		end if
+	case "len"
+		if ast_func.count = 1 then 
+			if ast_args.top().kind = nv_tok.STR then
+				ldc_ret = len(string(ast_args.pop().value))
+				lt_ret.kind = nv_tok.DECIM
+				lt_ret.value = ldc_ret
+			else
+				is_lasterror = "len() can only take string argument, given " + ast_args.top().typename()
+				lt_ret.kind = nv_tok.ERR
+				lt_ret.value = is_lasterror
+			end if
+		else
+			is_lasterror = "len() needs 1 argument"
+			lt_ret.kind = nv_tok.ERR
+			lt_ret.value = is_lasterror
+		end if
+	case "msgbox"
+		if ast_func.count = 1 then
+			if ast_args.top().kind = nv_tok.STR then
+				ldc_ret = MessageBox("Evaluator", string(ast_args.pop().value))
+				lt_ret.kind = nv_tok.INTG
+				lt_ret.value = ldc_ret
+			else
+				is_lasterror = "msgbox() can only take string argument, given " + ast_args.top().typename()
+				lt_ret.kind = nv_tok.ERR
+				lt_ret.value = is_lasterror
+			end if
+		else
+			is_lasterror = "msgbox() needs 1 argument"
+			lt_ret.kind = nv_tok.ERR
+			lt_ret.value = is_lasterror
+		end if
+	case else
+		is_lasterror = "cannot evaluate function `" + ast_func.value + "`"
+		lt_ret.kind = nv_tok.ERR
+		lt_ret.value = is_lasterror
+end choose
+
+if lt_ret.kind = nv_tok.ERR then 
+	string ls_tmp
+	ls_tmp = lt_ret.value
+	ls_tmp += " at " + string(ast_func.position)
+	lt_ret.value = ls_tmp
+end if
+
+return lt_ret
+
+end function
+
 on nv_parser.create
 call super::create
 TriggerEvent( this, "constructor" )
@@ -910,4 +985,10 @@ on nv_parser.destroy
 TriggerEvent( this, "destructor" )
 call super::destroy
 end on
+
+event constructor;
+is_SYSDECSEP = getlocaleinfo(locale_sdecimal, true)
+is_numbercharpattern = "[0-9" + iif(DECSEP = '.', "\.", DECSEP) + "]"
+
+end event
 

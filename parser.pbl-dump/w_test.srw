@@ -355,7 +355,7 @@ long i
 nv_tok lt_tokens[], lt_parsed[]
 
 i_parser.setreverse( cbx_postfix.checked )
-mle_formula.text = fixdecimal(mle_formula.text)
+//mle_formula.text = fixdecimal(mle_formula.text)
 
 if i_parser.tokenize( mle_formula.text ) then
 	i_parser.gettokens( lt_tokens[] )
@@ -414,7 +414,7 @@ ls_form = mle_formula.text
 p = pos(ls_form, "~r~n")
 if p > 0 then ls_form = left(ls_form, p - 1)
 
-ls_form = fixdecimal(ls_form)
+//ls_form = fixdecimal(ls_form)
 mle_formula.text = ls_form
 
 if i_parser.tokenize( ls_form ) then
@@ -426,7 +426,7 @@ if i_parser.tokenize( ls_form ) then
 		if cbx_dbgtokens.checked then 
 			mle_debug.text += lt_tokens[i].dump() + &
 									'[' + lt_tokens[i].typename() + ']' +&
-									iif(lt_tokens[i].kind = i_parser.UNARYOP or lt_tokens[i].kind = i_parser.BINARYOP, string(i_parser.getprec(lt_tokens[i])), "") + &
+									iif(lt_tokens[i].kind = nv_tok.UNARYOP or lt_tokens[i].kind = nv_tok.BINARYOP, string(i_parser.getprec(lt_tokens[i])), "") + &
 									'~r~n' 
 		end if 
 	next

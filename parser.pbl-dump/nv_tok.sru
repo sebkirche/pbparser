@@ -17,7 +17,7 @@ long position
 
 //types of tokens
 constant integer UNDEF = 0
-//constant integer INTG = 1			//integer numeric type
+constant integer INTG = 1			//integer numeric type
 constant integer DECIM = 2			//decimal numeric type
 constant integer BOOL = 3			//boolean type
 constant integer STR = 4			//string type
@@ -40,6 +40,7 @@ public function boolean tobool ()
 public function decimal todec ()
 public function decimal tolong ()
 public function string dump ()
+public function boolean iscompatiblewith (nv_tok at_other)
 end prototypes
 
 public function string tostring ();
@@ -61,7 +62,8 @@ string ls_name
 
 choose case ai_type
 
-	case DECIM;		ls_name = "Num"			//numeric type
+	case INTG;		ls_name = "Int"			//numeric type
+	case DECIM;		ls_name = "Dec"			//numeric type
 	case BOOL;		ls_name = "Bool"			//boolean type
 	case STR;		ls_name = "String"			//string type
 	case UNARYOP;	ls_name = "UnOp"		//unary operator
@@ -134,7 +136,7 @@ elseif kind = UNARYOP then
 	else
 		ls_ret = value
 	end if
-elseif kind = BOOL or kind = DECIM then
+elseif kind = BOOL or kind = DECIM or kind = INTG then
 	ls_ret = string(value)
 elseif kind = STR then
 	ls_ret = '"' + value + '"'
@@ -143,6 +145,21 @@ else
 end if
 
 return ls_ret
+
+end function
+
+public function boolean iscompatiblewith (nv_tok at_other);
+choose case kind
+	case INTG, DECIM
+		if at_other.kind = INTG or at_other.kind = DECIM then
+			return true
+		else
+			return false
+		end if
+	case else
+		return kind = at_other.kind
+end choose
+
 
 end function
 
