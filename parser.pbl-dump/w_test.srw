@@ -193,7 +193,8 @@ event open;
 //mle_formula.text = "+1 + --+1" // attendu 2
 //mle_formula.text = "true and not false"
 //mle_formula.text = "len('toto') = 4"
-mle_formula.text = "min(len('toto')+7;-len(~"machin~");4.2)+42"
+//mle_formula.text = "min(len('toto')+7;-len(~"machin~");4.2)+42"
+mle_formula.text = "'aa'+'bb'"
 
 end event
 

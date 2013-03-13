@@ -146,6 +146,7 @@ do while ll_tk_start <= ll_inplen
 			if ll_tokens = 0 then
 				lnv_tok.kind = UNARYOP
 			elseif inv_tokens[ll_tokens].kind = DECIM &
+				or inv_tokens[ll_tokens].kind = STR &
 				or inv_tokens[ll_tokens].kind = IDENT &
 				or inv_tokens[ll_tokens].kind = TRPAR  then
 				lnv_tok.kind = BINARYOP
@@ -633,7 +634,7 @@ choose case ast_func.value
 				lt_ret.kind = DECIM
 				lt_ret.value = ldc_ret
 			else
-				is_lasterror = "len() con only take string argument"
+				is_lasterror = "len() can only take string argument"
 				lt_ret.kind = ERR
 				lt_ret.value = is_lasterror
 			end if
@@ -689,7 +690,7 @@ public function nv_tok evalop (nv_tok ast_op, ref nv_tokstack ast_args);
 
 nv_tok lt_ret, st_op1, st_op2
 dec ldc_op1, ldc_op2, ldc_res
-any la_op1, la_op2
+any la_op1, la_op2, la_res
 boolean lb_val
 long i
 
@@ -730,24 +731,49 @@ choose case ast_op.kind
 				//need to improve type checking / inference
 				choose case ast_op.value
 					case '+', '-', '*', '/', '%', '^'
-						ldc_op2 = dec(ast_args.pop().value)
-						ldc_op1 = dec(ast_args.pop().value)
+						if ast_args.top().kind <> ast_args.peek(1).kind then
+							//Coercion to first operand
+							if ast_args.peek(1).kind = STR then
+								if ast_op.value <> '+' then
+									lt_ret.kind = ERR
+									lt_ret.value = "eval failed: mismatch operands (" + ast_args.peek(1).typename() + '/' + ast_args.top().typename() + ") for `" + ast_op.value + "` at " + string(ast_op.position)
+									goto end_eval
+								else
+									la_op2 = string(ast_args.pop().value)
+									lt_ret.kind = STR
+								end if
+							elseif ast_args.peek(1).kind = DECIM then
+								if isnumber(ast_args.top().value) then
+									la_op2 = dec(ast_args.pop().value)
+									lt_ret.kind = DECIM
+								else
+									lt_ret.kind = ERR
+									lt_ret.value = "eval failed: cannot convert `" + ast_args.top().value + "` to numeric for `" + ast_op.value + "` at " + string(ast_op.position)
+									goto end_eval
+								end if
+							end if
+							la_op1 = ast_args.pop().value
+						else
+							//same operand types
+							lt_ret.kind = ast_args.top().kind
+							la_op2 = ast_args.pop().value
+							la_op1 = ast_args.pop().value
+						end if
 						choose case ast_op.value
 							case '+'
-								ldc_res = ldc_op1 + ldc_op2
+								la_res = la_op1 + la_op2
 							case '-'
-								ldc_res = ldc_op1 - ldc_op2
+								la_res = la_op1 - la_op2
 							case '*'
-								ldc_res = ldc_op1 * ldc_op2
+								la_res = la_op1 * la_op2
 							case '/'
-								ldc_res = ldc_op1 / ldc_op2
+								la_res = la_op1 / la_op2
 							case '%'
-								ldc_res = mod(ldc_op1, ldc_op2)
+								la_res = mod(la_op1, la_op2)
 							case '^'
-								ldc_res = ldc_op1 ^ ldc_op2
+								la_res = la_op1 ^ la_op2
 						end choose
-						lt_ret.kind = DECIM
-						lt_ret.value = ldc_res
+						lt_ret.value = la_res
 					case '<', '<=', '>', '>='
 						la_op2 = ast_args.pop().value
 						la_op1 = ast_args.pop().value
@@ -768,7 +794,7 @@ choose case ast_op.kind
 						st_op1 = ast_args.pop()
 						if st_op1.kind <> st_op2.kind then
 							lt_ret.kind = ERR
-							lt_ret.value = "broken expression : mismatch operands (" + st_op1.typename() + '/' + st_op2.typename() + ") for `" + ast_op.value + "` at " + string(ast_op.position)
+							lt_ret.value = "eval failed: mismatch operands (" + st_op1.typename() + '/' + st_op2.typename() + ") for `" + ast_op.value + "` at " + string(ast_op.position)
 							goto end_eval
 						end if
 						//TODO pourra être traité par un nv_tok.tobool

@@ -79,12 +79,12 @@ return lt_ret
 end function
 
 public function nv_tok peek (long al_pos);
-// for debug : get a value
+// for debug : get a value at (top - pos)
 
 any la_val
 
-if al_pos > 0 and al_pos <= al_pos then
-	la_val = it_values[al_pos]
+if al_pos > 0 and al_pos <= il_pos then
+	la_val = it_values[il_pos - al_pos]
 end if
 
 return la_val
