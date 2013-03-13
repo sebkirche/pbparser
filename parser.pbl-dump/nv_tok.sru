@@ -136,6 +136,8 @@ elseif kind = UNARYOP then
 	end if
 elseif kind = BOOL or kind = DECIM then
 	ls_ret = string(value)
+elseif kind = STR then
+	ls_ret = '"' + value + '"'
 else
 	ls_ret = value
 end if

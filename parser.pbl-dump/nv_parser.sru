@@ -64,10 +64,10 @@ constant char RPAR = ')'
 private:
 nv_tok inv_tokens[]	//array for tokenized input
 nv_tok ist_parsed[]	//array for parsed tokens
-boolean ib_postfix = true
-
+any ia_vars[]			//array for variables (pairs of ident-value)
 string is_lasterror
 
+boolean ib_postfix = true //for debug
 
 end variables
 
@@ -88,6 +88,7 @@ public function nv_tok evalfunc (nv_tok ast_func, ref nv_tokstack ast_args)
 public function nv_tok evalident (nv_tok ast_ident)
 public function nv_tok evalop (nv_tok ast_op, ref nv_tokstack ast_args)
 public function boolean isfunc (string as_name)
+public function boolean setvariables (any aa_vals[])
 end prototypes
 
 public subroutine setreverse (boolean ab_reverse);
@@ -158,7 +159,7 @@ do while ll_tk_start <= ll_inplen
 				ll_tk_end++
 			loop
 			lnv_tok = create nv_tok
-			lnv_tok.value = trim(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start))
+			lnv_tok.value = lower(trim(mid(as_input, ll_tk_start, ll_tk_end - ll_tk_start)))
 			if isbool(lnv_tok.value) then
 				lnv_tok.value = iif(lower(lnv_tok.value)="true", true, false)
 				lnv_tok.kind = BOOL
@@ -316,7 +317,7 @@ if lt_eval.size() = 1 then
 	elseif item.kind = BOOL then
 		ls_ret = iif(item.value, 'True', 'False')
 	elseif item.kind = STR then
-		ls_ret = item.value
+		ls_ret = '"' + item.value + '"'
 	else
 		ls_ret = "not sure how to process " + item.typename() + " `" + string(item.value) + "`"
 	end if
@@ -634,7 +635,7 @@ choose case ast_func.value
 				lt_ret.kind = DECIM
 				lt_ret.value = ldc_ret
 			else
-				is_lasterror = "len() can only take string argument"
+				is_lasterror = "len() can only take string argument, given " + ast_args.top().typename()
 				lt_ret.kind = ERR
 				lt_ret.value = is_lasterror
 			end if
@@ -665,7 +666,7 @@ public function nv_tok evalident (nv_tok ast_ident);
 
 nv_tok lt_ret, item
 dec ldc_ret = 0, ldc_val
-long i
+long i, max
 
 lt_ret = create nv_tok
 
@@ -676,11 +677,19 @@ choose case lower(ast_ident.value)
 		lt_ret.kind = DECIM
 		lt_ret.value = 3.14
 	case else
+		max = upperbound(ia_vars[]) - 1
+		for i = 1 to max step 2
+			if ast_ident.value = ia_vars[i] then
+				lt_ret = ia_vars[i+1]
+				goto eval_done
+			end if
+		next
 		lt_ret.kind = ERR
 		is_lasterror = "cannot resolve `" + ast_ident.value + "`"
 		lt_ret.value = is_lasterror
 end choose
 
+eval_done:
 return lt_ret
 
 end function
@@ -849,6 +858,46 @@ choose case lower(as_name)
 end choose
 
 return lb_ret
+
+end function
+
+public function boolean setvariables (any aa_vals[]);
+//populate the variables
+// aa_vals[] must be an even sized array of key-value pairs
+
+boolean lb_ret = true
+int i, max, n
+nv_tok lt_tok
+
+max = upperbound(aa_vals[])
+if mod(max, 2) <> 0 then return false
+
+n = 1
+for i = 1 to max step 2
+	if not isbool(aa_vals[i]) &
+		and not isfunc(aa_vals[i]) /*TODO : and not isOP*/ then
+
+		lt_tok = create nv_tok
+		choose case classname(aa_vals[i+1])
+			case "boolean"
+				lt_tok.kind = BOOL
+				lt_tok.value = aa_vals[i+1] //iif(lower(string(aa_vals[i+1])) = "true", true, false)
+			case "decimal"
+				lt_tok.kind = DECIM
+				lt_tok.value = aa_vals[i+1]
+			case "string"
+				if left(aa_vals[i+1],1) = right(aa_vals[i+1],1) then
+					lt_tok.kind = STR
+					lt_tok.value = mid(aa_vals[i+1], 2, len(string(aa_vals[i+1])) - 2)
+				end if
+		end choose
+		ia_vars[n+1] = lt_tok
+		ia_vars[n] = lower(aa_vals[i])
+		n += 2
+	end if
+next
+
+return true
 
 end function
 

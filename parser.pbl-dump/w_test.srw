@@ -281,6 +281,18 @@ nv_tok lt_parsed[]
 
 i_parser.getparsed( lt_parsed[] )
 
+any vars[]
+vars[1] = "toto"
+vars[2] = "'titi'"
+vars[3] = "vrai"
+vars[4] = true
+vars[5] = "faux"
+vars[6] = false
+vars[7] = "e"
+vars[8] = 2.718
+
+i_parser.setvariables( vars[] )
+
 ls_res = i_parser.eval(lt_parsed[])
 
 showerror(ls_res)
