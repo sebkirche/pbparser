@@ -83,12 +83,12 @@ end if
 end subroutine
 
 public function any peek (long al_pos);
-// for debug : get a value
+//get a value at al_pos items from top
 
 any la_val
 
-if al_pos > 0 and al_pos <= al_pos then
-	la_val = ia_values[al_pos]
+if al_pos >= 0 and al_pos <= il_pos then
+	la_val = ia_values[il_pos - al_pos]
 end if
 
 return la_val
