@@ -277,7 +277,7 @@ event clicked;
 
 long i
 string ls_res
-nv_tok lt_parsed[]
+nv_term lt_parsed[]
 
 i_parser.getparsed( lt_parsed[] )
 
@@ -352,7 +352,7 @@ end type
 
 event clicked;
 long i
-nv_tok lt_tokens[], lt_parsed[]
+nv_term lt_tokens[], lt_parsed[]
 
 i_parser.setreverse( cbx_postfix.checked )
 //mle_formula.text = fixdecimal(mle_formula.text)
@@ -407,7 +407,7 @@ end type
 
 event clicked;
 long i, p
-nv_tok lt_tokens[]
+nv_term lt_tokens[]
 string ls_err, ls_form
 
 ls_form = mle_formula.text
@@ -426,7 +426,7 @@ if i_parser.tokenize( ls_form ) then
 		if cbx_dbgtokens.checked then 
 			mle_debug.text += lt_tokens[i].dump() + &
 									'[' + lt_tokens[i].typename() + ']' +&
-									iif(lt_tokens[i].kind = nv_tok.UNARYOP or lt_tokens[i].kind = nv_tok.BINARYOP, string(i_parser.getprec(lt_tokens[i])), "") + &
+									iif(lt_tokens[i].kind = nv_term.UNARYOP or lt_tokens[i].kind = nv_term.BINARYOP, string(i_parser.getprec(lt_tokens[i])), "") + &
 									'~r~n' 
 		end if 
 	next

@@ -1,17 +1,17 @@
-$PBExportHeader$nv_tokstack.sru
+$PBExportHeader$nv_termstack.sru
 forward
-global type nv_tokstack from nonvisualobject
+global type nv_termstack from nonvisualobject
 end type
 end forward
 
-global type nv_tokstack from nonvisualobject autoinstantiate
+global type nv_termstack from nonvisualobject autoinstantiate
 end type
 
 type variables
 
 private:
 
-nv_tok it_values[]
+nv_term it_values[]
 long il_pos = 0
 
 end variables
@@ -20,10 +20,10 @@ forward prototypes
 public function boolean isempty ()
 public subroutine reset ()
 public function long size ()
-public function nv_tok pop ()
-public subroutine push (nv_tok at_val)
-public function nv_tok top ()
-public function nv_tok peek (long al_pos)
+public function nv_term pop ()
+public subroutine push (nv_term at_val)
+public function nv_term top ()
+public function nv_term peek (long al_pos)
 end prototypes
 
 public function boolean isempty ();
@@ -32,7 +32,7 @@ return il_pos = 0
 end function
 
 public subroutine reset ();
-nv_tok empty[]
+nv_term empty[]
 
 it_values[] = empty[]
 il_pos = 0
@@ -44,8 +44,8 @@ return il_pos
 
 end function
 
-public function nv_tok pop ();
-nv_tok lt_ret
+public function nv_term pop ();
+nv_term lt_ret
 
 if il_pos = 0 then 
 	return lt_ret	//null
@@ -59,14 +59,14 @@ return lt_ret
 
 end function
 
-public subroutine push (nv_tok at_val);
+public subroutine push (nv_term at_val);
 il_pos++
 it_values[il_pos] = at_val
 
 end subroutine
 
-public function nv_tok top ();
-nv_tok lt_ret
+public function nv_term top ();
+nv_term lt_ret
 
 if il_pos = 0 then 
 	return lt_ret	//null
@@ -78,7 +78,7 @@ return lt_ret
 
 end function
 
-public function nv_tok peek (long al_pos);
+public function nv_term peek (long al_pos);
 //get a value at al_pos items from top
 
 any la_val
@@ -91,12 +91,12 @@ return la_val
 
 end function
 
-on nv_tokstack.create
+on nv_termstack.create
 call super::create
 TriggerEvent( this, "constructor" )
 end on
 
-on nv_tokstack.destroy
+on nv_termstack.destroy
 TriggerEvent( this, "destructor" )
 call super::destroy
 end on

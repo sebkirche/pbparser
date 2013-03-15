@@ -1,12 +1,12 @@
-$PBExportHeader$nv_tok.sru
+$PBExportHeader$nv_term.sru
 forward
-global type nv_tok from nonvisualobject
+global type nv_term from nonvisualobject
 end type
 end forward
 
-global type nv_tok from nonvisualobject
+global type nv_term from nonvisualobject
 end type
-global nv_tok nv_tok
+global nv_term nv_term
 
 type variables
 
@@ -40,7 +40,7 @@ public function boolean tobool ()
 public function decimal todec ()
 public function decimal tolong ()
 public function string dump ()
-public function boolean iscompatiblewith (nv_tok at_other)
+public function boolean iscompatiblewith (nv_term at_other)
 end prototypes
 
 public function string tostring ();
@@ -148,7 +148,7 @@ return ls_ret
 
 end function
 
-public function boolean iscompatiblewith (nv_tok at_other);
+public function boolean iscompatiblewith (nv_term at_other);
 choose case kind
 	case INTG, DECIM
 		if at_other.kind = INTG or at_other.kind = DECIM then
@@ -163,12 +163,12 @@ end choose
 
 end function
 
-on nv_tok.create
+on nv_term.create
 call super::create
 TriggerEvent( this, "constructor" )
 end on
 
-on nv_tok.destroy
+on nv_term.destroy
 TriggerEvent( this, "destructor" )
 call super::destroy
 end on

@@ -1,8 +1,0 @@
-$PBExportHeader$st_tok.srs
-global type st_tok from structure
-	any		value
-	integer		kind
-	long		position
-	long		count
-end type
-
