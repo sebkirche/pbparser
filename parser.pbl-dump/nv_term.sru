@@ -10,10 +10,16 @@ global nv_term nv_term
 
 type variables
 
-any value
-integer kind
-long count
-long position
+any value				//what the term contains
+integer kind			//nature of the term (see constants below)
+
+any eval					//the result of evaluation
+integer evaltype		//the type of evaluated value e.g. an IDENT can contain a BOOL
+
+long count				//number of args for a function
+long position			//node position in the input string  TODO REMOVE ??
+nv_term root			//parent node
+nv_term childs[]		//child nodes
 
 //types of tokens
 constant integer UNDEF = 0
@@ -31,7 +37,6 @@ constant integer TRPAR = 11		//function
 constant integer ERR = 12			//error
 
 end variables
-
 forward prototypes
 public function string tostring ()
 public function string typename (integer ai_type)

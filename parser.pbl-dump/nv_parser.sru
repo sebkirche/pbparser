@@ -69,6 +69,7 @@ string is_SYSDECSEP
 boolean ib_postfix = true //for debug
 
 end variables
+
 forward prototypes
 public subroutine setreverse (boolean ab_reverse)
 public function string getlasterror ()
@@ -822,6 +823,7 @@ nv_term l_term
 
 max = upperbound(aa_vals[])
 if mod(max, 2) <> 0 then return false
+
 
 n = 1
 for i = 1 to max step 2
