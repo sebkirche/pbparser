@@ -10,8 +10,6 @@ type mle_eval from multilineedit within w_test
 end type
 type cb_eval from commandbutton within w_test
 end type
-type cbx_postfix from checkbox within w_test
-end type
 type mle_polish from multilineedit within w_test
 end type
 type cb_parse from commandbutton within w_test
@@ -47,7 +45,6 @@ cbx_dbgtokens cbx_dbgtokens
 mle_debug mle_debug
 mle_eval mle_eval
 cb_eval cb_eval
-cbx_postfix cbx_postfix
 mle_polish mle_polish
 cb_parse cb_parse
 mle_tokens mle_tokens
@@ -149,7 +146,6 @@ this.cbx_dbgtokens=create cbx_dbgtokens
 this.mle_debug=create mle_debug
 this.mle_eval=create mle_eval
 this.cb_eval=create cb_eval
-this.cbx_postfix=create cbx_postfix
 this.mle_polish=create mle_polish
 this.cb_parse=create cb_parse
 this.mle_tokens=create mle_tokens
@@ -159,7 +155,6 @@ this.Control[]={this.cbx_dbgtokens,&
 this.mle_debug,&
 this.mle_eval,&
 this.cb_eval,&
-this.cbx_postfix,&
 this.mle_polish,&
 this.cb_parse,&
 this.mle_tokens,&
@@ -173,7 +168,6 @@ destroy(this.cbx_dbgtokens)
 destroy(this.mle_debug)
 destroy(this.mle_eval)
 destroy(this.cb_eval)
-destroy(this.cbx_postfix)
 destroy(this.mle_polish)
 destroy(this.cb_parse)
 destroy(this.mle_tokens)
@@ -193,8 +187,9 @@ event open;
 //mle_formula.text = "+1 + --+1" // attendu 2
 //mle_formula.text = "true and not false"
 //mle_formula.text = "len('toto') = 4"
-//mle_formula.text = "min(len('toto')+7;-len(~"machin~");4.2)+42"
-mle_formula.text = "'aa'+'bb'"
+//mle_formula.text = "min(len('toto')+7,-len(~"machin~"),4.2)+42"
+//mle_formula.text = "'aa'+'bb'"
+mle_formula.text = "if(pi=3.14,msgbox('true'),msgbox('false'))"
 
 end event
 
@@ -253,8 +248,10 @@ fontpitch fontpitch = fixed!
 fontfamily fontfamily = modern!
 string facename = "Courier New"
 long textcolor = 33554432
+boolean hscrollbar = true
 boolean autohscroll = true
 boolean autovscroll = true
+boolean displayonly = true
 borderstyle borderstyle = stylelowered!
 end type
 
@@ -293,29 +290,12 @@ vars[8] = 2.718
 
 i_parser.setvariables( vars[] )
 
-ls_res = i_parser.eval(lt_parsed[])
+if not i_parser.eval(lt_parsed[1]) then
+	showerror(lt_parsed[1].value)
+end if
 
-showerror(ls_res)
-
-mle_eval.text = ls_res
+mle_eval.text = string(lt_parsed[1].value)
 end event
-
-type cbx_postfix from checkbox within w_test
-integer x = 471
-integer y = 608
-integer width = 1074
-integer height = 80
-integer textsize = -8
-integer weight = 400
-fontcharset fontcharset = ansi!
-fontpitch fontpitch = variable!
-fontfamily fontfamily = swiss!
-string facename = "Tahoma"
-long textcolor = 33554432
-long backcolor = 67108864
-string text = "postfix (uncheck for prefix - won~'t evaluate)"
-boolean checked = true
-end type
 
 type mle_polish from multilineedit within w_test
 integer x = 37
@@ -330,8 +310,10 @@ fontpitch fontpitch = fixed!
 fontfamily fontfamily = modern!
 string facename = "Courier New"
 long textcolor = 33554432
+boolean hscrollbar = true
 boolean autohscroll = true
 boolean autovscroll = true
+boolean displayonly = true
 borderstyle borderstyle = stylelowered!
 end type
 
@@ -353,9 +335,6 @@ end type
 event clicked;
 long i
 nv_term lt_tokens[], lt_parsed[]
-
-i_parser.setreverse( cbx_postfix.checked )
-//mle_formula.text = fixdecimal(mle_formula.text)
 
 if i_parser.tokenize( mle_formula.text ) then
 	i_parser.gettokens( lt_tokens[] )
@@ -385,8 +364,10 @@ fontpitch fontpitch = fixed!
 fontfamily fontfamily = modern!
 string facename = "Courier New"
 long textcolor = 33554432
+boolean hscrollbar = true
 boolean autohscroll = true
 boolean autovscroll = true
+boolean displayonly = true
 borderstyle borderstyle = stylelowered!
 end type
 
@@ -426,7 +407,7 @@ if i_parser.tokenize( ls_form ) then
 		if cbx_dbgtokens.checked then 
 			mle_debug.text += lt_tokens[i].dump() + &
 									'[' + lt_tokens[i].typename() + ']' +&
-									iif(lt_tokens[i].kind = nv_term.UNARYOP or lt_tokens[i].kind = nv_term.BINARYOP, string(i_parser.getprec(lt_tokens[i])), "") + &
+									iif(lt_tokens[i].kind = nv_term.UNARYOP or lt_tokens[i].kind = nv_term.BINARYOP, "p="+string(i_parser.getprec(lt_tokens[i])), "") + &
 									'~r~n' 
 		end if 
 	next
