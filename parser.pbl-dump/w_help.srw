@@ -34,11 +34,11 @@ mle_help.text = "Supported operators (by order of precedence) ~r~n&
 ~r~n&
 Functions (can have any number of parameters) ~r~n&
 	answer()		: 42 (dummy func) ~r~n&
-	sum(i;j;k;...)	: returns the sum of arguments ~r~n&
-	mul(i;j;k;...)	: returns the multiplication of arguments ~r~n&
+	sum(i,j,k,...)	: returns the sum of arguments ~r~n&
+	mul(i,j,k,...)	: returns the multiplication of arguments ~r~n&
 	abs(x)		: return absolute value of x ~r~n&
-	min(a;b;c;...)	: returns the minimum of arguments~r~n&
-	max(a;b;c;...)	: returns the maximum of arguments~r~n&
+	min(a,b,c,...)	: returns the minimum of arguments~r~n&
+	max(a,b,c,...)	: returns the maximum of arguments~r~n&
 	len(string)	: returns the length of the given string ~r~n&
 "
 

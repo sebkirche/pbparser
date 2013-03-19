@@ -719,7 +719,7 @@ choose case ast_op.kind
 						goto end_eval
 					end if
 					//TODO pourra être traité par un nv_term.tobool
-					if (ast_op.text = 'and' or ast_op.text = 'or') and st_op1.valtype <> nv_term.BOOL then
+					if (ast_op.text = 'and' or ast_op.text = 'or' or ast_op.text = 'xor') and st_op1.valtype <> nv_term.BOOL then
 						ast_op.valtype = nv_term.ERR
 						ast_op.value = "`" + ast_op.text + "` cannot handle `" + st_op1.typename() + "` at " + string(ast_op.position)
 						goto end_eval
@@ -909,13 +909,6 @@ choose case ast_func.text
 			ast_func.valtype = nv_term.ERR
 			ast_func.value = is_lasterror
 		end if
-	/*case "not"
-		if ast_func.count = 1 then
-			ast_func.kind = BOOL
-			ast_func.value = not(atst_args.pop().value)
-		else
-			is_lasterror = "abs() needs 1 argument"
-		end if*/
 	case "min"
 		if ast_func.count > 0 then 
 			ldc_ret = dec(ast_func.childs[1].value)
@@ -951,7 +944,7 @@ choose case ast_func.text
 				ast_func.valtype = nv_term.INTG
 				ast_func.value = nb
 			else
-				is_lasterror = "len() can only take string argument, given " + ast_func.childs[1].typename()
+				is_lasterror = "len() can only take string argument, given " + ast_func.childs[1].valuetype()
 				ast_func.valtype = nv_term.ERR
 				ast_func.value = is_lasterror
 			end if

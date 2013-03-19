@@ -50,6 +50,9 @@ public function decimal tolong ()
 public function string dump ()
 public function boolean iscompatiblewith (nv_term at_other)
 public function string typename (readonly nv_term a_term)
+public function string prettyprint (ref nv_term a_term, string as_indent, boolean ab_last)
+public function string valuetype (readonly nv_term a_term)
+public function string valuetype ()
 end prototypes
 
 public function string tostring ();
@@ -122,7 +125,7 @@ if kind = ATOM then
 		ls_ret = /*'"' +*/ text /*+ '"'*/
 	end if
 elseif kind = FUNC then
-	ls_ret = text + '.' + iif(count > -1, string(count), '?')
+	ls_ret = text //+ '.' + iif(count > -1, string(count), '?')
 elseif kind = UNARYOP then
 	if text = '-' then 
 		ls_ret = '_'
@@ -184,6 +187,57 @@ choose case a_term.kind
 end choose
 
 return ls_name
+
+end function
+
+public function string prettyprint (ref nv_term a_term, string as_indent, boolean ab_last);
+string ls_ret
+int i, nb
+
+ls_ret = as_indent
+
+if ab_last then
+	ls_ret += '`-- '
+	as_indent += '   '
+else
+	ls_ret += '|-- '
+	as_indent += '|  '
+end if
+
+ls_ret += a_term.text
+if a_term.kind <> ATOM and a_term.valtype <> UNDEF then 
+	ls_ret += ' (' + string(a_term.value) + ')'
+end if
+ls_ret += "~r~n"
+
+nb = upperbound(a_term.childs[])
+for i = 1 to nb
+	ls_ret += a_term.prettyprint( a_term.childs[i], as_indent, i = nb)
+next
+
+return ls_ret
+
+end function
+
+public function string valuetype (readonly nv_term a_term);
+//return the stringified type 
+string ls_name
+
+choose case a_term.valtype
+	case UNDEF;		ls_name = "undefined"
+	case INTG;		ls_name = "Integer"		//numeric type
+	case DECIM;		ls_name = "Decimal"		//numeric type
+	case BOOL;		ls_name = "Boolean"		//boolean type
+	case STR;		ls_name = "String"	//string type
+	case ERR;		ls_name = "Error"	//string type
+end choose
+
+return ls_name
+
+end function
+
+public function string valuetype ();
+return valuetype(this)
 
 end function
 

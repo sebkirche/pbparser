@@ -16,6 +16,8 @@ Supported types:
 
 Functions:
 ---------
+- if(cond, true, false)  : "special" function equivalent to the ?: ternary C operator
+        (special in the sense that it performs lazy evaluation of the returned value depending on the condition and not evaluates both values)
 - sum : summarize a list of operands
 - mul : multiply the list of operands
 - abs : absolute value
@@ -30,13 +32,14 @@ Examples of expressions :
 - len(`string`) -> 6
 - 2 - 1 <= 1 + 1 -> True
 - +1 + --+1 -> 2
-- min(len('a string')+7;-len("another");4.2)+42 -> 35
+- min(len('a string')+7,-len("another"),4.2)+42 -> 35
 - 'aa' + 42 -> 'aa42'
 - 40 + '2' -> 42
 - so due to coercion len('aa'+42) -> 4 but len(40+'2') -> "len() can only take string argument at 1"
 - 'aa'='bb' = false -> True
 - 'aa'='bb' = vrai (vrai is a variable set to true) -> False
-- msgbox('length = ' + len("message")) -. displays a message and return 1
+- msgbox('length = ' + len("message")) -> displays a message and return 1
+- msgbox(if(true, 'true', 'false')) -> displays a single message
 
 The addition of new operators or functions needs currently to modify the code, but an attempt
 to define seperate objects that allow clean declaration for new items is in progress in a dedicated branch.

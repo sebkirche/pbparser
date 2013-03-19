@@ -4,13 +4,13 @@ global type m_main from menu
 end type
 type m_help from menu within m_main
 end type
-type m_about from menu within m_help
-end type
 type m_help0 from menu within m_help
 end type
+type m_about from menu within m_help
+end type
 type m_help from menu within m_main
-m_about m_about
 m_help0 m_help0
+m_about m_about
 end type
 global type m_main from menu
 m_help m_help
@@ -36,23 +36,40 @@ destroy(this.m_help)
 end on
 
 type m_help from menu within m_main
-m_about m_about
 m_help0 m_help0
+m_about m_about
 end type
 
 on m_help.create
 call super::create
 this.text = "Help"
-this.m_about=create m_about
 this.m_help0=create m_help0
-this.Item[UpperBound(this.Item)+1]=this.m_about
+this.m_about=create m_about
 this.Item[UpperBound(this.Item)+1]=this.m_help0
+this.Item[UpperBound(this.Item)+1]=this.m_about
 end on
 
 on m_help.destroy
 call super::destroy
-destroy(this.m_about)
 destroy(this.m_help0)
+destroy(this.m_about)
+end on
+
+type m_help0 from menu within m_help
+end type
+
+event clicked;
+open(w_help)
+
+end event
+
+on m_help0.create
+call super::create
+this.text = "Help"
+end on
+
+on m_help0.destroy
+call super::destroy
 end on
 
 type m_about from menu within m_help
@@ -71,21 +88,4 @@ end on
 on m_about.destroy
 call super::destroy
 end on
-
-type m_help0 from menu within m_help
-end type
-
-on m_help0.create
-call super::create
-this.text = "Help"
-end on
-
-on m_help0.destroy
-call super::destroy
-end on
-
-event clicked;
-open(w_help)
-
-end event
 

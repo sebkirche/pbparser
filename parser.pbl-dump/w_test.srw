@@ -2,6 +2,10 @@ $PBExportHeader$w_test.srw
 forward
 global type w_test from window
 end type
+type cbx_dbgeval from checkbox within w_test
+end type
+type cbx_dbgparse from checkbox within w_test
+end type
 type cbx_dbgtokens from checkbox within w_test
 end type
 type mle_debug from multilineedit within w_test
@@ -10,7 +14,7 @@ type mle_eval from multilineedit within w_test
 end type
 type cb_eval from commandbutton within w_test
 end type
-type mle_polish from multilineedit within w_test
+type mle_parsed from multilineedit within w_test
 end type
 type cb_parse from commandbutton within w_test
 end type
@@ -41,11 +45,13 @@ boolean maxbox = true
 long backcolor = 67108864
 string icon = "AppIcon!"
 boolean center = true
+cbx_dbgeval cbx_dbgeval
+cbx_dbgparse cbx_dbgparse
 cbx_dbgtokens cbx_dbgtokens
 mle_debug mle_debug
 mle_eval mle_eval
 cb_eval cb_eval
-mle_polish mle_polish
+mle_parsed mle_parsed
 cb_parse cb_parse
 mle_tokens mle_tokens
 cb_tokenize cb_tokenize
@@ -72,6 +78,7 @@ forward prototypes
 public function string getlocaleinfo (unsignedlong al_localetype, boolean ab_userlocale)
 public function string fixdecimal (string as_text)
 public subroutine showerror (string as_return)
+public subroutine toggledebug (boolean ab_show)
 end prototypes
 
 public function string getlocaleinfo (unsignedlong al_localetype, boolean ab_userlocale);// returns the LOCALE setting of the given type
@@ -140,22 +147,36 @@ end if
 
 end subroutine
 
+public subroutine toggledebug (boolean ab_show);
+//
+if ab_show then
+	this.width = 3287
+else
+	this.width = 2203
+end if
+
+end subroutine
+
 on w_test.create
 if this.MenuName = "m_main" then this.MenuID = create m_main
+this.cbx_dbgeval=create cbx_dbgeval
+this.cbx_dbgparse=create cbx_dbgparse
 this.cbx_dbgtokens=create cbx_dbgtokens
 this.mle_debug=create mle_debug
 this.mle_eval=create mle_eval
 this.cb_eval=create cb_eval
-this.mle_polish=create mle_polish
+this.mle_parsed=create mle_parsed
 this.cb_parse=create cb_parse
 this.mle_tokens=create mle_tokens
 this.cb_tokenize=create cb_tokenize
 this.mle_formula=create mle_formula
-this.Control[]={this.cbx_dbgtokens,&
+this.Control[]={this.cbx_dbgeval,&
+this.cbx_dbgparse,&
+this.cbx_dbgtokens,&
 this.mle_debug,&
 this.mle_eval,&
 this.cb_eval,&
-this.mle_polish,&
+this.mle_parsed,&
 this.cb_parse,&
 this.mle_tokens,&
 this.cb_tokenize,&
@@ -164,11 +185,13 @@ end on
 
 on w_test.destroy
 if IsValid(MenuID) then destroy(MenuID)
+destroy(this.cbx_dbgeval)
+destroy(this.cbx_dbgparse)
 destroy(this.cbx_dbgtokens)
 destroy(this.mle_debug)
 destroy(this.mle_eval)
 destroy(this.cb_eval)
-destroy(this.mle_polish)
+destroy(this.mle_parsed)
 destroy(this.cb_parse)
 destroy(this.mle_tokens)
 destroy(this.cb_tokenize)
@@ -193,6 +216,52 @@ event open;
 mle_formula.text = "msgbox('msg = `'+if(pi>e,~"left~",`right`)+'`')"
 end event
 
+type cbx_dbgeval from checkbox within w_test
+integer x = 1810
+integer y = 928
+integer width = 343
+integer height = 64
+integer textsize = -8
+integer weight = 400
+fontcharset fontcharset = ansi!
+fontpitch fontpitch = variable!
+fontfamily fontfamily = swiss!
+string facename = "Tahoma"
+long textcolor = 33554432
+long backcolor = 67108864
+string text = "debug --->"
+end type
+
+event clicked;
+cbx_dbgtokens.checked = false
+cbx_dbgparse.checked = false
+toggledebug(checked)
+
+end event
+
+type cbx_dbgparse from checkbox within w_test
+integer x = 1810
+integer y = 608
+integer width = 343
+integer height = 64
+integer textsize = -8
+integer weight = 400
+fontcharset fontcharset = ansi!
+fontpitch fontpitch = variable!
+fontfamily fontfamily = swiss!
+string facename = "Tahoma"
+long textcolor = 33554432
+long backcolor = 67108864
+string text = "debug --->"
+end type
+
+event clicked;
+cbx_dbgtokens.checked = false
+cbx_dbgeval.checked = false
+toggledebug(checked)
+
+end event
+
 type cbx_dbgtokens from checkbox within w_test
 integer x = 1810
 integer y = 288
@@ -210,12 +279,10 @@ string text = "debug --->"
 end type
 
 event clicked;
-if checked then
-	parent.width = 3287
-else
-	parent.width = 2203
-end if
 
+cbx_dbgparse.checked = false
+cbx_dbgeval.checked = false
+toggledebug(checked)
 end event
 
 type mle_debug from multilineedit within w_test
@@ -224,13 +291,14 @@ integer y = 64
 integer width = 1015
 integer height = 1160
 integer taborder = 20
-integer textsize = -10
+integer textsize = -8
 integer weight = 400
 fontcharset fontcharset = ansi!
-fontpitch fontpitch = fixed!
-fontfamily fontfamily = modern!
-string facename = "Courier New"
+fontpitch fontpitch = variable!
+fontfamily fontfamily = swiss!
+string facename = "Tahoma"
 long textcolor = 33554432
+boolean hscrollbar = true
 boolean vscrollbar = true
 borderstyle borderstyle = stylelowered!
 end type
@@ -274,9 +342,19 @@ event clicked;
 
 long i
 string ls_res
+nv_term lt_tokens[]
 nv_term lt_parsed[]
 
-i_parser.getparsed( lt_parsed[] )
+if i_parser.tokenize( mle_formula.text) then
+	i_parser.gettokens(lt_tokens[] )
+	if i_parser.parse(lt_tokens[]) then
+		i_parser.getparsed(lt_parsed[])
+	else
+		return
+	end if
+else
+	return
+end if
 
 any vars[]
 vars[1] = "toto"
@@ -295,9 +373,13 @@ if not i_parser.eval(lt_parsed[1]) then
 end if
 
 mle_eval.text = string(lt_parsed[1].value)
+
+if cbx_dbgeval.checked then mle_debug.text = lt_parsed[1].prettyprint(lt_parsed[1], "", true)
+
+
 end event
 
-type mle_polish from multilineedit within w_test
+type mle_parsed from multilineedit within w_test
 integer x = 37
 integer y = 704
 integer width = 2117
@@ -340,13 +422,16 @@ if i_parser.tokenize( mle_formula.text ) then
 	i_parser.gettokens( lt_tokens[] )
 	if i_parser.parse(lt_tokens[]) then
 		i_parser.getparsed( lt_parsed[] )
-		mle_polish.text = ""
+		mle_parsed.text = ""
 		for i = 1 to upperbound(lt_parsed[])
-			mle_polish.text += lt_parsed[i].dump() + ' '
+			mle_parsed.text += lt_parsed[i].dump() + ' '
 		next
+		if cbx_dbgparse.checked then mle_debug.text = lt_parsed[1].prettyprint(lt_parsed[1], "", true)
 	else
-		mle_polish.text = i_parser.getlasterror()
+		mle_parsed.text = i_parser.getlasterror()
 	end if
+else
+	mle_parsed.text = ""
 end if
 
 end event
@@ -395,7 +480,7 @@ ls_form = mle_formula.text
 p = pos(ls_form, "~r~n")
 if p > 0 then ls_form = left(ls_form, p - 1)
 
-//ls_form = fixdecimal(ls_form)
+mle_tokens.text = ""
 mle_formula.text = ls_form
 
 if i_parser.tokenize( ls_form ) then
