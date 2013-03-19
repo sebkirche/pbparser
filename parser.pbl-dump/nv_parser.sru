@@ -214,13 +214,13 @@ do while ll_tk_start <= ll_inplen
 			choose case lc
 				case ARGSEP; l_term.kind = nv_term.TARGSEP
 				case LPAR; 
-					if ll_nbterm > 0 then
+					/*buggy if ll_nbterm > 0 then
 						if inv_terms[ll_nbterm].kind = nv_term.IDENT then
 							is_lasterror = "`" + inv_terms[ll_nbterm].text + +"`is not a function at " + string(inv_terms[ll_nbterm].position)
 							lb_ret = false
 							goto exit_tokenize
 						end if
-					end if
+					end if*/
 					l_term.kind = nv_term.TLPAR
 				case RPAR; l_term.kind = nv_term.TRPAR
 			end choose
@@ -462,10 +462,10 @@ do while t <= upperbound(at_terms[])
 				l_func.count = ll_count
 				treeifyterm(ref l_func, ref ltst_ast)
 				ltst_ast.push(l_func)
-			else
+			/*buggy else
 				is_lasterror = '`' + ltst_op.top().text + '` is not a function'
 				lb_ret = false
-				goto end_of_shunt
+				goto end_of_shunt*/
 			end if
 		else
 			is_lasterror = "parenthesis error"

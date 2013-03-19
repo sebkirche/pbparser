@@ -189,8 +189,8 @@ event open;
 //mle_formula.text = "len('toto') = 4"
 //mle_formula.text = "min(len('toto')+7,-len(~"machin~"),4.2)+42"
 //mle_formula.text = "'aa'+'bb'"
-mle_formula.text = "if(pi=3.14,msgbox('true'),msgbox('false'))"
-
+//mle_formula.text = "if(pi=3.14,msgbox('true'),msgbox('false'))"
+mle_formula.text = "msgbox('msg = `'+if(pi>e,~"left~",`right`)+'`')"
 end event
 
 type cbx_dbgtokens from checkbox within w_test
