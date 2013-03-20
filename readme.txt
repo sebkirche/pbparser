@@ -39,7 +39,8 @@ Examples of expressions :
 - 'aa'='bb' = false -> True
 - 'aa'='bb' = vrai (vrai is a variable set to true) -> False
 - msgbox('length = ' + len("message")) -> displays a message and return 1
-- msgbox(if(true, 'true', 'false')) -> displays a single message
+- msgbox(if(true, 'true', 'false')) -> displays 'true'
+- if(true, msgbox('true'), msgbox('false')) -> displays a single 'true'
 
 The addition of new operators or functions needs currently to modify the code, but an attempt
 to define seperate objects that allow clean declaration for new items is in progress in a dedicated branch.
